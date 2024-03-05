@@ -6,7 +6,7 @@
 /*   By: asamuilk <asamuilk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 14:55:35 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/04 19:08:30 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/03/05 18:37:13 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,27 +14,31 @@
 
 void	shell_loop(char **envp)
 {
-	char	*line;
 	char	**args;
+	char	*line;
 
 	(void)envp;
-	while (1)
+	set_signal_handler();
+	line = readline("-->");
+	while (line)
 	{
-		line = readline("-->");
-		if (line)
+		if (*line)
 		{
-			add_history(line);
-			args = ft_split(line, ' ');
-			free(line);
+			add_history(rl_line_buffer);
+			printf("%s\n", rl_line_buffer);
+			args = ft_split(rl_line_buffer, ' ');
 			free_split(args);
 		}
+		free(line);
+		line = readline("-->");
 	}
+	printf("exit\n");
 	rl_clear_history();
+	exit(EXIT_SUCCESS);
 }
 
 int	main(int ac, char **av, char **envp)
 {
-
 	(void)av;
 	if (ac == 1)
 		shell_loop(envp);

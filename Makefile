@@ -1,5 +1,5 @@
 CFLAGS := -Wall -Wextra -Werror
-CFILES := src/main.c src/utils.c
+CFILES := src/main.c src/utils.c src/signals.c
 OFILES := $(CFILES:.c=.o)
 INCLUDE := include
 LIBFT_PATH := libft/
