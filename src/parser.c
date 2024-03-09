@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 06:47:54 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/03/09 13:30:53 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/03/09 14:14:12 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@ int	find_env_var(char *line, char *to_extend)
 		free(tmp);
 		ft_strlcpy(tmp,	to_extend, ++len);
 	}
-	// TODO: if env var not found tmp = '\n'
 	line = join_token(line, tmp);
 	free(tmp);
 	return (len);
@@ -63,7 +62,7 @@ void	parser(t_token *token) // it can be changed to updated t_token
 		}
 		else if (token->type <= 4)
 		{
-			if (token->type <= 4 && ft_strchr(token->value, '$'))
+			if (token->type == 4 && ft_strchr(token->value, '$'))
 			{
 				extended = ft_split(token->value, '$'); //what if $i is token->value[0]?
 				while (extended[i])
@@ -104,7 +103,7 @@ int main(int argc, char *argv[])
 	strcpy(three, argv[3]);
 	first = create_token(1, one, 5);
 	first->next = create_token(2, two, 5);
-	first->next->next = create_token(3, three, 3);
+	first->next->next = create_token(4, three, 4);
 	parser(first);
 }
 
@@ -119,5 +118,6 @@ int main(int argc, char *argv[])
 
 // ./a.out "hello" " " "Mr $name"	returns "hello Mr John"
 
-// a.out "hello" " " "Mr $namesas"	returns "hello Mr "
+// ./a.out "hello" " " "Mr $namesas"	returns "hello Mr "
 	//it should return "hello   Mr \n"
+//TODO: Understand why it expands regardless of type

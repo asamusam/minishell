@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 17:18:43 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/09 13:40:45 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/03/09 14:02:05 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ typedef struct s_envp
 	char			*key;
 	char			*value;
 }	t_envp;
-
+/* commented out to silence error
 // array of pointers to builtin functions
 typedef	(*t_builtin_ptr)(t_list *args, t_info *info);
 
@@ -94,5 +94,5 @@ typedef struct s_info
 	int				exit_flag;
 	int				return_code;
 }	t_info;
-
+*/
 #endif
