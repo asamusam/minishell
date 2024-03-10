@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 06:47:54 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/03/10 08:52:44 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/03/10 10:44:23 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,19 +23,18 @@ char	*join_token(char *line, char *line_to_add)
 	return (tmp);
 }
 
-void	parser(t_token *token)
+char	*parser(t_token *token)
 {
 	char	*line;
-	char	*tmp;
 	char	**extended;
 	int		i;
 
 	if (!token)
-		return ; //empty input
+		return (NULL); //empty input
 	line = malloc(sizeof(char) * (token->len + 1));
 	if (!line)
 	{
-		return ;//malloc error, perror?
+		return (NULL);//malloc error, perror?
 	}
 	while (token)
 	{
@@ -45,7 +44,7 @@ void	parser(t_token *token)
 				// create process with line command
 				break;
 		}
-		else if (token->type <= 4) // strings, space, single and double quotes
+		else if (token->type <= 4 || token->type == 8) // strings, space, single and double quotes / insource
 		{
 			if (token->type == 4 && ft_strchr(token->value, '$')) // is_extendable?
 			{
@@ -53,12 +52,8 @@ void	parser(t_token *token)
 					i = 1;
 				extended = ft_split(token->value, '$');
 				while (extended[i])
-				{
-					tmp = getenv(extended[i]);
-					line = join_token(line, tmp);
-					//free(tmp); TODO: free gives segv
-					i++;
-				}
+					line = join_token(line, getenv(extended[i++]));
+				free_split(extended);
 			}
 			else // no expand
 				line = join_token(line, token->value);
@@ -66,6 +61,7 @@ void	parser(t_token *token)
 		token = token->next;
 	}
 	printf("%s\n", line);
+	return (line);
 }
 
 // for testing
@@ -81,7 +77,22 @@ t_token *create_token(int type, char *value, int len)
 	return (token);
 }
 
-int main(int argc, char *argv[], char *envp[])
+void	free_token(t_token *token)
+{
+	t_token *tmp;
+	while (token)
+	{
+		token->type = 0;
+		token->value = NULL;
+		token->len = 0;
+		tmp = token->next;
+		token->next = NULL;
+		free(token);
+		token = tmp;
+	}	
+}
+
+int main()
 {
 	t_token *first;
 
@@ -99,6 +110,7 @@ int main(int argc, char *argv[], char *envp[])
 	first->next->next->next->next = create_token(4, five, 4);
 	first->next->next->next->next->next = create_token(4, six, 4);
 	parser(first);
+	free_token(first);
 }
 
 // HOW TO TEST
