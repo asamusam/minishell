@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asamuilk <asamuilk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 17:18:43 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/08 19:12:36 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/03/11 17:58:48 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,12 +53,12 @@ typedef struct s_envp
 }	t_envp;
 
 // array of pointers to builtin functions
-typedef	(*t_builtin_ptr)(t_list *args, t_info *info);
+//typedef	(*t_builtin_ptr)(t_list *args, t_info *info);
 
 // main general info structure
 typedef struct s_info
 {
-	t_builtin_ptr	builtins;
+	//t_builtin_ptr	builtins;
 	char			*reserved_words[7];
 	char			**path;
 	char			**envp;
