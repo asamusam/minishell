@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: asamuilk <asamuilk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 13:35:22 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/11 19:54:13 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/03/12 19:20:02 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,39 +87,20 @@ int	get_token(t_list **token_lst, char *line, int i)
 
 // in: user input line
 // out: list of tokens
-void	lexer(char *line, t_list **token_lst)
+t_list	*lexer(char *line)
 {
-	int	i;
-	int	add;
+	int		i;
+	int		add;
+	t_list	*token_lst;
 
 	i = 0;
+	token_lst = NULL;
 	while (line[i])
 	{
-		add = get_token(token_lst, line, i);
+		add = get_token(&token_lst, line, i);
 		if (add == -1)
 			break ;
 		i = i + add;
 	}
-}
-
-void	print_token(void *arg)
-{
-	t_token *token;
-
-	token = (t_token *)arg;
-	ft_printf("token type: %d\ntoken value: ", token->type);
-	write(STDOUT_FILENO, token->value, token->len);
-	ft_printf("\ntoken len: %d\n", token->len);
-}
-
-int	main(int ac, char **av)
-{
-	t_list	*tokens;
-
-	tokens = NULL;
-	if (ac == 2)
-	{
-		lexer(av[1], &tokens);
-		ft_lstiter(tokens, print_token);
-	}
+	return (token_lst);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: asamuilk <asamuilk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 17:18:43 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/11 17:58:48 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/03/12 19:02:35 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,8 @@
 char	*get_envvar(char **envp, char *var);
 void	free_split(char **arr);
 void	set_signal_handler(void);
+void	print_token(void *arg);
+t_list	*lexer(char *line);
 
 // each node in the list of tokens will 
 // contain a pointer to this structure

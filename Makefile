@@ -1,6 +1,6 @@
 CFLAGS := -Wall -Wextra -Werror
-# CFILES := src/main.c src/utils.c src/signals.c 
-CFILES := src/lexer.c src/lexer_spec_token_func.c src/lexer_token_func_utils.c src/lexer_word_token_func.c
+CFILES := src/main.c src/utils.c src/signals.c \
+          src/lexer.c src/lexer_spec_token_func.c src/lexer_utils.c src/lexer_word_token_func.c
 OFILES := $(CFILES:.c=.o)
 INCLUDE := include
 LIBFT_PATH := libft/
