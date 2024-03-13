@@ -3,13 +3,12 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asamuilk <asamuilk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 18:32:40 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/05 18:46:52 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/03/13 13:57:18 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "minishell.h"
 
@@ -32,11 +31,9 @@ void	set_signal_handler(void)
 	sa.sa_handler = signal_handler;
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = SA_RESTART;
-
 	ignore.sa_handler = SIG_IGN;
 	sigemptyset(&ignore.sa_mask);
 	ignore.sa_flags = SA_RESTART;
-
 	sigaction(SIGINT, &sa, NULL);
 	sigaction(SIGQUIT, &ignore, NULL);
 }

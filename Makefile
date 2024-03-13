@@ -1,6 +1,6 @@
 CFLAGS := -Wall -Wextra -Werror
 CFILES := src/main.c src/utils.c src/signals.c \
-          src/lexer.c src/lexer_spec_token_func.c src/lexer_utils.c src/lexer_word_token_func.c
+          src/lexer.c src/lexer_token_func_spec.c src/lexer_token_func_word.c src/lexer_utils.c
 OFILES := $(CFILES:.c=.o)
 INCLUDE := include
 LIBFT_PATH := libft/
@@ -23,7 +23,7 @@ clean:
 	rm -f $(OFILES)
 
 fclean: clean
-	rm -f $(LIBFT)
+	rm -f $(LIBFT_PATH)$(LIBFT)
 	rm -f $(NAME)
 
 re: fclean all

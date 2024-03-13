@@ -3,42 +3,53 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asamuilk <asamuilk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/04 17:18:06 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/04 19:01:59 by asamuilk         ###   ########.fr       */
+/*   Created: 2024/03/13 15:57:01 by asamuilk          #+#    #+#             */
+/*   Updated: 2024/03/13 16:46:32 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 /*
- * Function: get_envvar
- * ----------------------------
- * Allocates with malloc() and returns the value of 
- * a specified environment variable.
- * 
+ * Prints given error message.
+ *
  * Arguments:
- * - envp - environment variables list;
- * - var - environment variable to find;
+ * - message — error message to print
+ * - type — function to use: PERROR for raising perror() 
+ * with 'message' as an arg and STDERR for printing 'message' 
+ * to the standard error
  * 
  * Returns:
- * A pointer to the string containing the value of
- * the variable specified in var. NULL if var is not found 
- * or there is no value assigned to it.
+ * Zero.
  */
-char	*get_envvar(char **envp, char *var)
+int	print_error(char *message, int type)
 {
-	char	*res;
+	if (type == PERROR)
+		perror(message);
+	else if (type == STDERR)
+		ft_putendl_fd(message, STDERR_FILENO);
+	return (0);
+}
 
-	while (*envp)
-	{
-		res = ft_strnstr(*envp, var, ft_strlen(*envp));
-		if (res && res == *envp)
-			return (ft_strdup(ft_strchr(res, '=') + 1));
-		envp ++;
-	}
-	return (NULL);
+/*
+ * Prints the contents of a token structure: type, value, length.
+ *
+ * Arguments:
+ * - arg — pointer to the token structure
+ * 
+ * Returns:
+ * Nothing.
+ */
+void	print_token(void *arg)
+{
+	t_token	*token;
+
+	token = (t_token *)arg;
+	ft_printf("token type: %d\ntoken value: ", token->type);
+	write(STDOUT_FILENO, token->value, token->len);
+	ft_printf("\ntoken len: %d\n", token->len);
 }
 
 /*
@@ -47,7 +58,7 @@ char	*get_envvar(char **envp, char *var)
  * Frees all the memory associated with ft_split() return.
  * 
  * Arguments:
- * - arr - array of strings returned by ft_split().
+ * - arr — array of strings returned by ft_split()
  * 
  * Returns:
  * Nothing.

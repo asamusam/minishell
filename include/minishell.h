@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asamuilk <asamuilk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 17:18:43 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/12 19:02:35 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/03/13 17:06:28 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,10 @@
 # define REDIRECT_INSOURCE 8
 # define PIPE 9
 
+// error handling
+# define PERROR 0
+# define STDERR 1
+
 # include <stdio.h>
 # include <stdlib.h>
 # include <readline/readline.h>
@@ -31,9 +35,8 @@
 # include <signal.h>
 # include "libft.h"
 
-char	*get_envvar(char **envp, char *var);
-void	free_split(char **arr);
 void	set_signal_handler(void);
+int		print_error(char *message, int type);
 void	print_token(void *arg);
 t_list	*lexer(char *line);
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asamuilk <asamuilk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 13:35:22 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/12 19:20:02 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/03/13 16:50:23 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,93 +14,61 @@
 #include "lexer.h"
 
 /*
- * Allocates with malloc() and returns a pointer to a token structure.
- * 
+ * Determines the token type and calls a corresponding function 
+ * to add the token to the token list.
+ *
  * Arguments:
- * - type — token type in range from 1 to 9 as defined in the header
- * - value — a pointer to the beginning of the token value
- * - len — length of the token in bytes
+ * - token_lst — list to add a token to
+ * - line — pointer to the beginning of a token in the user input string
  * 
  * Returns:
- * A pointer to the filled token structure. NULL if the allocation fails.
+ * The length of the token, including quotes where applicable.
  */
-t_token	*create_token(int type, char *value, int len)
+int	get_token(t_list **token_lst, char *line)
 {
-	t_token	*token;
-
-	token = malloc(sizeof(t_token));
-	if (!token)
-		return (NULL);
-	token->type = type;
-	token->value = value;
-	token->len = len;
-	return (token);
+	if (*line == '|')
+		return (add_pipe(token_lst, line));
+	else if (*line == '<' && *(line + 1) == '<')
+		return (add_redir_insource(token_lst, line));
+	else if (*line == '<')
+		return (add_redir_in(token_lst, line));
+	else if (*line == '>' && *(line + 1) == '>')
+		return (add_redir_append(token_lst, line));
+	else if (*line == '>')
+		return (add_redir_out(token_lst, line));
+	else if (*line == '\'')
+		return (add_field(token_lst, line));
+	else if (*line == '\"')
+		return (add_exp_field(token_lst, line));
+	else if (ft_isspace(*line))
+		return (add_separator(token_lst, line));
+	else
+		return (add_word(token_lst, line));
 }
 
 /*
- * Allocates with malloc() and adds a new node to the token list, with
- * the content of the node being a pointer to the token.
- * The token is also allocated with malloc().
- * 
+ * Transforms a user input string into a list of tokens (logical units).
+ *
  * Arguments:
- * - token_lst — pointer to the beginning of the token list
- * - token — pointer to a token
+ * - line — user input string
  * 
  * Returns:
- * Pointer to the new node in token_lst or NULL if the allocation fails.
+ * List of type t_list with a t_token structure as a content of each node.
  */
-t_list	*add_token(t_list **token_lst, t_token *token)
-{
-	t_list	*node;
-
-	node = ft_lstnew(token);
-	if (!node)
-	{
-		free(token);
-		return (NULL);
-	}
-	ft_lstadd_back(token_lst, node);
-	return (node);
-}
-
-int	get_token(t_list **token_lst, char *line, int i)
-{
-	if (line[i] == '|')
-		return (add_pipe(token_lst, line + i));
-	else if (line[i] == '<' && line[i + 1] == '<')
-		return (add_redir_insource(token_lst, line + i));
-	else if (line[i] == '<')
-		return (add_redir_in(token_lst, line + i));
-	else if (line[i] == '>' && line[i + 1] == '>')
-		return (add_redir_append(token_lst, line + i));
-	else if (line[i] == '>')
-		return (add_redir_out(token_lst, line + i));
-	else if (line[i] == '\'')
-		return (add_field(token_lst, line + i));
-	else if (line[i] == '\"')
-		return (add_exp_field(token_lst, line + i));
-	else if (ft_isspace(line[i]))
-		return (add_separator(token_lst, line + i));
-	else
-		return (add_word(token_lst, line + i));
-}
-
-// in: user input line
-// out: list of tokens
 t_list	*lexer(char *line)
 {
 	int		i;
-	int		add;
+	int		len;
 	t_list	*token_lst;
 
 	i = 0;
 	token_lst = NULL;
 	while (line[i])
 	{
-		add = get_token(&token_lst, line, i);
-		if (add == -1)
-			break ;
-		i = i + add;
+		len = get_token(&token_lst, line + i);
+		if (!len)
+			return (NULL);
+		i = i + len;
 	}
 	return (token_lst);
 }
