@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 17:18:43 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/09 14:02:05 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/03/13 08:34:14 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,24 +35,6 @@ char	*get_envvar(char **envp, char *var);
 void	free_split(char **arr);
 void	set_signal_handler(void);
 
-// possible structure for each process
-typedef struct s_process
-{
-	char				*input_line;
-	struct s_process	*prev;
-	struct s_process	*next;
-} 	t_process;
-
-//possible structure for redirect
-
-typedef struct s_redirect
-{
-	char	*file; // name
-	int		mode; // O_CREATE,ect
-	int		fd; // 0 = stdin / 1 = stdout
-	char	*cmd; //command
-} t_redirect;
-
 // each node in the list of tokens will 
 // contain a pointer to this structure
 // (the list type itself is defined in libft)
@@ -61,15 +43,7 @@ typedef struct s_token
 	int				type;
 	char			*value;
 	int				len;
-	struct s_token	*next; //decide if using this or s_tok_list
 }	t_token;
-
-// // list of token // or we could add a next to s_token
-// typedef struct s_tok_list
-// {
-// 	t_token		*token;
-// 	t_token		*next;
-// }	t_tok_list;
 
 // environment variable structure
 typedef struct s_envp
@@ -77,10 +51,9 @@ typedef struct s_envp
 	char			*key;
 	char			*value;
 }	t_envp;
-/* commented out to silence error
+/*
 // array of pointers to builtin functions
 typedef	(*t_builtin_ptr)(t_list *args, t_info *info);
-
 
 // main general info structure
 typedef struct s_info

@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 10:45:49 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/03/10 11:53:11 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/03/13 08:09:56 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,5 +47,24 @@ int main(int argc, char *argv[])
 		printf("%s\n", ins);
 }
 
-// cc -g insource.c ../libft/libft.a ../include/minishell.h
+// cc -g insource.c ../libft/libft.a ../include/m
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+inishell.h
 // ./a.out "END helloda \n dsfoioj \n dfiojoiEND"

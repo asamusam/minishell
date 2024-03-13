@@ -2,7 +2,10 @@
 	"files.associations": {
 		"minishell.h": "c",
 		"type_traits": "c",
-		"typeinfo": "c"
+		"typeinfo": "c",
+		"stdlib.h": "c",
+		"history.h": "c",
+		"compare": "c"
 	},
 	"C_Cpp.errorSquiggles": "disabled"
 }
