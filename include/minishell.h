@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 17:18:43 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/13 08:34:14 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/03/13 17:06:28 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,16 +24,21 @@
 # define REDIRECT_INSOURCE 8
 # define PIPE 9
 
+// error handling
+# define PERROR 0
+# define STDERR 1
+
 # include <stdio.h>
 # include <stdlib.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <signal.h>
-# include "../libft/include/libft.h"
+# include "libft.h"
 
-char	*get_envvar(char **envp, char *var);
-void	free_split(char **arr);
 void	set_signal_handler(void);
+int		print_error(char *message, int type);
+void	print_token(void *arg);
+t_list	*lexer(char *line);
 
 // each node in the list of tokens will 
 // contain a pointer to this structure
@@ -51,14 +56,14 @@ typedef struct s_envp
 	char			*key;
 	char			*value;
 }	t_envp;
-/*
+
 // array of pointers to builtin functions
-typedef	(*t_builtin_ptr)(t_list *args, t_info *info);
+//typedef	(*t_builtin_ptr)(t_list *args, t_info *info);
 
 // main general info structure
 typedef struct s_info
 {
-	t_builtin_ptr	builtins;
+	//t_builtin_ptr	builtins;
 	char			*reserved_words[7];
 	char			**path;
 	char			**envp;
@@ -67,5 +72,5 @@ typedef struct s_info
 	int				exit_flag;
 	int				return_code;
 }	t_info;
-*/
+
 #endif

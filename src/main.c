@@ -3,19 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 14:55:35 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/09 08:55:09 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/03/13 16:50:58 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "minishell.h"
 
 void	shell_loop(char **envp)
 {
-	char	**args;
 	char	*line;
+	t_list	*tokens;
 
 	(void)envp;
 	set_signal_handler();
@@ -25,10 +25,11 @@ void	shell_loop(char **envp)
 		if (*line)
 		{
 			add_history(rl_line_buffer);
-			printf("%s\n", rl_line_buffer);
-			args = ft_split(rl_line_buffer, ' ');
-			free_split(args);
+			tokens = lexer(line);
+			if (tokens)
+				ft_lstiter(tokens, print_token); // run parser here
 		}
+		ft_lstclear(&tokens, free);
 		free(line);
 		line = readline("-->");
 	}
