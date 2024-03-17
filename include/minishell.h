@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 17:18:43 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/13 17:06:28 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/03/17 14:09:32 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ typedef struct s_info
 	char			*reserved_words[7];
 	char			**path;
 	char			**envp;
-	t_list			envp_list;
+	t_list			*envp_list; //TODO: added *
 	int				envp_flag;
 	int				exit_flag;
 	int				return_code;

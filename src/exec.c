@@ -6,117 +6,48 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 09:04:55 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/03/15 14:36:10 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/03/17 12:43:05 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
 /*
- * Checks if the string provided is a built-in cmd
+ * Create last process, close remaining pipes, executes cmd
  *
  * Arguments:
- * - cmd - string
+ * - command - command structure
+ * - info - info structure
+ * - prev_pipe - previous pipe,
  * 
  * Returns:
- * Number corresponding to cmd, 0 if not built-in
+ * Status
  */
 
-int	is_buit_in(char *cmd)
+int	ft_last_pipe(t_command *command, t_info *info, int *prev_pipe)
 {
-	if (!ft_strncmp("echo", cmd, ft_strlen(cmd)))
+	pid_t	pid;
+
+	pid = fork();
+	if ((pid = fork()) == -1)
+	{
+		print_error("Fork error\n", 0); // TODO: check error
 		return (1);
-	else if (!ft_strncmp("cd", cmd, ft_strlen(cmd)))
-		return (2);
-	else if (!ft_strncmp("pwd", cmd, ft_strlen(cmd)))
-		return (3);
-	else if (!ft_strncmp("export", cmd, ft_strlen(cmd)))
-		return (4);
-	else if (!ft_strncmp("unset", cmd, ft_strlen(cmd)))
-		return (5);
-	else if (!ft_strncmp("env", cmd, ft_strlen(cmd)))
-		return (6);
-	else if (!ft_strncmp("exit", cmd, ft_strlen(cmd)))
-		return (7);
-	return (0);
-}
-
-int	handle_built_in(char *input)
-{
-	int	n;
-
-	n = is_buit_in(input);
-	if (n == 1)
-		handle_echo(input);
-	else if (n == 2)
-		handle_cd(input);
-	else if (n == 3)
-		handle_pwd(input);
-	else if (n == 4)
-		handle_export(input);
-	else if (n == 5)
-		handle_unset(input);
-	else if (n == 6)
-		handle_env(input);
-	else if (n == 7)
-		handle_exit(input);
-	// TODO: handle errors/return
-	return(0);
-}
-
-/*
- * Checks if the string provided is a valid cmd and if so returns it
- *
- * Arguments:
- * - path - available paths
- * - command - command name
- * 
- * Returns:
- * String to input in execve, otherwise null
- */
-
-char	*get_command(char **path, char *command)
-{
-	char	*tmp;
-	char	*cmd;
-	while (*path)
-	{
-		tmp = ft_strjoin(*path, "/");
-		cmd = ft_strjoin(tmp, command);
-		free(tmp);
-		if (!access(cmd, 0))
-			return (cmd);
-		free(cmd);
-		path++;
 	}
-	return (NULL);
-}
-
-/*
- * Divided the input in cmd and args and exec them
- *
- * Arguments:
- * - input
- * - info struct
- * 
- * Returns:
- * 
- */
-
-int	handle_input(char *input, t_info *info)
-{
-	char	**args;
-	char	cmd;
-
-	// if string with no redirection
-	args = ft_split(args, ' ');
-	cmd = get_command(info->path, args[0]);
-	if (!cmd)
+	if (pid == 0)
 	{
-		print_error("Invalid cmd\n", 0); // TODO: get correct error
-		exit (1);
+		dup2(prev_pipe, STDIN_FILENO); // TODO: check for redirection
+		close(prev_pipe);
+		if (!is_buitin(command->args->content))
+			handle_builtin(command, info);
+		else
+			handle_input(command, info);
 	}
-	execve(cmd, args, info->envp);
+	else
+	{
+		close(prev_pipe);
+		waitpid(pid, NULL, 0);
+	}
 	return (0);
 }
 
@@ -124,56 +55,77 @@ int	handle_input(char *input, t_info *info)
  * Create processes, pipes and executes commands
  *
  * Arguments:
- * - env - enviromental variables
- * - TBD
+ * - command - command structure
+ * - info - info structure
+ * - prev_pipe - previous pipe,
+ * 
+ * Returns:
+ * Status
+ */
+
+int ft_pipe(t_command *command, t_info *info, int *prev_pipe)
+{
+	pid_t	pid;
+	int		pipefd[2];
+
+	if (pipe(pipefd) == -1)
+	{
+		print_error("Pipe error\n", 0); // TODO: check error, make sure to close previous pipes
+		return (1);
+	}
+	if ((pid = fork()) == -1)
+	{
+		print_error("Fork error\n", 0); // TODO: check error
+		return (1);
+	}
+	if (pid == 0) // child process
+	{
+		close(pipefd[0]);
+		dup2(pipefd[1], STDOUT_FILENO); // write TODO: check for redirection
+		close (pipefd[1]);
+		dup2(*prev_pipe, STDIN_FILENO); // read TODO: check for redirection
+		close(*prev_pipe);
+		if (!is_buitin(command->args->content))
+			handle_builtin(command, info);
+		else
+			handle_input(command, info);
+	}
+	else
+	{
+		close(pipefd[1]);
+		close(*prev_pipe);
+		*prev_pipe = pipefd[0];
+		waitpid(pid, NULL, 0);
+	}
+	return (0);
+}
+
+/*
+ * Loops through commands list and creates processes accordingly
+ *
+ * Arguments:
+ * - commands - list of commands/processes
+ * - info - info structure
  * 
  * Returns:
  * TBD
  */
 
-int	ft_pipe(t_list **processes, t_info *info)
+void	exec(t_list *commands, t_info *info)
 {
-	int		n_process;
-	char	input[] = "grep Hello"; // depending on struct it'll be the input to analize
+	int		prev_pipe;
+	t_list	*current;
 
-	n_process = 3; // function to count number of sublists
-	int		pipes[n_process][2];
-	pid_t	pid[n_process];
-	int		i;
-
-	i = 0;
-	while (i < n_process)
+	prev_pipe = dup(0); // initialized with any valid fd to avoid error, since first child doesn't need prev_pipe
+	current = commands;
+	while (current && current->next)
 	{
-		if (pipe(pipes[i]) < 0)
-		{
-			print_error("Pipe error\n", 0); // TODO: get correct error
-			return (1);
-		}
+		ft_pipe(current->content, info, &prev_pipe);
+		current = current->next;
 	}
-	i = 0;
-	while (i < n_process)
-	{
-		if ((pid[i] = fork()) == -1)
-			print_error("Fork error\n", 0); // TODO: get correct error, also EXIT?
-		if (pid[i] == 0)
-		{
-			if (i > 0) // not first process
-				dup2(pipes[i][0], STDIN_FILENO); // read from pipe
-			if (i < n_process)
-				dup2(pipes[i][1], STDOUT_FILENO); // write into pipe
-			close(pipes[i][0]);
-			close(pipes[i][1]);
-			if (!is_buit_in(input))
-				handle_built_in(input);
-			else
-				handle_input(input, info);
-			print_error("Exec error\n", 0); // TODO: get correct error
-			return (1);
-		}
-		i++;
-	}
-	i = 0;
-	while (i < n_process)
-		waitpid(pid[i++], NULL, 0);
-	return (0);
+	ft_last(current->content, info, prev_pipe);
+	// TODO: free(commands) 
 }
+
+// Valgrind with pipes and forks
+//valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --trace-children=yes ./a.out
