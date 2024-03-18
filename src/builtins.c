@@ -6,21 +6,21 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 09:07:33 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/03/17 15:14:32 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/03/18 15:17:39 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "exec.h"
+#include "../include/exec.h"
 
 
-int	handle_echo(t_command *command)
+int	handle_echo(t_list *args)
 {
 	
 }
 
 ////////////////////////////////////////////////////
 
-int handle_cd(t_command *command)
+int handle_cd(t_list *args)
 {
 	
 }
@@ -95,9 +95,9 @@ int	handle_export(t_list *args, t_info *info)
 	keyval = ft_split((char *)((args->next)->content), '=');
 	key = ft_strdup(keyval[0]);
 	value = ft_strdup(keyval[1]);
-	current = &(info->envp_list);
+	current = (info->envp_list);
 	if (!current) //if no env set
-		current->content = (void *)create_env(key, value);
+		current->content = (void *)create_envp_node(key, value);
 	else if (check_envs(current, key, value))
 	{
 		free_split(keyval);
@@ -106,7 +106,7 @@ int	handle_export(t_list *args, t_info *info)
 	else
 	{
 		current = ft_lstlast(current);
-		current->next = create_envp_node(key, value);
+		current->next = ft_lstnew((void *)(create_envp_node(key, value)));
 	}
 	free_split(keyval);
 	return (0);
@@ -114,7 +114,7 @@ int	handle_export(t_list *args, t_info *info)
 
 ////////////////////////////////////////////////////
 
-int	handle_unset(t_command *command)
+int	handle_unset(t_list *args)
 {
 	
 }
@@ -133,7 +133,7 @@ int	handle_env(t_info *info)
 
 ////////////////////////////////////////////////////
 
-int	handle_exit(t_command *command)
+int	handle_exit(t_list *args)
 {
 	
 }

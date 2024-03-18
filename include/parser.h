@@ -6,13 +6,13 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 15:00:30 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/17 07:17:14 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/03/18 09:32:52 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PARSER_H
 # define PARSER_H
-# include "libft.h"
+# include "../libft/include/libft.h"
 # include "minishell.h"
 
 // the executor gets a list of commands, i.e. t_list *commands.

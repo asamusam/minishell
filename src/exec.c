@@ -6,11 +6,12 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 09:04:55 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/03/17 12:43:05 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/03/18 15:18:41 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "exec.h"
+#include "../include/exec.h"
+#include "../include/minishell.h"
 
 /*
  * Create last process, close remaining pipes, executes cmd
@@ -24,7 +25,7 @@
  * Status
  */
 
-int	ft_last_pipe(t_command *command, t_info *info, int *prev_pipe)
+int	last_process(t_command *command, t_info *info, int prev_pipe)
 {
 	pid_t	pid;
 
@@ -38,7 +39,7 @@ int	ft_last_pipe(t_command *command, t_info *info, int *prev_pipe)
 	{
 		dup2(prev_pipe, STDIN_FILENO); // TODO: check for redirection
 		close(prev_pipe);
-		if (!is_buitin(command->args->content))
+		if (is_buitin((char *)(command->args->content)))
 			handle_builtin(command, info);
 		else
 			handle_input(command, info);
@@ -63,7 +64,7 @@ int	ft_last_pipe(t_command *command, t_info *info, int *prev_pipe)
  * Status
  */
 
-int ft_pipe(t_command *command, t_info *info, int *prev_pipe)
+int create_process(t_command *command, t_info *info, int *prev_pipe)
 {
 	pid_t	pid;
 	int		pipefd[2];
@@ -80,12 +81,12 @@ int ft_pipe(t_command *command, t_info *info, int *prev_pipe)
 	}
 	if (pid == 0) // child process
 	{
-		close(pipefd[0]);
-		dup2(pipefd[1], STDOUT_FILENO); // write TODO: check for redirection
+		close (pipefd[0]);
+		dup2 (pipefd[1], STDOUT_FILENO);
 		close (pipefd[1]);
-		dup2(*prev_pipe, STDIN_FILENO); // read TODO: check for redirection
-		close(*prev_pipe);
-		if (!is_buitin(command->args->content))
+		dup2 (*prev_pipe, STDIN_FILENO);
+		close (*prev_pipe);
+		if (is_buitin(command->args->content))
 			handle_builtin(command, info);
 		else
 			handle_input(command, info);
@@ -116,16 +117,68 @@ void	exec(t_list *commands, t_info *info)
 	int		prev_pipe;
 	t_list	*current;
 
-	prev_pipe = dup(0); // initialized with any valid fd to avoid error, since first child doesn't need prev_pipe
+	prev_pipe = dup(0);// initialized with any valid fd to avoid error, since first child doesn't need prev_pipe
 	current = commands;
 	while (current && current->next)
 	{
-		ft_pipe(current->content, info, &prev_pipe);
+		create_process((t_command *)(current->content), info, &prev_pipe);
 		current = current->next;
 	}
-	ft_last(current->content, info, prev_pipe);
+	last_process((t_command *)(current->content), info, prev_pipe);
 	// TODO: free(commands) 
 }
 
+///////////////////////////////////////////////////////////////////////
+// For testing
+//////////////////////////////////////////////////////////////////////
+
+t_command *create_command(t_list *args, char *in, char *out, int flag)
+{
+	t_command *command;
+
+	command = malloc(sizeof(t_command));
+	command->args = args;
+	command->file_in = in;
+	command->file_out = out;
+	command->file_out_flag = flag;
+	return (command);
+}
+
+int main(int argc, char **argv, char **envp)
+{
+	char *cmd1[] = {"ls", "-l"};
+	char *cmd2[] = {"wc", "-c"};
+	char *cmd3[] = {"cat", "-e"};
+	char *path = "/home/mmughedd/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin";
+	char **pathss;
+	pathss = ft_split(path, ':');
+	t_list *args1, *args2, *args3, *main_list;
+	t_command *comm1, *comm2, *comm3;
+	t_info *info;
+	info = malloc(sizeof(t_info));
+	info->envp = envp;
+	info->path = pathss;
+	args1 = ft_lstnew((void *)cmd1[0]);
+	args1->next = ft_lstnew((void *)cmd1[1]);
+	args2 = ft_lstnew((void *)cmd2[0]);
+	args2->next = ft_lstnew((void *)cmd2[1]);
+	args3 = ft_lstnew((void *)cmd3[0]);
+	args3->next = ft_lstnew((void *)cmd3[1]);
+	comm1 = create_command(args1, NULL, NULL, 0);
+	comm2 = create_command(args2, NULL, NULL, 0);
+	comm3 = create_command(args3, NULL, NULL, 0);
+	main_list = ft_lstnew((void *)comm1);
+	main_list->next = ft_lstnew((void *)comm2);
+	main_list->next->next = ft_lstnew((void *)comm3);
+	exec(main_list, info);
+}
+
+// gdb
+// set follow-fork-mode child: gdb will automatically switch to debugging the child process when a fork() call is encountered.
+// set follow-fork-mode parent: gdb will stay with the parent process and not switch to the child process.
+
 // Valgrind with pipes and forks
-//valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --trace-children=yes ./a.out
+// valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --trace-children=yes ./a.out
+
+// compiling
+// cc -g utils.c builtins.c builtins_utils.c exec.c exec_utils.c ../libft/libft.a

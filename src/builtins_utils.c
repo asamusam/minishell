@@ -5,12 +5,12 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/17 12:39:49 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/03/17 13:52:23 by mmughedd         ###   ########.fr       */
+/*   Created: 2024/03/18 09:35:06 by mmughedd          #+#    #+#             */
+/*   Updated: 2024/03/18 15:18:04 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "exec.h"
+#include "../include/exec.h"
 
 /*
  * Checks if the string provided is a built-in cmd
@@ -66,7 +66,7 @@ int	handle_builtin(t_command *command,  t_info *info) // TODO: check which built
 	else if (n == 3)
 		handle_pwd();
 	else if (n == 4)
-		handle_export(args);
+		handle_export(args, info);
 	else if (n == 5)
 		handle_unset(args);
 	else if (n == 6)

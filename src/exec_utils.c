@@ -6,11 +6,11 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 12:36:09 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/03/17 14:04:32 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/03/18 14:39:27 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "exec.h"
+#include "../include/exec.h"
 
 /*
  * Divides the input in cmd and args and exec them
@@ -26,13 +26,13 @@
 int	handle_input(t_command *command, t_info *info)
 {
 	char	**args;
-	char	cmd;
+	char	*cmd;
 
-	get_args(command->args ,args);
+	args = get_args(command->args);
 	cmd = get_command(info->path, args[0]);
 	if (!cmd)
 	{
-		print_error("Invalid cmd\n", 0); // TODO: get correct error
+		print_error("cmd error", 0); // TODO: get correct error
 		free_split(args);
 		return (1);
 	}
@@ -81,10 +81,11 @@ char	*get_command(char **path, char *command)
  * void
  */
 
-void	get_args(t_list *arg_lst, char **args)
+char	**get_args(t_list *arg_lst)
 {
 	int		len;
 	int		i;
+	char	**args;
 	t_list	*current;
 
 	len = ft_lstsize(arg_lst);
@@ -96,6 +97,7 @@ void	get_args(t_list *arg_lst, char **args)
 		args[i++] = ft_strdup((char *)(current->content));
 		current = current->next;
 	}
-	args[i] = '/0';
+	args[i] = '\0';
+	return (args);
 }
 

@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 17:18:43 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/17 14:09:32 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/03/18 09:41:26 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,12 +33,13 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <signal.h>
-# include "libft.h"
+# include "../libft/include/libft.h"
 
 void	set_signal_handler(void);
 int		print_error(char *message, int type);
 void	print_token(void *arg);
 t_list	*lexer(char *line);
+void	free_split(char **arr);
 
 // each node in the list of tokens will 
 // contain a pointer to this structure
