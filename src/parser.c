@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 13:16:41 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/18 16:06:04 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/03/18 20:22:09 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,15 +65,19 @@ t_list	*split_groups(t_list *tokens)
 	return (groups);
 }
 
-t_list	*parser(t_list *tokens)
+t_list	*parser(t_list *tokens, t_info *minishell)
 {
 	t_list	*commands;
 	t_list	*groups;
 
+	(void)minishell;
 	commands = NULL;
 	groups = split_groups(tokens);
 	if (!groups)
+	{
+		ft_lstclear(&tokens, free);
 		return (NULL);
+	}
 	ft_lstiter(groups, print_group);
 	ft_lstclear(&groups, free_groups);
 	return (commands);

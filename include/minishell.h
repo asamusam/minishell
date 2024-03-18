@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 17:18:43 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/18 13:20:48 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/03/18 19:56:24 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,12 +35,6 @@
 # include <signal.h>
 # include "libft.h"
 
-void	set_signal_handler(void);
-int		print_error(char *message, int type);
-void	print_token(void *arg);
-t_list	*lexer(char *line);
-t_list	*parser(t_list *tokens);
-
 // each node in the list of tokens will 
 // contain a pointer to this structure
 // (the list type itself is defined in libft)
@@ -56,6 +50,7 @@ typedef struct s_envp
 {
 	char			*key;
 	char			*value;
+	char			**pair;
 }	t_envp;
 
 // array of pointers to builtin functions
@@ -68,10 +63,20 @@ typedef struct s_info
 	char			*reserved_words[7];
 	char			**path;
 	char			**envp;
-	t_list			envp_list;
+	t_list			*envp_list;
 	int				envp_flag;
 	int				exit_flag;
 	int				return_code;
 }	t_info;
+
+void	init_envp(char **envp, t_info *minishell);
+void	set_signal_handler(void);
+int		print_error(char *message, int type);
+void	print_token(void *arg);
+void	free_split(char **arr);
+void	print_envvar(void *arg);
+void	free_envvar(void *arg);
+t_list	*lexer(char *line);
+t_list	*parser(t_list *tokens, t_info *minishell);
 
 #endif
