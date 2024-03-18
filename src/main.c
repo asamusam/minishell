@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 14:55:35 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/13 16:50:58 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/03/18 16:08:28 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,8 @@ void	shell_loop(char **envp)
 			add_history(rl_line_buffer);
 			tokens = lexer(line);
 			if (tokens)
-				ft_lstiter(tokens, print_token); // run parser here
+				parser(tokens);
 		}
-		ft_lstclear(&tokens, free);
 		free(line);
 		line = readline("-->");
 	}

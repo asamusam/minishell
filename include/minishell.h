@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 17:18:43 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/13 17:06:28 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/03/18 13:20:48 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ void	set_signal_handler(void);
 int		print_error(char *message, int type);
 void	print_token(void *arg);
 t_list	*lexer(char *line);
+t_list	*parser(t_list *tokens);
 
 // each node in the list of tokens will 
 // contain a pointer to this structure

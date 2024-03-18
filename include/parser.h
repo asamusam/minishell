@@ -6,12 +6,13 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 15:00:30 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/15 15:42:35 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/03/18 16:04:53 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PARSER_H
 # define PARSER_H
+# define PIPE_SYNTAX_ERROR "minishell: syntax error near unexpected token '|'"
 # include "libft.h"
 # include "minishell.h"
 
@@ -27,5 +28,8 @@ typedef struct s_command
 				  			// for example, you do "if (flag & O_TRUNC)"
 				  			// for file_in it is always O_RDONLY
 }	t_command;
+
+void	print_group(void *arg);
+void	free_groups(void *arg);
 
 #endif
