@@ -6,13 +6,13 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 15:00:30 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/18 16:04:53 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/03/19 13:19:14 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PARSER_H
 # define PARSER_H
-# define PIPE_SYNTAX_ERROR "minishell: syntax error near unexpected token '|'"
+# define SYNTAX_ERROR "minishell: syntax error"
 # include "libft.h"
 # include "minishell.h"
 

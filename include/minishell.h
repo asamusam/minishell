@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 17:18:43 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/18 19:56:24 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/03/19 18:28:30 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,6 @@ typedef struct s_token
 {
 	int				type;
 	char			*value;
-	int				len;
 }	t_token;
 
 // environment variable structure
@@ -73,6 +72,7 @@ void	init_envp(char **envp, t_info *minishell);
 void	set_signal_handler(void);
 int		print_error(char *message, int type);
 void	print_token(void *arg);
+void	free_token(void *arg);
 void	free_split(char **arr);
 void	print_envvar(void *arg);
 void	free_envvar(void *arg);

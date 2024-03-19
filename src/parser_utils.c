@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 16:03:30 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/18 16:04:22 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/03/19 18:36:33 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,5 +26,5 @@ void	free_groups(void *arg)
 	t_list	*group;
 
 	group = (t_list *)arg;
-	ft_lstclear(&group, free);
+	ft_lstclear(&group, free_token);
 }
