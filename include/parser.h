@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 15:00:30 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/19 13:19:14 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/03/20 16:35:36 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,5 +31,6 @@ typedef struct s_command
 
 void	print_group(void *arg);
 void	free_groups(void *arg);
+void	expand(void *arg);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 13:16:41 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/19 18:31:05 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/03/20 21:01:51 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,7 @@ t_list	*parser(t_list *tokens, t_info *minishell)
 		ft_lstclear(&tokens, free_token);
 		return (NULL);
 	}
+	// ft_lstiter(groups, expand);
 	ft_lstiter(groups, print_group);
 	ft_lstclear(&groups, free_groups);
 	return (commands);

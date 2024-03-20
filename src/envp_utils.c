@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 19:55:40 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/18 20:13:11 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/03/20 13:37:41 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,4 +28,5 @@ void	free_envvar(void *arg)
 	var = (t_envp *)arg;
 	free(var->key);
 	free(var->value);
+	free(var);
 }

@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 17:57:54 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/18 20:17:24 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/03/20 13:52:48 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,13 +42,18 @@ void	create_envp_list(t_info *minishell)
 	while (minishell->envp[i])
 	{
 		var = malloc(sizeof(t_envp));
+
 		split = ft_split(minishell->envp[i], '=');
 		if (!var || !split)
 			exit(EXIT_FAILURE);
-		var->key = split[0];
-		var->value = split[1];
-		var->pair = &minishell->envp[i];
+		var->key = ft_strdup(split[0]);
+		if (split[1])
+			var->value = ft_strdup(split[1]);
+		else
+			var->value = ft_strdup("");
 		free_split(split);
+
+		var->pair = &minishell->envp[i];
 		ft_lstadd_back(&minishell->envp_list, ft_lstnew(var));
 		i ++;
 	}

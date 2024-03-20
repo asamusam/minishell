@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 14:55:35 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/18 20:14:25 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/03/20 13:58:48 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,7 @@ void	shell_loop(t_info *minishell)
 	}
 	printf("exit\n");
 	free_split(minishell->envp);
-	ft_lstiter(minishell->envp_list, free_envvar);
-	ft_lstclear(&minishell->envp_list, free);
+	ft_lstclear(&minishell->envp_list, free_envvar);
 	rl_clear_history();
 	exit(EXIT_SUCCESS);
 }
