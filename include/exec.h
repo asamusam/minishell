@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 12:17:56 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/03/18 15:18:38 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/03/20 14:39:39 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 #include "parser.h"
 
 int	handle_echo(t_list *args);
-int handle_cd(t_list *args);
+int handle_cd(t_list *args, t_info *info);
 int	handle_pwd(void);
 int	update_env(t_list *env_list, char *key, char *value);
 int	check_envs(t_list *env_list, char *key, char *value);
@@ -34,6 +34,8 @@ int	handle_builtin(t_command *command,  t_info *info);
 int	handle_input(t_command *command, t_info *info);
 char	*get_command(char **path, char *command);
 char	**get_args(t_list *arg_lst);
+char	*find_envp_line(char *key, char **envp);
+
 
 
 

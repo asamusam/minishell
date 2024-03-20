@@ -6,26 +6,68 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 09:07:33 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/03/18 15:17:39 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/03/20 14:43:50 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/exec.h"
 
+/*
+ * Replicates echo builtin command, checks for -n option
+ *
+ * Arguments:
+ * 
+ * 
+ * Returns:
+ * Status
+ */
 
 int	handle_echo(t_list *args)
 {
-	
+	t_list	*current;
+	int		is_n;
+
+	is_n = 0;
+	current = args;
+	current = current->next;
+	if (!ft_strncmp((char *)current->content, "-n", 2))
+		is_n = 1;
+	while (current)
+	{
+		ft_putstr_fd((char *)current->content, 1);
+		current = current->next;
+	}
+	if (!is_n)
+		ft_putstr_fd("\n", 1);
+	return(0);
 }
 
 ////////////////////////////////////////////////////
 
-int handle_cd(t_list *args)
+int handle_cd(t_list *args, t_info *info)
 {
-	
+	char	*dir;
+	t_list	*current;
+
+	current = args;	
+	if (args->next->next)
+		print_error("bash: cd: too many arguments", 1); // only one or two args  TODO: exit
+	dir = find_envp_line("PWD", info->envp);
+
+	return(0);
 }
 
 ////////////////////////////////////////////////////
+
+/*
+ * Replicates pwd builtin command
+ *
+ * Arguments:
+ * - t_list args
+ * 
+ * Returns:
+ * Status
+ */
 
 int	handle_pwd(void)
 {
@@ -116,10 +158,20 @@ int	handle_export(t_list *args, t_info *info)
 
 int	handle_unset(t_list *args)
 {
-	
+	return(0);
 }
 
 ////////////////////////////////////////////////////
+
+/*
+ * Replicates env builtin command
+ *
+ * Arguments:
+ * - t_info struct
+ * 
+ * Returns:
+ * Status
+ */
 
 int	handle_env(t_info *info)
 {
@@ -128,12 +180,12 @@ int	handle_env(t_info *info)
 	i = 0;
 	while ((info->envp)[i])
 		ft_putendl_fd((info->envp)[i++], 1);
-	return (1);
+	return (0);
 }
 
 ////////////////////////////////////////////////////
 
 int	handle_exit(t_list *args)
 {
-	
+	return(0);
 }

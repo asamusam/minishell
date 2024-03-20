@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 09:04:55 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/03/18 15:18:41 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/03/20 14:02:05 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ int	last_process(t_command *command, t_info *info, int prev_pipe)
 {
 	pid_t	pid;
 
-	pid = fork();
 	if ((pid = fork()) == -1)
 	{
 		print_error("Fork error\n", 0); // TODO: check error
@@ -146,9 +145,10 @@ t_command *create_command(t_list *args, char *in, char *out, int flag)
 
 int main(int argc, char **argv, char **envp)
 {
-	char *cmd1[] = {"ls", "-l"};
-	char *cmd2[] = {"wc", "-c"};
-	char *cmd3[] = {"cat", "-e"};
+	// char *cmd1[] = {"echo", "-n", "sdofndf"};
+	char *cmd1[] = {"pwd"};
+	// char *cmd2[] = {"wc", "-c"};
+	// char *cmd3[] = {"cat", "-e"};
 	char *path = "/home/mmughedd/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin";
 	char **pathss;
 	pathss = ft_split(path, ':');
@@ -160,16 +160,15 @@ int main(int argc, char **argv, char **envp)
 	info->path = pathss;
 	args1 = ft_lstnew((void *)cmd1[0]);
 	args1->next = ft_lstnew((void *)cmd1[1]);
-	args2 = ft_lstnew((void *)cmd2[0]);
-	args2->next = ft_lstnew((void *)cmd2[1]);
-	args3 = ft_lstnew((void *)cmd3[0]);
-	args3->next = ft_lstnew((void *)cmd3[1]);
+	//args1->next->next = ft_lstnew((void *)cmd1[2]);
+	// args2 = ft_lstnew((void *)cmd2[0]);
+	// args2->next = ft_lstnew((void *)cmd2[1]);
+	// args3 = ft_lstnew((void *)cmd3[0]);
+	// args3->next = ft_lstnew((void *)cmd3[1]);
 	comm1 = create_command(args1, NULL, NULL, 0);
-	comm2 = create_command(args2, NULL, NULL, 0);
-	comm3 = create_command(args3, NULL, NULL, 0);
+	// comm2 = create_command(args2, NULL, NULL, 0);
+	// comm3 = create_command(args3, NULL, NULL, 0);
 	main_list = ft_lstnew((void *)comm1);
-	main_list->next = ft_lstnew((void *)comm2);
-	main_list->next->next = ft_lstnew((void *)comm3);
 	exec(main_list, info);
 }
 

@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 09:35:06 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/03/18 15:18:04 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/03/20 14:39:27 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ int	handle_builtin(t_command *command,  t_info *info) // TODO: check which built
 	if (n == 1)
 		handle_echo(args);
 	else if (n == 2)
-		handle_cd(args);
+		handle_cd(args, info);
 	else if (n == 3)
 		handle_pwd();
 	else if (n == 4)
@@ -73,6 +73,28 @@ int	handle_builtin(t_command *command,  t_info *info) // TODO: check which built
 		handle_env(info);
 	else if (n == 7)
 		handle_exit(args);
+	exit(0); // Exit child process after handling the built-in command
 	// TODO: handle errors/return
 	return(0);
+}
+
+/*
+ * Locates and returns line in envp 
+ *
+ * Arguments:
+ * - key: start of the line (f.i. PATH)
+ * - envp strings
+ * 
+ * Returns:
+ * line without initial key
+ */
+
+char	*find_envp_line(char *key, char **envp)
+{
+	int	len;
+
+	len = ft_strlen(key);
+	while (ft_strncmp(key, *envp, len))
+		envp++;
+	return (*envp + ++len);
 }

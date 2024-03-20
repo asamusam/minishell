@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 12:36:09 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/03/18 14:39:27 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/03/20 12:44:20 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ char	**get_args(t_list *arg_lst)
 		args[i++] = ft_strdup((char *)(current->content));
 		current = current->next;
 	}
-	args[i] = '\0';
+	args[i] = NULL;
 	return (args);
 }
 
