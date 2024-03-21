@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 12:36:09 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/03/20 12:44:20 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/03/21 11:40:47 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int	handle_input(t_command *command, t_info *info)
 	{
 		print_error("cmd error", 0); // TODO: get correct error
 		free_split(args);
-		return (1);
+		return (127); //command not found status
 	}
 	execve(cmd, args, info->envp);
 	return (0);

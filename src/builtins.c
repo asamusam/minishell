@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 09:07:33 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/03/20 14:43:50 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/03/21 14:56:48 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int	handle_echo(t_list *args)
 	is_n = 0;
 	current = args;
 	current = current->next;
-	if (!ft_strncmp((char *)current->content, "-n", 2))
+	if (!ft_strncmp((char *)current->content, "-n", 2)) //TODO:bool
 		is_n = 1;
 	while (current)
 	{
@@ -51,7 +51,10 @@ int handle_cd(t_list *args, t_info *info)
 
 	current = args;	
 	if (args->next->next)
+	{
 		print_error("bash: cd: too many arguments", 1); // only one or two args  TODO: exit
+		return (2);
+	}
 	dir = find_envp_line("PWD", info->envp);
 
 	return(0);
@@ -83,6 +86,18 @@ int	handle_pwd(void)
 
 ////////////////////////////////////////////////////
 
+/*
+ * Updates a env var value in the env_list list
+ *
+ * Arguments:
+ * - t_list env_list
+ * - env var key
+ * - env var value
+ * 
+ * Returns:
+ * Status
+ */
+
 int	update_env(t_list *env_list, char *key, char *value)
 {
 	free(env_list->content);
@@ -90,29 +105,16 @@ int	update_env(t_list *env_list, char *key, char *value)
 	return (0);
 }
 
-int	check_envs(t_list *env_list, char *key, char *value)
-{
-	t_list	*current;
-	char	*list_key;
-	size_t		len;
-
-	current = env_list;
-	len = ft_strlen(key);
-	while (current)
-	{
-		list_key = (char *)(current->content);
-		if (len == ft_strlen(list_key))
-		{
-			if (!strncmp(list_key, key, len)) //TODO: implement strcmp instead
-			{
-				update_env(current, key, value);
-				return (1);
-			}
-		}
-		current = current->next;
-	}
-	return (0);
-}
+/*
+ * Creates an envp_node in the t_envp struct
+ *
+ * Arguments:
+ * - env var key
+ * - env var value
+ * 
+ * Returns:
+ * Status
+ */
 
 t_envp	*create_envp_node(char *key, char *value)
 {
@@ -126,23 +128,74 @@ t_envp	*create_envp_node(char *key, char *value)
 	return (node);
 }
 
-int	handle_export(t_list *args, t_info *info)
+/*
+ * Checks if there's already an env var with the same key. If there's it updates it, otherwise it creates a new list node with those values
+ *
+ * Arguments:
+ * - env var key
+ * - env var value
+ * 
+ * Returns:
+ * Status
+ */
+
+int	check_envs(t_list *env_list, char *key, char *value)
+{
+	t_list	*current;
+	char	*list_key;
+	size_t	len;
+
+	current = env_list;
+	len = ft_strlen(key);
+	while (current)
+	{
+		list_key = (char *)(current->content);
+		if (len == ft_strlen(list_key))
+		{
+			if (!strncmp(list_key, key, len))
+			{
+				update_env(current, key, value);
+				return (0);
+			}
+		}
+		current = current->next;
+	}
+	current = create_envp_node(key, value);
+	return (0);
+}
+
+/*
+ * Handles export builtin command
+ *
+ * Arguments:
+ * - t_list args
+ * - t_info info
+ * 
+ * Returns:
+ * Status
+ */
+
+int	handle_export(t_list *args, t_info *info) // TODO: export no args
 {
 	t_list	*current;
 	char	**keyval;
 	char	*key;
 	char	*value;
 
-	//TODO: check if t_list args second node will be "name=john" or "name" and third node "john"
+	if (!((args->next)->content))
+		return (0); // TODO: unpspecified behaviour with no args
+	//TODO: check if t_list args second node will be "name=john" or "name" and third node "john" // no =
 	keyval = ft_split((char *)((args->next)->content), '=');
 	key = ft_strdup(keyval[0]);
-	value = ft_strdup(keyval[1]);
+	if (!keyval[1])
+		value = NULL;
+	else
+		value = ft_strdup(keyval[1]);
 	current = (info->envp_list);
 	if (!current) //if no env set
 		current->content = (void *)create_envp_node(key, value);
 	else if (check_envs(current, key, value))
 	{
-		free_split(keyval);
 		return (0);
 	}
 	else
@@ -156,9 +209,54 @@ int	handle_export(t_list *args, t_info *info)
 
 ////////////////////////////////////////////////////
 
-int	handle_unset(t_list *args)
+int	find_env(char *env_var, t_list *env_list)
 {
-	return(0);
+	t_list	*tmp;
+	t_list	*current;
+
+	current = env_list;
+	while (current)
+	{
+		if (!ft_strncmp(*env_var, (char *)current->content, ft_strlen(env_var)))
+		{
+			if (!tmp)
+			{
+				tmp = current->next;
+				ft_lstdelone(current);
+				env_list = tmp;
+			}
+			else
+			{
+				tmp->next = current->next;
+				ft_lstdelone(current);
+			}
+			return (0);
+		}
+		tmp = current;
+		current = current->next;
+	}
+	return (1);
+}
+
+int	handle_unset(t_list *args, t_info *info)
+{
+	int		status;
+	t_list	*current;
+
+	status = 0;
+	if ((args->next)->content)
+	{
+		current = args->next;
+		while (current)
+		{
+			if (!status)
+				status = find_env((char *)current->content, info->envp_list);
+			else
+				find_env((char *)current->content, info->envp_list);
+			current = current->next;
+		}
+	}
+	return(status); // TODO: 0 if all replaced
 }
 
 ////////////////////////////////////////////////////
