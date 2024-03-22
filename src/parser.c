@@ -6,11 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 13:16:41 by asamuilk          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2024/03/20 21:01:51 by asamuilk         ###   ########.fr       */
-=======
-/*   Updated: 2024/03/22 12:08:30 by asamuilk         ###   ########.fr       */
->>>>>>> 19f3307 (added comments for some functions in parser)
+/*   Updated: 2024/03/22 12:28:11 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

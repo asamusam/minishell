@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 15:57:01 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/19 18:28:09 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/03/22 12:29:14 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,6 @@ void	print_token(void *arg)
 }
 
 /*
- * Function: free_token
- * ----------------------------
  * Frees all the memory associated with the t_token structure.
  * 
  * Arguments:
