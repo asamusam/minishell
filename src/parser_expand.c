@@ -6,12 +6,26 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 14:08:43 by asamuilk          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2024/03/20 21:01:12 by asamuilk         ###   ########.fr       */
+=======
+/*   Updated: 2024/03/22 12:11:51 by asamuilk         ###   ########.fr       */
+>>>>>>> 19f3307 (added comments for some functions in parser)
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 
+/*
+ * Checks if the given token type is expandable, i.e.
+ * belongs to one of these types: WORD, FIELD, or EXP_FIELD.
+ * 
+ * Arguments:
+ * - type — token type
+ * 
+ * Returns:
+ * One if the given type is expandable and zero if not.
+ */
 int	is_expandable(int type)
 {
 	if (type == WORD || type == FIELD || type == EXP_FIELD)

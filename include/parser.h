@@ -6,7 +6,11 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 15:00:30 by asamuilk          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2024/03/20 16:35:36 by asamuilk         ###   ########.fr       */
+=======
+/*   Updated: 2024/03/22 12:09:08 by asamuilk         ###   ########.fr       */
+>>>>>>> 19f3307 (added comments for some functions in parser)
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +34,11 @@ typedef struct s_command
 }	t_command;
 
 void	print_group(void *arg);
+<<<<<<< HEAD
 void	free_groups(void *arg);
 void	expand(void *arg);
+=======
+void	free_token_list(void *arg);
+>>>>>>> 19f3307 (added comments for some functions in parser)
 
 #endif
