@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 15:00:30 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/22 12:28:41 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/03/23 21:25:57 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,5 +31,9 @@ typedef struct s_command
 
 void	print_group(void *arg);
 void	free_token_list(void *arg);
+void	expand(t_list *tokens, t_info *minishell);
+int		is_expandable(int type);
+char	*get_envp_value(char *key, int len, t_info *minishell);
+
 
 #endif

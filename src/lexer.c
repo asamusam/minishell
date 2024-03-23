@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 13:35:22 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/13 16:50:23 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/03/23 21:42:53 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,11 @@ t_list	*lexer(char *line)
 	{
 		len = get_token(&token_lst, line + i);
 		if (!len)
+		{
+			if (token_lst)
+				ft_lstclear(&token_lst, free_token);
 			return (NULL);
+		}
 		i = i + len;
 	}
 	return (token_lst);

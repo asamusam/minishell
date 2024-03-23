@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 14:55:35 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/20 13:58:48 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/03/23 21:44:13 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ int	main(int ac, char **av, char **envp)
 	if (ac == 1)
 	{
 		init_envp(envp, &minishell);
+		minishell.return_code = 0;
 		shell_loop(&minishell);
 	}
 	else

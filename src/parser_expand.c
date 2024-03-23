@@ -6,108 +6,88 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 14:08:43 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/22 12:29:48 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/03/23 21:28:34 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 
-/*
- * Checks if the given token type is expandable, i.e.
- * belongs to one of these types: WORD, FIELD, or EXP_FIELD.
- * 
- * Arguments:
- * - type — token type
- * 
- * Returns:
- * One if the given type is expandable and zero if not.
- */
-int	is_expandable(int type)
+void	concat_strings(char **str, char *to_join)
 {
-	if (type == WORD || type == FIELD || type == EXP_FIELD)
-		return (1);
-	return (0);
-}
+	char	*joined;
 
-char	*get_envp_value(char *key, int len, t_info *minishell)
-{
-	t_list	*vars;
-	t_envp	*var;
-
-	vars = minishell->envp_list;
-	while (vars)
+	if (!to_join)
+		return ;
+	if (!*to_join)
 	{
-		var = (t_envp *)vars->content;
-		if (ft_strncmp(key, var->key, len))
-			return (var->value);
-		vars = vars->next;
+		free(to_join);
+		return ;
 	}
-	return (NULL);
+	if (!*str)
+		*str = to_join;
+	else
+	{
+		joined = ft_strjoin(*str, to_join);
+		free(*str);
+		free(to_join);
+		*str = joined;
+	}
 }
 
-int	expand_token(t_token *token, t_info *minishell)
+int	expand_dollar(char	*key, char **to_join, t_info *minishell)
+{
+	int	i;
+	int	j;
+
+	i = 1;
+	if (!key[i])
+	{
+		concat_strings(to_join, ft_strdup("$"));
+		return (1);
+	}
+	if (key[i] == '?')
+	{
+		concat_strings(to_join, ft_itoa(minishell->return_code));
+		return (2);
+	}
+	if (key[i] == '$')
+	{
+		concat_strings(to_join, ft_strdup("1"));
+		return (2);
+	}
+	j = i;
+	while (key[j] && key[j] != '$' && !ft_isspace(key[j]))
+		j ++;
+	concat_strings(to_join, get_envp_value(key + i, j - i, minishell));
+	return (j);
+}
+
+void	expand_token(t_token *token, t_info *minishell)
 {
 	char	*str;
-	char	*join;
-	char	*temp;
-	int		j;
+	char	*before;
+	char	*dollar;
 	int		i;
 
-	if (token->type == FIELD || !ft_strchr(token->value, '$'))
-		return (token);
-	str = "";
-	j = 0;
-	i = 0;
-	while (token->value[i])
+	str = token->value;
+	dollar = ft_strchr(str, '$');
+	if (token->type == FIELD || !dollar)
+		return ;
+	before = ft_substr(str, 0, dollar - str);
+	i = dollar - str;
+	while (dollar)
 	{
-		if (token->value[i] == '$')
+		i += expand_dollar(dollar, &before, minishell);
+		dollar = ft_strchr(str + i, '$');
+		if (dollar)
 		{
-			if (!token->value[i + 1])
-				break ;
-			else if (token->value[i + 1] == '?')
-			{
-				if (*str)
-				{
-					temp = ft_itoa(minishell->return_code);
-					join = ft_strjoin(str, temp);
-					free(str);
-					free(temp);
-					str = join;
-				}
-				else
-					str = ft_itoa(minishell->return_code);
-				i ++;
-			}
-			else
-			{
-				j = i + 1;
-				while (token->value[j] && token->value[j] != '$' && !ft_isspace(token->value[j]))
-					j ++;
-				temp = get_envp_value(token->value + i + 1, j - i + 1, minishell);
-				if (temp)
-				{
-					if (*str)
-					{
-						join = ft_strjoin(str, temp);
-						free(str);
-						str = join;
-					}
-					else
-						str = ft_strdup(temp);
-					i = j - 1;
-				}
-			}
+			concat_strings(&before, ft_substr(str, i, dollar - str - i));
+			i = dollar - str;
 		}
-		i ++;
 	}
-	if (*str)
-	{
-		temp = ft_substr(token->value, j, i - j);
-		join = ft_strjoin(str, temp);
-		free(str);
-		free(temp);
-		str = join;
-	}
+	concat_strings(&before, ft_strdup(str + i));
+	free(token->value);
+	token->value = str;
 }
 
 t_list	*merge_nodes(t_list	*dst, t_list *src)
