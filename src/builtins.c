@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 09:07:33 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/03/21 14:56:48 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/03/25 10:12:03 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,22 +16,19 @@
  * Replicates echo builtin command, checks for -n option
  *
  * Arguments:
- * 
- * 
+ *
+ *
  * Returns:
  * Status
  */
-
-int	handle_echo(t_list *args)
+int handle_echo(t_list *args)
 {
-	t_list	*current;
-	int		is_n;
+	t_list *current;
+	bool is_n;
 
-	is_n = 0;
 	current = args;
 	current = current->next;
-	if (!ft_strncmp((char *)current->content, "-n", 2)) //TODO:bool
-		is_n = 1;
+	is_n = (ft_strcmp((char *)current->content, "-n") == 0);
 	while (current)
 	{
 		ft_putstr_fd((char *)current->content, 1);
@@ -39,25 +36,112 @@ int	handle_echo(t_list *args)
 	}
 	if (!is_n)
 		ft_putstr_fd("\n", 1);
-	return(0);
+	return (0);
 }
 
 ////////////////////////////////////////////////////
 
+char *get_cdpath(t_list *envp)
+{
+	char *cdpath;
+	t_list *current;
+
+	current = envp;
+	cdpath = NULL;
+	while (current)
+	{
+		if (!ft_strcmp((char *)current->content, "CDPATH"))
+			cdpath = (char *)current->content;
+		current = current->next;
+	}
+	return (cdpath);
+}
+
+int update_pwd(char *dir, t_info *info)
+{
+	return (0);
+}
+
 int handle_cd(t_list *args, t_info *info)
 {
-	char	*dir;
-	t_list	*current;
+	char *dir;
+	char *cdpath;
+	char *dirpath;
+	char *tmp;
+	char **cdpaths;
+	t_list *current;
 
-	current = args;	
-	if (args->next->next)
+	if (args->next && args->next->next)
 	{
-		print_error("bash: cd: too many arguments", 1); // only one or two args  TODO: exit
-		return (2);
+		print_error("bash: cd: too many arguments\n", 1); // only one or two args  TODO: exit
+		exit(1);
 	}
-	dir = find_envp_line("PWD", info->envp);
-
-	return(0);
+	else if (!args->next) // no directory provided
+	{
+		dir = getenv("HOME");
+		if (dir == NULL) // 1. If no directory operand is given and the HOME environment variable is empty or undefined, the default behavior is implementation-defined and no further steps shall be taken.
+		{
+			print_error("HOME environment variable not set.\n", 1);
+			return (1);
+		}
+		chdir(dir);
+		exit(0);
+	}
+	else
+	{
+		current = args->next;
+		dir = (char *)current->content;
+		if (dir[0] == '/') // absolute path TODO: what about'~'?
+		{
+			if (chdir(dir) == -1)
+			{
+				print_error("0 - chdir error\n", 1);
+				return (1);
+			}
+			// printf("Changed to %s\n", dir);
+			exit(0);
+		}
+		else
+		{
+			cdpath = get_cdpath(info->envp_list);
+			printf("%s", cdpath);
+			if (!cdpath) //(!(cdpath = getenv("CDPATH")))
+			{
+				if (chdir(dir) == -1)
+				{
+					print_error("1 -chdir error\n", 1);
+					return (1);
+				}
+				printf("1 - Changed to %s\n", dir);
+				exit(0);
+			}
+			else
+			{ //TODO: to test
+				cdpaths = ft_split(cdpath, ':');
+				while (*cdpaths)
+				{
+					tmp = ft_strjoin(*cdpaths, "/");
+					dirpath = ft_strjoin(tmp, dir);
+					free(tmp);
+					if (!access(dirpath, F_OK))
+					{
+						free_split(cdpaths);
+						if (chdir(dirpath) == -1)
+						{
+							print_error("2 - chdir error\n", 1);
+							return (1);
+						}
+						printf("2 - Changed to %s\n", dir);
+						exit(0);
+					}
+					cdpaths++;
+				}
+				free_split(cdpaths);
+			}
+			// printf("cdpath: %s\n",cdpath);
+		}
+	}
+	return (0);
 }
 
 ////////////////////////////////////////////////////
@@ -67,14 +151,13 @@ int handle_cd(t_list *args, t_info *info)
  *
  * Arguments:
  * - t_list args
- * 
+ *
  * Returns:
  * Status
  */
-
-int	handle_pwd(void)
+int handle_pwd(void)
 {
-	char	cwd[PATH_MAX];
+	char cwd[PATH_MAX]; // TODO: check path_max
 
 	if (getcwd(cwd, PATH_MAX))
 	{
@@ -93,15 +176,14 @@ int	handle_pwd(void)
  * - t_list env_list
  * - env var key
  * - env var value
- * 
+ *
  * Returns:
  * Status
  */
-
-int	update_env(t_list *env_list, char *key, char *value)
+int update_env(t_list *env_list, char *key, char *value)
 {
-	free(env_list->content);
-	env_list->content = (void *)(ft_strdup(value));
+	//free(((t_envp *)env_list->content)->value); TODO: check
+	((t_envp *)env_list->content)->value = ft_strdup(value);
 	return (0);
 }
 
@@ -111,21 +193,20 @@ int	update_env(t_list *env_list, char *key, char *value)
  * Arguments:
  * - env var key
  * - env var value
- * 
+ *
  * Returns:
  * Status
  */
-
-t_envp	*create_envp_node(char *key, char *value)
+t_list *create_envp_node(char *key, char *value)
 {
-	t_envp	*node;
+	t_envp *node;
 
 	node = malloc(sizeof(t_envp));
 	if (!node)
 		print_error("malloc error\n", 1);
 	node->key = key;
 	node->value = value;
-	return (node);
+	return (ft_lstnew((void *)node));
 }
 
 /*
@@ -134,33 +215,27 @@ t_envp	*create_envp_node(char *key, char *value)
  * Arguments:
  * - env var key
  * - env var value
- * 
+ *
  * Returns:
  * Status
  */
-
-int	check_envs(t_list *env_list, char *key, char *value)
+int check_envs(t_info *info, char *key, char *value)
 {
-	t_list	*current;
-	char	*list_key;
-	size_t	len;
+	t_list *current;
+	char *list_key;
 
-	current = env_list;
-	len = ft_strlen(key);
+	current = info->envp_list;
 	while (current)
 	{
-		list_key = (char *)(current->content);
-		if (len == ft_strlen(list_key))
+		list_key = ((t_envp *)current->content)->key;
+		if (!ft_strcmp(list_key, key))
 		{
-			if (!strncmp(list_key, key, len))
-			{
-				update_env(current, key, value);
-				return (0);
-			}
+			update_env(current, key, value);
+			return (0);
 		}
 		current = current->next;
 	}
-	current = create_envp_node(key, value);
+	ft_lstadd_back(&info->envp_list, create_envp_node(key, value));
 	return (0);
 }
 
@@ -170,93 +245,123 @@ int	check_envs(t_list *env_list, char *key, char *value)
  * Arguments:
  * - t_list args
  * - t_info info
- * 
+ *
  * Returns:
  * Status
  */
-
-int	handle_export(t_list *args, t_info *info) // TODO: export no args
+int handle_export(t_list *args, t_info *info) // TODO: export no args
 {
-	t_list	*current;
 	char	**keyval;
 	char	*key;
 	char	*value;
+	t_list	*current;
 
-	if (!((args->next)->content))
+	if ((args->next) && !((args->next)->content))
 		return (0); // TODO: unpspecified behaviour with no args
-	//TODO: check if t_list args second node will be "name=john" or "name" and third node "john" // no =
+	// TODO: check if t_list args second node will be "name=john" or "name" and third node "john" // no =
 	keyval = ft_split((char *)((args->next)->content), '=');
 	key = ft_strdup(keyval[0]);
 	if (!keyval[1])
-		value = NULL;
+		value = NULL; //TODO: check if ""
 	else
 		value = ft_strdup(keyval[1]);
-	current = (info->envp_list);
-	if (!current) //if no env set
-		current->content = (void *)create_envp_node(key, value);
-	else if (check_envs(current, key, value))
-	{
-		return (0);
-	}
+	if (!info->envp_list) // if no env set
+		info->envp_list = create_envp_node(key, value);
 	else
-	{
-		current = ft_lstlast(current);
-		current->next = ft_lstnew((void *)(create_envp_node(key, value)));
-	}
+		check_envs(info, key, value);
 	free_split(keyval);
 	return (0);
 }
 
 ////////////////////////////////////////////////////
 
-int	find_env(char *env_var, t_list *env_list)
+/* Frees the content of a t_list node
+ * 
+ *
+ * Arguments:
+ * - char *content
+ *
+ * Returns:
+ * 
+ */
+void del_content(void *content)
+{
+	free(content);
+	content = NULL;
+}
+
+/* Loops through envp_list and if finds a match it deletes it
+ * 
+ *
+ * Arguments:
+ * - env var key
+ * - t_info *struct
+ *
+ * Returns:
+ * 0 if the variable is found and deleted, 1 otherwise
+ */
+int del_env(char *envp_key, t_info *info)
 {
 	t_list	*tmp;
 	t_list	*current;
 
-	current = env_list;
+	current = info->envp_list;
+	tmp = NULL;
 	while (current)
 	{
-		if (!ft_strncmp(*env_var, (char *)current->content, ft_strlen(env_var)))
+		if (!ft_strcmp(envp_key, ((t_envp *)current->content)->key))
 		{
 			if (!tmp)
 			{
 				tmp = current->next;
-				ft_lstdelone(current);
-				env_list = tmp;
+				ft_lstdelone(current, del_content);
+				info->envp_list = tmp;
+				current = info->envp_list;
 			}
 			else
 			{
 				tmp->next = current->next;
-				ft_lstdelone(current);
+				ft_lstdelone(current, del_content);
+				current = tmp;
 			}
 			return (0);
 		}
 		tmp = current;
-		current = current->next;
+		if (current)
+			current = current->next;
 	}
 	return (1);
 }
 
-int	handle_unset(t_list *args, t_info *info)
+/*
+ * Replicates unset builtin command
+ *
+ * Arguments:
+ * - t_list *args
+ * - t_info *struct
+ *
+ * Returns:
+ * 0 if all the var are deleted, 1 otherwise
+ */
+int handle_unset(t_list *args, t_info *info)
 {
-	int		status;
-	t_list	*current;
+	int status;
+	t_list *current;
 
 	status = 0;
-	if ((args->next)->content)
+	if (args->next)
 	{
 		current = args->next;
 		while (current)
 		{
 			if (!status)
-				status = find_env((char *)current->content, info->envp_list);
+				status = del_env((char *)current->content, info);
 			else
-				find_env((char *)current->content, info->envp_list);
+				del_env((char *)current->content, info);
 			current = current->next;
 		}
 	}
-	return(status); // TODO: 0 if all replaced
+	return (status); // TODO: 0 if all replaced
 }
 
 ////////////////////////////////////////////////////
@@ -265,15 +370,14 @@ int	handle_unset(t_list *args, t_info *info)
  * Replicates env builtin command
  *
  * Arguments:
- * - t_info struct
- * 
+ * - t_info *struct
+ *
  * Returns:
  * Status
  */
-
-int	handle_env(t_info *info)
+int handle_env(t_info *info)
 {
-	int	i;
+	int i;
 
 	i = 0;
 	while ((info->envp)[i])
@@ -283,7 +387,7 @@ int	handle_env(t_info *info)
 
 ////////////////////////////////////////////////////
 
-int	handle_exit(t_list *args)
+int handle_exit(t_list *args)
 {
-	return(0);
+	return (0);
 }

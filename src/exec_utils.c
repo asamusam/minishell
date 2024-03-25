@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 12:36:09 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/03/21 11:40:47 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/03/24 14:07:30 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@
  * Returns:
  * Status
  */
-
 int	handle_input(t_command *command, t_info *info)
 {
 	char	**args;
@@ -50,22 +49,31 @@ int	handle_input(t_command *command, t_info *info)
  * Returns:
  * The cmd string if valid, otherwise NULL
  */
-
 char	*get_command(char **path, char *command)
 {
 	char	*tmp;
 	char	*cmd;
 	int		i;
 
-	i = 0;
-	while (path[i])
+	if (strchr(command, '/')) // TODO: confirm that's correct or simply check for command[0] == '/'
 	{
-		tmp = ft_strjoin(path[i++], "/");
-		cmd = ft_strjoin(tmp, command);
-		free(tmp);
 		if (!access(cmd, 0))
 			return (cmd);
-		free(cmd);
+		else
+			return (NULL);
+	}
+	else
+	{
+		i = 0;
+		while (path[i])
+		{
+			tmp = ft_strjoin(path[i++], "/");
+			cmd = ft_strjoin(tmp, command);
+			free(tmp);
+			if (!access(cmd, 0))
+				return (cmd);
+			free(cmd);
+		}
 	}
 	return (NULL);
 }
@@ -80,7 +88,6 @@ char	*get_command(char **path, char *command)
  * Returns:
  * void
  */
-
 char	**get_args(t_list *arg_lst)
 {
 	int		len;
@@ -101,3 +108,14 @@ char	**get_args(t_list *arg_lst)
 	return (args);
 }
 
+int	ft_strcmp(char *s1, char *s2)
+{
+	while (*s1 && *s2 && *s1 == *s2)
+	{
+		s1++;
+		s2++;
+	}
+	if (*s1 == '\0' && *s2 == '\0')
+		return (0);
+	return (*s1 - *s2);
+}
