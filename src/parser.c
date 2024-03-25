@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 13:16:41 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/22 15:53:37 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/03/25 16:26:29 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ t_list	*split_groups(t_list *tokens)
  * 
  * Arguments:
  * - tokens — list of tokens
- * – minishell — structure with the general program information
+ * - minishell — general info structure
  * 
  * Returns:
  * List of commands, each command containing a list of arguments
@@ -118,7 +118,11 @@ t_list	*parser(t_list *tokens, t_info *minishell)
 	temp = groups;
 	while (temp)
 	{
-		expand((t_list *)temp->content, minishell);
+		if (!expand((t_list *)temp->content, minishell))
+		{
+			ft_lstclear(&groups, free_token_list);
+			return (NULL);
+		}
 		temp = temp->next;
 	}
 	ft_lstiter(groups, print_group);

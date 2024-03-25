@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 16:03:30 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/23 21:25:28 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/03/25 16:02:05 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,19 @@ int	is_expandable(int type)
 	return (0);
 }
 
-
+/*
+ * Looks up the environment variable value by the given key.
+ * 
+ * Arguments:
+ * - key — pointer to the beginning of the key to look for
+ * - len — the length of the key
+ * - minishell — general info structure
+ * 
+ * Returns:
+ * Environment variable value — pointer to the string
+ * contained in the var->value in the envp list.
+ * NULL if the key not found.
+ */
 char	*get_envp_value(char *key, int len, t_info *minishell)
 {
 	t_list	*vars;
@@ -77,8 +89,44 @@ char	*get_envp_value(char *key, int len, t_info *minishell)
 	{
 		var = (t_envp *)vars->content;
 		if (!ft_strncmp(key, var->key, len) && !var->key[len])
-			return (ft_strdup(var->value));
+			return (var->value);
 		vars = vars->next;
 	}
 	return (NULL);
+}
+
+/*
+ * Joins two strings, assigns the resulting value to str, 
+ * and frees the original strings.
+ * 
+ * Arguments:
+ * - str — the destination string
+ * - to_join — the string to append to str
+ * 
+ * Returns:
+ * One on success and zero if the memory allocation fails.
+ */
+int	concat_strings(char **str, char *to_join)
+{
+	char	*joined;
+
+	if (!to_join)
+		return (SUCCESS);
+	if (!*to_join)
+	{
+		free(to_join);
+		return (SUCCESS);
+	}
+	if (!*str)
+		*str = to_join;
+	else
+	{
+		joined = ft_strjoin(*str, to_join);
+		if (!joined)
+			return (FAIL);
+		free(*str);
+		free(to_join);
+		*str = joined;
+	}
+	return (SUCCESS);
 }
