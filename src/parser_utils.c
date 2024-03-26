@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: asamuilk <asamuilk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 16:03:30 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/25 16:02:05 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/03/26 18:10:12 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,7 @@ int	concat_strings(char **str, char *to_join)
 	char	*joined;
 
 	if (!to_join)
-		return (SUCCESS);
+		return (FAIL);
 	if (!*to_join)
 	{
 		free(to_join);
@@ -123,7 +123,10 @@ int	concat_strings(char **str, char *to_join)
 	{
 		joined = ft_strjoin(*str, to_join);
 		if (!joined)
+		{
+			free(to_join);
 			return (FAIL);
+		}
 		free(*str);
 		free(to_join);
 		*str = joined;
