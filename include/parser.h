@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asamuilk <asamuilk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 15:00:30 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/26 16:19:46 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/03/27 17:29:57 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,5 +38,8 @@ int		is_expandable(int type);
 char	*get_envp_value(char *key, int len, t_info *minishell);
 int		concat_strings(char **str, char *to_join);
 int		merge_tokens(t_list **tokens, t_token **token, t_list *merge);
+int		free_and_fail(char *str);
+void	change_token_value(t_token *token, char *new_value);
+int		expand_special(char **dst, char *to_join, int *index, int i);
 
 #endif

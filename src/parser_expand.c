@@ -3,94 +3,66 @@
 /*                                                        :::      ::::::::   */
 /*   parser_expand.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asamuilk <asamuilk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 14:08:43 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/26 18:21:28 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/03/27 19:15:01 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 
-int	expand_dollar(char	*key, char **dst, t_info *minishell, int *counter)
+/*
+ * Finds and appends the environment variable value to
+ * the given destination string.
+ * 
+ * Arguments:
+ * - key — pointer to the string beginning with a '$' sign
+ * - dst — destination string
+ * - minishell — general info structure
+ * - index — pointer to the index to increment
+ * 
+ * Returns:
+ * One on success and zero if memory allocation fails.
+ */
+int	expand_dollar(char *key, char **dst, t_info *minishell, int *index)
 {
 	int		i;
 	int		j;
-	char	*join;
 	char	*var;
 
 	i = 1;
 	if (!key[i])
+		return (expand_special(dst, ft_strdup("$"), index, i));
+	else if (key[i] == '?')
+		return (expand_special(dst, ft_itoa(minishell->return_code), \
+				index, i + 1));
+	else if (key[i] == '$')
+		return (expand_special(dst, ft_strdup("1"), index, i + 1));
+	else
 	{
-		join = ft_strdup("$");
-		if (!join)
+		j = i;
+		while (key[j] && key[j] != '$' && !ft_isspace(key[j]))
+			j ++;
+		var = get_envp_value(key + i, j - i, minishell);
+		if (var && !concat_strings(dst, ft_strdup(var)))
 			return (FAIL);
-		if (!concat_strings(dst, join))
-		{
-			free(join);
-			return (FAIL);
-		}
-		*counter += i;
-		return (SUCCESS);
+		*index += j;
 	}
-	if (key[i] == '?')
-	{
-		join = ft_itoa(minishell->return_code);
-		if (!join)
-			return (FAIL);
-		if (!concat_strings(dst, join))
-		{
-			free(join);
-			return (FAIL);
-		}
-		*counter += i + 1;
-		return (SUCCESS);
-	}
-	if (key[i] == '$')
-	{
-		join = ft_strdup("1");
-		if (!join)
-			return (FAIL);
-		if (!concat_strings(dst, join))
-		{
-			free(join);
-			return (FAIL);
-		}
-		*counter += i + 1;
-		return (SUCCESS);
-	}
-	j = i;
-	while (key[j] && key[j] != '$' && !ft_isspace(key[j]))
-		j ++;
-	var = get_envp_value(key + i, j - i, minishell);
-	if (var)
-	{
-		join = ft_strdup(var);
-		if (!join)
-			return (FAIL);
-		if (!concat_strings(dst, join))
-		{
-			free(join);
-			return (FAIL);
-		}
-	}
-	*counter += j;
 	return (SUCCESS);
 }
 
-int	free_and_fail(char *str)
-{
-	if (str)
-		free(str);
-	return (FAIL);
-}
-
-void	change_token_value(t_token *token, char *new_value)
-{
-	free(token->value);
-	token->value = new_value;
-}
-
+/*
+ * Replaces evironment variables in a token with their values.
+ * If a variable does not exist, it gets replaced with an empty string.
+ * 
+ * Arguments:
+ * - token — pointer to a token
+ * - minishell — general info structure
+ * 
+ * Returns:
+ * One on success and zero if memory allocation fails.
+ */
 int	expand_token(t_token *token, t_info *minishell)
 {
 	char	*before;
@@ -100,24 +72,21 @@ int	expand_token(t_token *token, t_info *minishell)
 	dollar = ft_strchr(token->value, '$');
 	if (token->type == FIELD || !dollar)
 		return (SUCCESS);
-	before = ft_substr(token->value, 0, dollar - token->value);
+	before = ft_strdup("");
 	if (!before)
 		return (FAIL);
-	i = dollar - token->value;
+	i = 0;
 	while (dollar)
 	{
+		if (!concat_strings(&before, \
+			ft_substr(token->value, i, dollar - token->value - i)))
+			return (free_and_fail(before));
+		i = dollar - token->value;
 		if (!expand_dollar(dollar, &before, minishell, &i))
 			return (free_and_fail(before));
 		dollar = ft_strchr(token->value + i, '$');
-		if (dollar)
-		{
-			if (!concat_strings(&before, \
-				ft_substr(token->value, i, dollar - token->value - i)))
-				return (free_and_fail(before));
-			i = dollar - token->value;
-		}
 	}
-	if (!concat_strings(&before, ft_strdup(token->value + i))) // HERE
+	if (!concat_strings(&before, ft_strdup(token->value + i)))
 		return (free_and_fail(before));
 	change_token_value(token, before);
 	return (SUCCESS);
