@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 12:17:56 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/03/24 13:55:32 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/03/28 11:21:13 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,13 +23,13 @@
 int	handle_echo(t_list *args);
 int handle_cd(t_list *args, t_info *info);
 int	handle_pwd(void);
-int	update_env(t_list *env_list, char *key, char *value);
+int	update_env(t_list *env_list, char *value);
 int	check_envs(t_info *info, char *key, char *value);
 t_list	*create_envp_node(char *key, char *value);
 int	handle_export(t_list *args, t_info *info);
 int	handle_unset(t_list *args, t_info *info);
 int	handle_env(t_info *info);
-int	handle_exit(t_list *args);
+int handle_exit(t_list *args, t_info *info);
 int	is_buitin(char *cmd);
 int	handle_builtin(t_command *command,  t_info *info);
 int	handle_input(t_command *command, t_info *info);
