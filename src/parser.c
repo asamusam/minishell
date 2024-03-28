@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 13:16:41 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/25 16:26:29 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/03/28 14:38:15 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,39 @@ t_list	*split_groups(t_list *tokens)
 	return (groups);
 }
 
+int	expand_groups(t_list *groups, t_info *minishell)
+{
+	t_list	*temp;
+
+	temp = groups;
+	while (temp)
+	{
+		if (!expand((t_list *)temp->content, minishell))
+		{
+			ft_lstclear(&groups, free_token_list);
+			return (FAIL);
+		}
+		temp = temp->next;
+	}
+	return (SUCCESS);
+}
+
+/*
+ * Frees a given string and returns zero.
+ * 
+ * Arguments:
+ * - str — a string to be freed
+ * 
+ * Returns:
+ * Zero.
+ */
+t_list	*free_tokens_return_null(t_list *tokens)
+{
+	if (tokens)
+		ft_lstclear(&tokens, free_token);
+	return (NULL);
+}
+
 /*
  * Analyzes the list of tokens and transforms them into
  * a list of commands and file information.
@@ -100,31 +133,16 @@ t_list	*parser(t_list *tokens, t_info *minishell)
 {
 	t_list	*commands;
 	t_list	*groups;
-	t_list	*temp;
 
 	(void)minishell;
 	commands = NULL;
 	if (!check_syntax(tokens))
-	{
-		ft_lstclear(&tokens, free_token);
-		return (NULL);
-	}
+		return (free_tokens_return_null(tokens));
 	groups = split_groups(tokens);
 	if (!groups)
-	{
-		ft_lstclear(&tokens, free_token);
+		return (free_tokens_return_null(tokens));
+	if (!expand_groups(groups, minishell))
 		return (NULL);
-	}
-	temp = groups;
-	while (temp)
-	{
-		if (!expand((t_list *)temp->content, minishell))
-		{
-			ft_lstclear(&groups, free_token_list);
-			return (NULL);
-		}
-		temp = temp->next;
-	}
 	ft_lstiter(groups, print_group);
 	ft_lstclear(&groups, free_token_list);
 	return (commands);
