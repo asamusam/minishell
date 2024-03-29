@@ -6,11 +6,30 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 17:57:54 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/20 13:52:48 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/03/29 21:05:26 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	print_envvar(void *arg)
+{
+	t_envp	*var;
+
+	var = (t_envp *)arg;
+	printf("----------\nkey: %s\nvalue: %s\npair: %s\n", \
+			var->key, var->value, *var->pair);
+}
+
+void	free_envvar(void *arg)
+{
+	t_envp	*var;
+
+	var = (t_envp *)arg;
+	free(var->key);
+	free(var->value);
+	free(var);
+}
 
 void	copy_envp(char **envp, t_info *minishell)
 {
@@ -52,7 +71,6 @@ void	create_envp_list(t_info *minishell)
 		else
 			var->value = ft_strdup("");
 		free_split(split);
-
 		var->pair = &minishell->envp[i];
 		ft_lstadd_back(&minishell->envp_list, ft_lstnew(var));
 		i ++;

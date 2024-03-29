@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 13:16:41 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/28 20:51:17 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/03/29 21:29:27 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,18 @@ t_list	*split_groups(t_list *tokens)
 	return (groups);
 }
 
+/*
+ * Goes through a list of groups and expands everything
+ * that has to be expanded (dollar signs and concatenation)
+ * in the contained token lists.
+ * 
+ * Arguments:
+ * - groups — pointer to the list of groups
+ * - minishell — general info structure
+ * 
+ * Returns:
+ * One on success and zero if memory allocation fails.
+ */
 int	expand_groups(t_list *groups, t_info *minishell)
 {
 	t_list	*temp;
@@ -128,5 +140,5 @@ t_list	*parser(t_list *tokens, t_info *minishell)
 	ft_lstclear(&groups, free_token_list);
 	ft_lstiter(commands, print_command);
 	ft_lstclear(&commands, free_command);
-	return (groups);
+	return (commands);
 }

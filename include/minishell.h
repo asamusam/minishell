@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 17:18:43 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/19 18:28:30 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/03/29 21:31:56 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,16 +35,12 @@
 # include <signal.h>
 # include "libft.h"
 
-// each node in the list of tokens will 
-// contain a pointer to this structure
-// (the list type itself is defined in libft)
 typedef struct s_token
 {
 	int				type;
 	char			*value;
 }	t_token;
 
-// environment variable structure
 typedef struct s_envp
 {
 	char			*key;
@@ -52,13 +48,8 @@ typedef struct s_envp
 	char			**pair;
 }	t_envp;
 
-// array of pointers to builtin functions
-//typedef	(*t_builtin_ptr)(t_list *args, t_info *info);
-
-// main general info structure
 typedef struct s_info
 {
-	//t_builtin_ptr	builtins;
 	char			*reserved_words[7];
 	char			**path;
 	char			**envp;
@@ -68,15 +59,32 @@ typedef struct s_info
 	int				return_code;
 }	t_info;
 
+// envp.c
+
 void	init_envp(char **envp, t_info *minishell);
+
+// signals.c
+
 void	set_signal_handler(void);
+
+// utils.c
+
 int		print_error(char *message, int type);
 void	print_token(void *arg);
 void	free_token(void *arg);
 void	free_split(char **arr);
+
+// envp.c
+
 void	print_envvar(void *arg);
 void	free_envvar(void *arg);
+
+// lexer.c
+
 t_list	*lexer(char *line);
+
+// parser.c
+
 t_list	*parser(t_list *tokens, t_info *minishell);
 
 #endif
