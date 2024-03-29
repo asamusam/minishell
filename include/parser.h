@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 15:00:30 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/27 17:29:57 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/03/28 20:51:33 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,18 +17,14 @@
 # define SUCCESS 1
 # include "libft.h"
 # include "minishell.h"
+# include "unistd.h"
+# include "fcntl.h"
 
-// the executor gets a list of commands, i.e. t_list *commands.
-// one command - one part of the pipeline.
-// each node in the list of commands will contain a pointer to the structure below.
 typedef struct s_command
 {
-	t_list	*args; // list of arguments (the first argument is a command, rest are args)
-	char	*file_in; // file to get the input from
-	char	*file_out; // file to write the output to
-	int		file_out_flag;	// bit mask for file_out, so to check if it is for truncating, 
-				  			// for example, you do "if (flag & O_TRUNC)"
-				  			// for file_in it is always O_RDONLY
+	t_list	*args;
+	int		file_in;
+	int		file_out;
 }	t_command;
 
 void	print_group(void *arg);
@@ -41,5 +37,11 @@ int		merge_tokens(t_list **tokens, t_token **token, t_list *merge);
 int		free_and_fail(char *str);
 void	change_token_value(t_token *token, char *new_value);
 int		expand_special(char **dst, char *to_join, int *index, int i);
+void	free_command(void *arg);
+t_list	*free_commands_return_null(t_list *commands);
+t_list	*free_tokens_return_null(t_list *tokens);
+t_list	*free_groups_return_null(t_list *groups);
+void	print_command(void *arg);
+t_list	*get_commands(t_list *groups);
 
 #endif

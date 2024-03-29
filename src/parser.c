@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 13:16:41 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/28 14:38:15 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/03/28 20:51:17 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,29 +92,10 @@ int	expand_groups(t_list *groups, t_info *minishell)
 	while (temp)
 	{
 		if (!expand((t_list *)temp->content, minishell))
-		{
-			ft_lstclear(&groups, free_token_list);
 			return (FAIL);
-		}
 		temp = temp->next;
 	}
 	return (SUCCESS);
-}
-
-/*
- * Frees a given string and returns zero.
- * 
- * Arguments:
- * - str — a string to be freed
- * 
- * Returns:
- * Zero.
- */
-t_list	*free_tokens_return_null(t_list *tokens)
-{
-	if (tokens)
-		ft_lstclear(&tokens, free_token);
-	return (NULL);
 }
 
 /*
@@ -131,19 +112,21 @@ t_list	*free_tokens_return_null(t_list *tokens)
  */
 t_list	*parser(t_list *tokens, t_info *minishell)
 {
-	t_list	*commands;
 	t_list	*groups;
+	t_list	*commands;
 
-	(void)minishell;
-	commands = NULL;
 	if (!check_syntax(tokens))
 		return (free_tokens_return_null(tokens));
 	groups = split_groups(tokens);
 	if (!groups)
 		return (free_tokens_return_null(tokens));
 	if (!expand_groups(groups, minishell))
-		return (NULL);
-	ft_lstiter(groups, print_group);
+		return (free_groups_return_null(groups));
+	commands = get_commands(groups);
+	if (!commands)
+		return (free_groups_return_null(groups));
 	ft_lstclear(&groups, free_token_list);
-	return (commands);
+	ft_lstiter(commands, print_command);
+	ft_lstclear(&commands, free_command);
+	return (groups);
 }
