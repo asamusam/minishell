@@ -6,11 +6,11 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 11:26:00 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/03/28 11:29:39 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/03/29 12:05:25 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "exec.h"
+#include "../../include/exec.h"
 
 /*
  * Replicates pwd builtin command
@@ -21,9 +21,9 @@
  * Returns:
  * Status
  */
-int handle_pwd(void)
+int	handle_pwd(void)
 {
-	char cwd[PATH_MAX]; // TODO: check path_max
+	char	cwd[PATH_MAX];
 
 	if (getcwd(cwd, PATH_MAX))
 	{

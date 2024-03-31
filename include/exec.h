@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 12:17:56 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/03/28 11:21:13 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/03/30 13:16:08 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ int	handle_input(t_command *command, t_info *info);
 char	*get_command(char **path, char *command);
 char	**get_args(t_list *arg_lst);
 char	*find_envp_line(char *key, char **envp);
-int	ft_strcmp(char *s1, char *s2);
 t_list *create_envp_node(char *key, char *value);
+void	free_info(t_info *info);
+void	del_content(void *content);
 #endif

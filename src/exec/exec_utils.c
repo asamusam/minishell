@@ -6,11 +6,11 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 12:36:09 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/03/28 11:16:26 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/03/31 15:39:42 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "exec.h"
+#include "../../include/exec.h"
 
 /*
  * Divides the input in cmd and args and exec them
@@ -109,14 +109,24 @@ char	**get_args(t_list *arg_lst)
 	return (args);
 }
 
-int	ft_strcmp(char *s1, char *s2)
+void del_env_content(void *content)
 {
-	while (*s1 && *s2 && *s1 == *s2)
-	{
-		s1++;
-		s2++;
-	}
-	if (*s1 == '\0' && *s2 == '\0')
-		return (0);
-	return (*s1 - *s2);
+	t_envp	*envp;
+	
+	envp = (t_envp *)content;
+	if (!envp)
+		return ;
+	free(envp->key);
+	free(envp->value);
+	//free(content);
+}
+
+void	free_info(t_info *info)
+{
+	free_split(info->path);
+	free_split(info->envp);
+	free(info->pwd);
+	free(info->oldpwd);
+	ft_lstclear(&(info->envp_list), &del_env_content);
+	free(info);
 }

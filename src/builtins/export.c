@@ -6,11 +6,11 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 11:25:50 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/03/28 11:29:19 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/03/31 15:25:58 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "exec.h"
+#include "../../include/exec.h"
 
 /*
  * Updates a env var value in the env_list list
@@ -26,7 +26,8 @@
 int update_env(t_list *env_list, char *value)
 {
 	//free(((t_envp *)env_list->content)->value); TODO: check
-	((t_envp *)env_list->content)->value = ft_strdup(value);
+	if (value)
+		((t_envp *)env_list->content)->value = ft_strdup(value);
 	return (0);
 }
 
@@ -44,11 +45,15 @@ t_list *create_envp_node(char *key, char *value)
 {
 	t_envp *node;
 
+	if (!key)
+		return (NULL);
 	node = malloc(sizeof(t_envp));
 	if (!node)
 		print_error("malloc error\n", 1);
-	node->key = key;
-	node->value = value;
+	node->key = ft_strdup(key);
+	node->value = NULL;
+	if (value)
+		node->value = ft_strdup(value);
 	return (ft_lstnew((void *)node));
 }
 
@@ -64,8 +69,8 @@ t_list *create_envp_node(char *key, char *value)
  */
 int check_envs(t_info *info, char *key, char *value)
 {
-	t_list *current;
-	char *list_key;
+	t_list	*current;
+	char	*list_key;
 
 	current = info->envp_list;
 	while (current)
@@ -82,6 +87,61 @@ int check_envs(t_info *info, char *key, char *value)
 	return (0);
 }
 
+int	find_equal(char *input)
+{
+	int	len;
+	int	i;
+
+	i = 0;
+	len = ft_strlen(input);
+	while (input[i] && i < len)
+	{
+		if (input[i] == '=')
+			return (i);
+		i++;
+	}
+	return (-1);
+}
+
+
+void	get_keyval(char *input, char **key, char **value)
+{
+	int	equal_len;
+	int	len;
+
+	equal_len = find_equal(input);
+	len = ft_strlen(input);
+	if (equal_len == len - 1)
+	{
+		*key = ft_substr(input, 0, len - 1);
+		*value = NULL;
+	}
+	else
+	{
+		*key = ft_substr(input, 0, equal_len);
+		*value = ft_substr(input, equal_len + 1, len - equal_len);
+	}
+}
+
+int	check_input(char *input)
+{
+	int	i;
+	int	equal_len;
+
+	i = 0;
+	equal_len = find_equal(input);
+	if (equal_len == -1)
+		equal_len = ft_strlen(input);
+	if (equal_len == 0 || (!ft_isalpha(input[i]) && input[i] != '_'))
+		return (0);
+	while (input[++i] && i < equal_len)
+	{
+		if (!ft_isalnum(input[i]) && input[i++] != '_')
+			return (0);
+	}
+	return (1);
+}
+
 /*
  * Handles export builtin command
  *
@@ -92,25 +152,36 @@ int check_envs(t_info *info, char *key, char *value)
  * Returns:
  * Status
  */
-int handle_export(t_list *args, t_info *info) // TODO: export no args
+int handle_export(t_list *args, t_info *info)
 {
+	char	*input;
 	char	**keyval;
 	char	*key;
 	char	*value;
 
-	if ((args->next) && !((args->next)->content))
-		return (0); // TODO: unpspecified behaviour with no args
-	// TODO: check if t_list args second node will be "name=john" or "name" and third node "john" // no =
-	keyval = ft_split((char *)((args->next)->content), '=');
-	key = ft_strdup(keyval[0]);
-	if (!keyval[1])
-		value = NULL; //TODO: check if ""
+	if (!args->next)
+	{
+		return (0); // TODO: print all envp, to determine how to store them
+	}
+	input = (char *)(args->next)->content;
+	if (!check_input(input))
+	{
+		print_error("bash: export: not a valid identifier\n", 1);
+		return (0);
+	}
+	if (find_equal(input) == -1)
+	{
+		key = ft_strdup(input);
+		value = NULL;
+	}
 	else
-		value = ft_strdup(keyval[1]);
+		get_keyval(input, &key, &value);
 	if (!info->envp_list) // if no env set
 		info->envp_list = create_envp_node(key, value);
 	else
 		check_envs(info, key, value);
-	free_split(keyval);
+	free(key);
+	if (value)
+		free(value);
 	return (0);
 }

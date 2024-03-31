@@ -6,11 +6,11 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 11:18:10 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/03/28 11:21:31 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/03/29 11:40:48 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "exec.h"
+#include "../../include/exec.h"
 
 int	check_status(char *arg)
 {

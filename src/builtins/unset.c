@@ -6,11 +6,11 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 11:26:05 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/03/28 11:28:46 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/03/30 13:26:17 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "exec.h"
+#include "../../include/exec.h"
 
 /* Frees the content of a t_list node
  * 
@@ -21,7 +21,7 @@
  * Returns:
  * 
  */
-void del_content(void *content)
+void	del_content(void *content)
 {
 	free(content);
 	content = NULL;

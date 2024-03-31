@@ -6,11 +6,11 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 09:35:06 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/03/28 11:17:18 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/03/31 13:38:53 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "exec.h"
+#include "../../include/exec.h"
 
 /*
  * Checks if the string provided is a built-in cmd
@@ -63,9 +63,9 @@ int	handle_builtin(t_command *command,  t_info *info) // TODO: check which built
 		handle_cd(args, info);
 	else if (n == 3)
 		handle_pwd();
-	else if (n == 4)
+	else if (n == 4 && !info->is_multiple_proc)
 		handle_export(args, info);
-	else if (n == 5)
+	else if (n == 5 && !info->is_multiple_proc)
 		handle_unset(args, info);
 	else if (n == 6)
 		handle_env(info);

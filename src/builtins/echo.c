@@ -6,11 +6,11 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 11:26:35 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/03/28 11:29:57 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/03/29 14:43:24 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "exec.h"
+#include "../../include/exec.h"
 
 /*
  * Replicates echo builtin command, checks for -n option
