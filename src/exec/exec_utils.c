@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 12:36:09 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/03/31 15:39:42 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/01 14:17:02 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,15 +118,31 @@ void del_env_content(void *content)
 		return ;
 	free(envp->key);
 	free(envp->value);
-	//free(content);
+	free(content);
+}
+
+void	t_lstclear(t_list **lst, void (*del)(void*))
+{
+	t_list	*node;
+	t_list	*next_node;
+
+	if (!*lst)
+		return ;
+	node = *lst;
+	while (node)
+	{
+		del(node->content);
+		next_node = node->next;
+		free(node);
+		node = next_node;
+	}
+	*lst = NULL;
 }
 
 void	free_info(t_info *info)
 {
 	free_split(info->path);
 	free_split(info->envp);
-	free(info->pwd);
-	free(info->oldpwd);
-	ft_lstclear(&(info->envp_list), &del_env_content);
+	t_lstclear(&(info->envp_list), &del_env_content);
 	free(info);
 }

@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 11:25:50 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/03/31 15:25:58 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/01 13:25:53 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,11 @@
  * Returns:
  * Status
  */
-int update_env(t_list *env_list, char *value)
+int update_env(t_list *envp_list, char *value)
 {
 	//free(((t_envp *)env_list->content)->value); TODO: check
 	if (value)
-		((t_envp *)env_list->content)->value = ft_strdup(value);
+		((t_envp *)envp_list->content)->value = ft_strdup(value);
 	return (0);
 }
 

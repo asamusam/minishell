@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 09:04:55 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/03/31 15:27:18 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/01 14:17:31 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,18 +190,20 @@ void	set_envp(t_info *info)
 			value = ft_strdup(keyval[1]);
 		else
 			value = NULL;
-		free_split(keyval);
 		if (!info->envp_list) // if no env set
 			info->envp_list = create_envp_node(key, value);
 		else
 			check_envs(info, key, value);
+		free_split(keyval);
+		free(key);
+		free(value);
 		envp_curr++;
 	}
 }
 
 ///////////////////////////////////////////////////////////////////////
-// For testing
-//////////////////////////////////////////////////////////////////////
+// For testing/////////////////////
+///////////////////////////////////////////////////////////////////////
 
 void printenvv(t_list *lst)
 {
@@ -235,12 +237,15 @@ t_info	*create_info(char **envp)
 	if (!info)
 	{
 		print_error("malloc error\n", 0);
+		return (NULL);
 	}
 	info->envp = copy_envp(envp);
-	if (getenv("PWD"))
-		info->pwd = ft_strdup(getenv("PWD"));
-	if (getenv("OLDPWD"))
-	 	info->oldpwd = ft_strdup(getenv("OLDPWD"));
+	info->pwd = NULL;
+	info->oldpwd = NULL;
+	// if (getenv("PWD"))
+	// 	info->pwd = ft_strdup(getenv("PWD"));
+	// if (getenv("OLDPWD"))
+	//  	info->oldpwd = ft_strdup(getenv("OLDPWD"));
 	paths = ft_strdup(getenv("PATH"));
 	info->path = ft_split(paths, ':');
 	free(paths);
@@ -248,24 +253,6 @@ t_info	*create_info(char **envp)
 	info->exit_flag = 0;
 	info->is_multiple_proc = 0;
 	return (info);
-}
-
-void	t_lstclear(t_list **lst, void (*del)(void*))
-{
-	t_list	*node;
-	t_list	*next_node;
-
-	if (!*lst)
-		return ;
-	node = *lst;
-	while (node)
-	{
-		del(node->content);
-		next_node = node->next;
-		free(node);
-		node = next_node;
-	}
-	*lst = NULL;
 }
 
 void	del_cmd_content(void *content)
@@ -282,8 +269,25 @@ void	del_lst_content(void *content)
 	cmd = (t_command *)content;
 	free(cmd->file_in);
 	free(cmd->file_out);
-	t_lstclear(&(cmd->args), del_cmd_content);
+	ft_lstclear(&(cmd->args), del_cmd_content);
 	free(cmd);
+}
+
+void	set_pwds(t_info *info)
+{
+	t_list	*enpv_list;
+	char	*key;
+
+	enpv_list = info->envp_list;
+	while (enpv_list)
+	{
+		key = ((t_envp *)enpv_list->content)->key;
+		if (key && !ft_strcmp(key, "PWD"))
+			info->pwd = ((t_envp *)enpv_list->content)->value;
+		else if (key && !ft_strcmp(key, "OLDPWD"))
+			info->oldpwd = ((t_envp *)enpv_list->content)->value;
+		enpv_list = enpv_list->next;
+	}
 }
 
 int main(int argc, char **argv, char **envp)
@@ -292,7 +296,8 @@ int main(int argc, char **argv, char **envp)
 
 	info = create_info(envp);
 	set_envp(info);
-	char *cmd1[] = {"export", "aaas=eewrfweno"};//{"echo", "-n", "sdofndf"};
+	set_pwds(info);
+	char *cmd1[] = {"exit", "s2", "_dfghfg"};//{"export", "aaas=eewrfweno"};//
 	// char *cmd1[] = {"awk", "END { print NR }", "test.txt"};
 	// char *cmd2[] = {"env", "2=22"};
 	// char *cmd3[] = {"export", "3=33"};
@@ -312,8 +317,9 @@ int main(int argc, char **argv, char **envp)
 	// comm3 = create_command(args3, NULL, NULL, 0);
 	main_list = ft_lstnew((void *)comm1);
 	//main_list->next = ft_lstnew((void *)comm2);
-	// main_list->next->next = ft_lstnew((void *)comm3);
+	//main_list->next->next = ft_lstnew((void *)comm3);
 	exec(main_list, info);
+	//printenvv(info->envp_list);
 	free_info(info);
 	ft_lstclear(&(main_list), &del_lst_content);
 }
