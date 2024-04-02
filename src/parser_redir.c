@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 20:31:52 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/29 21:06:02 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/01 18:22:05 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,19 +15,21 @@
 
 int	handle_insource(char *delimiter)
 {
-	int			fd;
-	char		*line;
+	int					fd;
+	char				*line;
 
 	fd = open("minishell_heredoc.txt", O_CREAT | O_TRUNC | O_WRONLY);
 	if (fd == -1)
 		return (-1);
-	line = readline("->");
+	write(STDIN_FILENO, "->", 2);
+	line = ft_getline(STDIN_FILENO);
 	while (line && ft_strcmp(line, delimiter))
 	{
-		if (write(fd, line, ft_strlen(line)) == -1 || write(fd, "\n", 1) == -1)
+		if (write(fd, line, ft_strlen(line)) == -1)
 			return (-1);
 		free(line);
-		line = readline("->");
+		write(STDIN_FILENO, "->", 2);
+		line = ft_getline(STDIN_FILENO);
 	}
 	free(line);
 	return (fd);
