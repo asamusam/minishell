@@ -3,20 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: asamuilk <asamuilk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 18:32:40 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/01 17:20:48 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/02 15:06:33 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	g_signal;
-
 static void	signal_handler(int signal)
 {
-	g_signal = signal;
 	if (signal == SIGINT)
 	{
 		printf("\n");
