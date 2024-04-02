@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 09:35:06 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/03/31 13:38:53 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/02 09:57:25 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,19 +58,18 @@ int	handle_builtin(t_command *command,  t_info *info) // TODO: check which built
 	args = command->args;
 	n = is_buitin(args->content);
 	if (n == 1)
-		handle_echo(args);
+		return(handle_echo(args));
 	else if (n == 2)
-		handle_cd(args, info);
+		return(handle_cd(args, info));
 	else if (n == 3)
-		handle_pwd();
+		return(handle_pwd());
 	else if (n == 4 && !info->is_multiple_proc)
-		handle_export(args, info);
+		return(handle_export(args, info));
 	else if (n == 5 && !info->is_multiple_proc)
-		handle_unset(args, info);
+		return(handle_unset(args, info));
 	else if (n == 6)
-		handle_env(info);
+		return(handle_env(info));
 	else if (n == 7)
-		handle_exit(args, info);
-	// TODO: handle errors/return
+		return(handle_exit(args, info));
 	return(0);
 }

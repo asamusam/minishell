@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 11:26:05 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/03/30 13:26:17 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/02 12:01:10 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,12 @@
  */
 void	del_content(void *content)
 {
+	t_envp	*envp;
+
+	envp = (t_envp *)content;
+	free(envp->key);
+	if (envp->value)
+		free(envp->value);
 	free(content);
 	content = NULL;
 }
@@ -86,7 +92,7 @@ int handle_unset(t_list *args, t_info *info)
 	t_list *current;
 
 	status = 0;
-	if (args->next)
+	if (args->next && !info->is_multiple_proc)
 	{
 		current = args->next;
 		while (current)
@@ -98,5 +104,5 @@ int handle_unset(t_list *args, t_info *info)
 			current = current->next;
 		}
 	}
-	return (status); // TODO: 0 if all replaced
+	return (status);
 }

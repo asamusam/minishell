@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 09:04:55 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/01 14:17:31 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/02 13:09:38 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,19 +26,18 @@
 int	last_process(t_command *command, t_info *info, int prev_pipe)
 {
 	pid_t	pid;
+	int		status;
 
+	status = 0;
 	if (!is_buitin(command->args->content))
 	{
 		if ((pid = fork()) == -1)
-		{
-			print_error("Fork error\n", 0); // TODO: check error
-			return (1);
-		}
+			return (print_error("Fork error\n", 0));
 		if (pid == 0)
 		{
 			dup2(prev_pipe, STDIN_FILENO); // TODO: check for redirection
 			close(prev_pipe);
-			handle_input(command, info);
+			status = handle_input(command, info);
 		}
 		else
 		{
@@ -49,9 +48,9 @@ int	last_process(t_command *command, t_info *info, int prev_pipe)
 	else
 	{
 		close(prev_pipe);
-		handle_builtin(command, info);
+		status = handle_builtin(command, info);
 	}
-	return (0);
+	return (status);
 }
 
 /*
@@ -69,56 +68,51 @@ int create_process(t_command *command, t_info *info, int *prev_pipe)
 {
 	pid_t	pid;
 	int		pipefd[2];
+	int		status;
 
-		info->is_multiple_proc = 1;
-		if (pipe(pipefd) == -1)
+	status = 0;
+	if (pipe(pipefd) == -1)
+		return (print_error("Pipe error\n", 0));
+	if ((pid = fork()) == -1)
+		return (print_error("Fork error\n", 0));
+	if (!is_buitin(command->args->content))
+	{
+		if (pid == 0)
 		{
-			print_error("Pipe error\n", 0); // TODO: check error, make sure to close previous pipes
-			return (1);
-		}
-		if ((pid = fork()) == -1)
-		{
-			print_error("Fork error\n", 0); // TODO: check error
-			return (1);
-		}
-		if (!is_buitin(command->args->content))
-		{
-			if (pid == 0)
-			{
-				close (pipefd[0]);
-				dup2 (pipefd[1], STDOUT_FILENO);
-				close (pipefd[1]);
-				dup2 (*prev_pipe, STDIN_FILENO);
-				close (*prev_pipe);
-				handle_input(command, info);
-			}
-			else
-			{
-				close(pipefd[1]);
-				close(*prev_pipe);
-				*prev_pipe = pipefd[0];
-				waitpid(pid, NULL, 0);
-			}
+			close (pipefd[0]);
+			dup2 (pipefd[1], STDOUT_FILENO);
+			close (pipefd[1]);
+			dup2 (*prev_pipe, STDIN_FILENO);
+			close (*prev_pipe);
+			status = handle_input(command, info);
 		}
 		else
 		{
-			if (pid == 0)
-			{
-				close (pipefd[0]);
-				close (pipefd[1]);
-				close (*prev_pipe);
-			}
-			else
-			{
-				dup2 (pipefd[1], STDOUT_FILENO);
-				close(pipefd[1]);
-				close(*prev_pipe);
-				*prev_pipe = pipefd[0];
-				waitpid(pid, NULL, 0);
-				handle_builtin(command, info);
-			}
+			close(pipefd[1]);
+			close(*prev_pipe);
+			*prev_pipe = pipefd[0];
+			waitpid(pid, NULL, 0);
 		}
-	return (0);
+	}
+	else
+	{
+		if (pid == 0)
+		{
+			close (pipefd[0]);
+			close (pipefd[1]);
+			close (*prev_pipe);
+		}
+		else
+		{
+			dup2 (pipefd[1], STDOUT_FILENO);
+			close(pipefd[1]);
+			close(*prev_pipe);
+			*prev_pipe = pipefd[0];
+			waitpid(pid, NULL, 0);
+			status = handle_builtin(command, info);
+		}
+	}
+	return (status);
 }
 
 /*
@@ -129,24 +123,27 @@ int create_process(t_command *command, t_info *info, int *prev_pipe)
  * - info - info structure
  * 
  * Returns:
- * TBD
+ * Status
  */
-void	exec(t_list *commands, t_info *info)
+int	exec(t_list *commands, t_info *info)
 {
 	int		prev_pipe;
+	int		status;
 	t_list	*current;
 	
 	prev_pipe = dup(0);// initialized with any valid fd to avoid error, since first child doesn't need prev_pipe
 	current = commands;
+	status = 0;
+	if (current && current->next)
+			info->is_multiple_proc = 1;
 	while (current && current->next && !info->exit_flag)
 	{
-		create_process((t_command *)(current->content), info, &prev_pipe);
+		status = create_process((t_command *)(current->content), info, &prev_pipe);
 		current = current->next;
 	}
 	if (!info->exit_flag)
-		last_process((t_command *)(current->content), info, prev_pipe);
-
-	// TODO: free(commands)
+		status = last_process((t_command *)(current->content), info, prev_pipe);
+	return (status);
 }
 
 char	**copy_envp(char**envp)
@@ -174,17 +171,17 @@ char	**copy_envp(char**envp)
 	return (envp_copy);
 }
 
-void	set_envp(t_info *info)
+void	set_envp(t_info *info, char **envp)
 {
-	char	**envp_curr;
 	char	**keyval;
 	char	*key;
 	char	*value;
-
-	envp_curr = info->envp;
-	while (*envp_curr)
+	char	**current;
+	
+	current = envp;
+	while (*current)
 	{
-		keyval = ft_split(*envp_curr, '=');
+		keyval = ft_split(*current, '='); // TODO: handle split if not =
 		key = ft_strdup(keyval[0]);
 		if (keyval[1])
 			value = ft_strdup(keyval[1]);
@@ -197,7 +194,7 @@ void	set_envp(t_info *info)
 		free_split(keyval);
 		free(key);
 		free(value);
-		envp_curr++;
+		current++;
 	}
 }
 
@@ -236,16 +233,13 @@ t_info	*create_info(char **envp)
 	info = malloc(sizeof(t_info));
 	if (!info)
 	{
-		print_error("malloc error\n", 0);
+		print_error("Malloc error\n", 0);
 		return (NULL);
 	}
 	info->envp = copy_envp(envp);
 	info->pwd = NULL;
 	info->oldpwd = NULL;
-	// if (getenv("PWD"))
-	// 	info->pwd = ft_strdup(getenv("PWD"));
-	// if (getenv("OLDPWD"))
-	//  	info->oldpwd = ft_strdup(getenv("OLDPWD"));
+	info->home = NULL;
 	paths = ft_strdup(getenv("PATH"));
 	info->path = ft_split(paths, ':');
 	free(paths);
@@ -286,6 +280,8 @@ void	set_pwds(t_info *info)
 			info->pwd = ((t_envp *)enpv_list->content)->value;
 		else if (key && !ft_strcmp(key, "OLDPWD"))
 			info->oldpwd = ((t_envp *)enpv_list->content)->value;
+		else if (key && !ft_strcmp(key, "HOME"))
+			info->home = ((t_envp *)enpv_list->content)->value;
 		enpv_list = enpv_list->next;
 	}
 }
@@ -295,28 +291,28 @@ int main(int argc, char **argv, char **envp)
 	t_info *info;
 
 	info = create_info(envp);
-	set_envp(info);
+	set_envp(info, envp);
 	set_pwds(info);
-	char *cmd1[] = {"exit", "s2", "_dfghfg"};//{"export", "aaas=eewrfweno"};//
-	// char *cmd1[] = {"awk", "END { print NR }", "test.txt"};
-	// char *cmd2[] = {"env", "2=22"};
+	char *cmd1[] = {"wc", "-c", "test.txt"};//{"export", "aaas=eewrfweno"};//
+	//char *cmd1[] = {"wc", "-c", "test.txt"};
+	char *cmd2[] = {"exit", "1"};
 	// char *cmd3[] = {"export", "3=33"};
 	t_list *args1, *args2, *args3, *main_list;
 	t_command *comm1, *comm2, *comm3;
 	//info->envp_list = create_envp_node("aaas", "00");
 	args1 = ft_lstnew((void *)cmd1[0]);
 	args1->next = ft_lstnew((void *)cmd1[1]);
-	//args1->next->next = ft_lstnew((void *)cmd1[2]);
-	// args2 = ft_lstnew((void *)cmd2[0]);
-	// args2->next = ft_lstnew((void *)cmd2[1]);
+	args1->next->next = ft_lstnew((void *)cmd1[2]);
+	args2 = ft_lstnew((void *)cmd2[0]);
+	args2->next = ft_lstnew((void *)cmd2[1]);
 	// args2->next->next = ft_lstnew((void *)cmd2[2]);
 	// args3 = ft_lstnew((void *)cmd3[0]);
 	// args3->next = ft_lstnew((void *)cmd3[1]);
 	comm1 = create_command(args1, NULL, NULL, 0);
-	// comm2 = create_command(args2, NULL, NULL, 0);
+	comm2 = create_command(args2, NULL, NULL, 0);
 	// comm3 = create_command(args3, NULL, NULL, 0);
 	main_list = ft_lstnew((void *)comm1);
-	//main_list->next = ft_lstnew((void *)comm2);
+	main_list->next = ft_lstnew((void *)comm2);
 	//main_list->next->next = ft_lstnew((void *)comm3);
 	exec(main_list, info);
 	//printenvv(info->envp_list);

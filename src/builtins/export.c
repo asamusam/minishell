@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 11:25:50 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/01 13:25:53 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/02 09:47:28 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,6 +142,21 @@ int	check_input(char *input)
 	return (1);
 }
 
+int	print_export(t_info *info)
+{
+	t_list	*current;
+	t_envp	*envp;
+
+	current = info->envp_list;
+	while (current)
+	{
+		envp = (t_envp *)current->content;
+		ft_printf("declare -x %s=%s\n", envp->key, envp->value);
+		current = current->next;
+	}
+	return (0);
+}
+
 /*
  * Handles export builtin command
  *
@@ -160,15 +175,12 @@ int handle_export(t_list *args, t_info *info)
 	char	*value;
 
 	if (!args->next)
-	{
-		return (0); // TODO: print all envp, to determine how to store them
-	}
+		return (print_export(info));
 	input = (char *)(args->next)->content;
 	if (!check_input(input))
-	{
-		print_error("bash: export: not a valid identifier\n", 1);
-		return (0);
-	}
+		return (print_error("bash: export: not a valid identifier\n", 1));
+	if (info->is_multiple_proc)
+		return(0);
 	if (find_equal(input) == -1)
 	{
 		key = ft_strdup(input);

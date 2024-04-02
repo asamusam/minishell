@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 15:57:01 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/23 11:37:50 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/02 09:26:47 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
  * to the standard error
  * 
  * Returns:
- * Zero.
+ * One
  */
 int	print_error(char *message, int type)
 {
@@ -30,7 +30,7 @@ int	print_error(char *message, int type)
 		perror(message);
 	else if (type == STDERR)
 		ft_putendl_fd(message, STDERR_FILENO);
-	return (0);
+	return (1);
 }
 
 /*

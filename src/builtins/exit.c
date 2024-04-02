@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 11:18:10 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/03/29 11:40:48 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/02 10:40:36 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,12 +35,12 @@ int	handle_exit(t_list *args, t_info *info)
 
 	status = 0;
 	if (args->next->next)
-		print_error("exit: too many args\n", 1);
+		return(print_error("exit: too many args\n", 1));
 	if (args->next)
 		status = check_status((char *)(args->next)->content);
 	if (status == -1)
-		print_error("exit status error\n", 1);
-	info->exit_flag = 1; // TODO: 
+		return(print_error("exit status error\n", 1));
+	info->exit_flag = 1;
 	info->return_code = status;
 	return (0);
 }

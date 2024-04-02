@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 17:18:43 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/31 13:36:48 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/02 11:32:06 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ typedef struct s_info
 	char			**envp;
 	char			*pwd;
 	char			*oldpwd;
+	char			*home;
 	t_list			*envp_list;
 	int				envp_flag; // TODO:
 	int				exit_flag;

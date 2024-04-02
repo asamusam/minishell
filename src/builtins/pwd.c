@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 11:26:00 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/03/29 12:05:25 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/02 10:20:22 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	handle_pwd(void)
 	if (getcwd(cwd, PATH_MAX))
 	{
 		ft_putendl_fd(cwd, 1);
-		return (1);
+		return (0);
 	}
-	return (0);
+	return (1);
 }

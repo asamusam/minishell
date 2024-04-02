@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 11:26:35 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/03/29 14:43:24 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/02 10:48:18 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
  * Replicates echo builtin command, checks for -n option
  *
  * Arguments:
- *
+ * args - argument to print
  *
  * Returns:
  * Status
