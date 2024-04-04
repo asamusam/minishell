@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 16:18:54 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/29 17:37:57 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/04 14:17:18 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,4 +63,3 @@ void	change_token_value(t_token *token, char *new_value)
 	free(token->value);
 	token->value = new_value;
 }
-

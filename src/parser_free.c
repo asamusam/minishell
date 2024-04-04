@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 19:38:26 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/29 20:51:21 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/04 16:45:32 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,11 +45,11 @@ void	free_command(void *arg)
  * Returns:
  * Zero.
  */
-int	free_command_return_fail(t_command *command)
+t_command	*free_command_return_null(t_command *command)
 {
 	if (command)
 		free_command(command);
-	return (FAIL);
+	return (NULL);
 }
 
 /*

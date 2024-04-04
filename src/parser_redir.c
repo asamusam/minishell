@@ -3,49 +3,84 @@
 /*                                                        :::      ::::::::   */
 /*   parser_redir.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asamuilk <asamuilk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 20:31:52 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/02 17:54:54 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/04 17:42:28 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 #include "stdbool.h"
 #include <sys/stat.h>
-#include <errno.h>
 
-int	handle_insource(char *delimiter)
+/*
+ * Prompts and writes the user input into a here-document.
+ *
+ * Arguments:
+ * - delimiter — delimiter provided by the user.
+ * - fd — file descriptor of an opened here-document.
+ * 
+ * Returns:
+ * Zero if there was an error or SIGINT was received, one on success.
+ */
+int	get_input(char *delimiter, int fd)
 {
-	int		fd;
 	char	*line;
-	size_t	delim_len;
 
-	fd = open("minishell_heredoc.txt", O_CREAT | O_TRUNC | O_WRONLY, \
-									S_IRUSR | S_IWUSR | S_IROTH);
-	if (fd == -1)
-		return (-1);
-	write(STDIN_FILENO, "->", 2);
-	line = ft_getline(STDIN_FILENO);
-	delim_len = ft_strlen(delimiter);
-	while (line)
+	line = readline("->");
+	while (line && ft_strcmp(line, delimiter) && g_signal != SIGINT)
 	{
-		if ((!ft_strncmp(line, delimiter, delim_len) && (line[delim_len] == '\n' || !line[delim_len])))
-		{
-			free(line);
-			return (fd);
-		}
-		if (write(fd, line, ft_strlen(line)) == -1)
-			return (-1);
+		if (write(fd, line, ft_strlen(line)) == -1 || write(fd, "\n", 1) == -1)
+			return (FAIL);
 		free(line);
-		write(STDIN_FILENO, "->", 2);
-		line = ft_getline(STDIN_FILENO);
+		line = readline("->");
 	}
-	errno = ENOMSG;
-	return (-1);
+	if (line)
+		free(line);
+	else
+		printf("minishell: warning: here-document delimited by end-of-file\n");
+	if (g_signal == SIGINT)
+		return (FAIL);
+	return (SUCCESS);
 }
 
-// TODO: file can be a relative path
+/*
+ * Opens a here-document and prompts the user input.
+ *
+ * Arguments:
+ * - delimiter — delimiter provided by the user.
+ * 
+ * Returns:
+ * File descriptor of the opened here-document or -1 on error.
+ */
+int	handle_insource(char *delimiter)
+{
+	int	fd;
+	int	flag;
+	int	mode;
+
+	flag = O_CREAT | O_TRUNC | O_WRONLY;
+	mode = S_IRUSR | S_IWUSR | S_IROTH;
+	fd = open("minishell_heredoc.txt", flag, mode);
+	if (fd == -1)
+		return (-1);
+	if (!get_input(delimiter, fd))
+		return (-1);
+	return (fd);
+}
+
+/*
+ * Opens a file suitable for the given redirect type.
+ *
+ * Arguments:
+ * - type — token type.
+ * - file — file name or delimiter.
+ * - cmd — command structure to write the file descriptor to.
+ * 
+ * Returns:
+ * Zero if there was an error and one on success.
+ */
 int	handle_redirect(int type, char *file, t_command *cmd)
 {
 	int		fd;
@@ -61,7 +96,7 @@ int	handle_redirect(int type, char *file, t_command *cmd)
 	if (type == REDIRECT_IN)
 		fd = open(file, O_RDONLY);
 	else if (type == REDIRECT_OUT)
-		fd = open(file, O_CREAT | O_TRUNC);
+		fd = open(file, O_CREAT | O_TRUNC, 0664);
 	else if (type == REDIRECT_APPEND)
 		fd = open(file, O_APPEND);
 	else

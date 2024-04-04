@@ -6,12 +6,11 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 16:21:27 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/13 17:01:32 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/04 17:28:48 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lexer.h"
-#include "libft.h"
 #include "fcntl.h"
 
 /*

@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 15:57:01 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/22 12:29:14 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/04 17:02:04 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,24 @@ int	print_error(char *message, int type)
 	else if (type == STDERR)
 		ft_putendl_fd(message, STDERR_FILENO);
 	return (0);
+}
+
+/*
+ * Prints the contents of the environment variable structure (t_envp).
+ *
+ * Arguments:
+ * - arg — pointer to a structure of type t_envp.
+ * 
+ * Returns:
+ * Nothing.
+ */
+void	print_envvar(void *arg)
+{
+	t_envp	*var;
+
+	var = (t_envp *)arg;
+	printf("----------\nkey: %s\nvalue: %s\n", \
+			var->key, var->value);
 }
 
 /*

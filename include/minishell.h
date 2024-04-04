@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asamuilk <asamuilk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 17:18:43 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/02 15:06:00 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/04 17:28:32 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,8 @@
 # include <signal.h>
 # include "libft.h"
 
+extern volatile sig_atomic_t	g_signal;
+
 typedef struct s_token
 {
 	int				type;
@@ -45,39 +47,35 @@ typedef struct s_envp
 {
 	char			*key;
 	char			*value;
-	char			**pair;
 }	t_envp;
 
 typedef struct s_info
 {
-	char			*reserved_words[7];
-	char			**path;
-	char			**envp;
 	t_list			*envp_list;
-	int				envp_flag;
-	int				exit_flag;
-	int				return_code;
+	int				exit_code;
 }	t_info;
 
-// envp.c
+// free.c
 
-void	init_envp(char **envp, t_info *minishell);
+void	free_envvar(void *arg);
+
+// init.c
+
+void	create_envp_list(char **envp, t_info *minishell);
+void	init(char **envp, t_info *minishell);
 
 // signals.c
 
+void	signal_handler(int signal);
 void	set_signal_handler(void);
 
 // utils.c
 
 int		print_error(char *message, int type);
+void	print_envvar(void *arg);
 void	print_token(void *arg);
 void	free_token(void *arg);
 void	free_split(char **arr);
-
-// envp.c
-
-void	print_envvar(void *arg);
-void	free_envvar(void *arg);
 
 // lexer.c
 
@@ -86,5 +84,13 @@ t_list	*lexer(char *line);
 // parser.c
 
 t_list	*parser(t_list *tokens, t_info *minishell);
+
+// parser_free.c
+
+void	free_command(void *arg);
+
+// parser_print.c
+
+void	print_command(void *arg);
 
 #endif

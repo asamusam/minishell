@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 14:08:43 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/27 19:15:01 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/04 17:15:39 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ int	expand_dollar(char *key, char **dst, t_info *minishell, int *index)
 	if (!key[i])
 		return (expand_special(dst, ft_strdup("$"), index, i));
 	else if (key[i] == '?')
-		return (expand_special(dst, ft_itoa(minishell->return_code), \
+		return (expand_special(dst, ft_itoa(minishell->exit_code), \
 				index, i + 1));
 	else if (key[i] == '$')
 		return (expand_special(dst, ft_strdup("1"), index, i + 1));

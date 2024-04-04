@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 15:00:30 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/29 21:31:36 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/04 16:45:49 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,9 @@ typedef struct s_command
 t_command	*init_command(void);
 int			add_arg(t_list **args, char *value);
 int			add_command(t_list **commands, t_command *cmd);
-int			get_command(t_list *group, t_list **commands);
+t_command	*get_command(t_list *group);
 t_list		*get_commands(t_list *groups);
+
 
 // parser_expand_utils.c
 
@@ -52,7 +53,7 @@ int			expand(t_list *tokens, t_info *minishell);
 // parser_free.c
 
 void		free_command(void *arg);
-int			free_command_return_fail(t_command *command);
+t_command	*free_command_return_null(t_command *command);
 t_list		*free_commands_return_null(t_list *commands);
 t_list		*free_tokens_return_null(t_list *tokens);
 t_list		*free_groups_return_null(t_list *groups);
@@ -64,6 +65,7 @@ void		print_command(void *arg);
 
 // parser_redir.c
 
+int			get_input(char *delimiter, int fd);
 int			handle_insource(char *delimiter);
 int			handle_redirect(int type, char *file, t_command *cmd);
 
