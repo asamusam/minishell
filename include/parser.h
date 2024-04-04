@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 15:00:30 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/04 16:45:49 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/04 17:45:54 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@ int			add_arg(t_list **args, char *value);
 int			add_command(t_list **commands, t_command *cmd);
 t_command	*get_command(t_list *group);
 t_list		*get_commands(t_list *groups);
-
 
 // parser_expand_utils.c
 
