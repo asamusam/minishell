@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 14:08:43 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/04 17:15:39 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/04 22:01:53 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int	expand_dollar(char *key, char **dst, t_info *minishell, int *index)
 	else
 	{
 		j = i;
-		while (key[j] && key[j] != '$' && !ft_isspace(key[j]))
+		while (key[j] && ft_isalnum(key[j]))
 			j ++;
 		var = get_envp_value(key + i, j - i, minishell);
 		if (var && !concat_strings(dst, ft_strdup(var)))
