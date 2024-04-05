@@ -42,7 +42,7 @@ int	expand_dollar(char *key, char **dst, t_info *minishell, int *index)
 	else
 	{
 		j = i;
-		while (key[j] && ft_isalnum(key[j]))
+		while (key[j] && (ft_isalnum(key[j]) || key[j] == '_'))
 			j ++;
 		var = get_envp_value(key + i, j - i, minishell);
 		if (var && !concat_strings(dst, ft_strdup(var)))
