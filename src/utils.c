@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 15:57:01 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/13 16:46:32 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/04 17:02:04 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,24 @@ int	print_error(char *message, int type)
 }
 
 /*
+ * Prints the contents of the environment variable structure (t_envp).
+ *
+ * Arguments:
+ * - arg — pointer to a structure of type t_envp.
+ * 
+ * Returns:
+ * Nothing.
+ */
+void	print_envvar(void *arg)
+{
+	t_envp	*var;
+
+	var = (t_envp *)arg;
+	printf("----------\nkey: %s\nvalue: %s\n", \
+			var->key, var->value);
+}
+
+/*
  * Prints the contents of a token structure: type, value, length.
  *
  * Arguments:
@@ -47,9 +65,25 @@ void	print_token(void *arg)
 	t_token	*token;
 
 	token = (t_token *)arg;
-	ft_printf("token type: %d\ntoken value: ", token->type);
-	write(STDOUT_FILENO, token->value, token->len);
-	ft_printf("\ntoken len: %d\n", token->len);
+	ft_printf("token type: %d\ntoken value: %s\n", token->type, token->value);
+}
+
+/*
+ * Frees all the memory associated with the t_token structure.
+ * 
+ * Arguments:
+ * - arg — pointer to the token structure
+ * 
+ * Returns:
+ * Nothing.
+ */
+void	free_token(void *arg)
+{
+	t_token	*token;
+
+	token = (t_token *)arg;
+	free(token->value);
+	free(token);
 }
 
 /*

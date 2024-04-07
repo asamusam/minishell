@@ -6,21 +6,22 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 18:32:40 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/13 13:57:18 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/04 17:07:29 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include <sys/ioctl.h>
 
-static void	signal_handler(int signal)
+volatile sig_atomic_t	g_signal;
+
+void	signal_handler(int signal)
 {
-	if (signal == SIGINT)
-	{
-		printf("\n");
-		rl_replace_line("", 1);
-		rl_on_new_line();
-		rl_redisplay();
-	}
+	g_signal = signal;
+	ioctl(STDIN_FILENO, TIOCSTI, "\n");
+	rl_replace_line("", 1);
+	rl_on_new_line();
+	(void)signal;
 }
 
 void	set_signal_handler(void)

@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 17:25:50 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/13 16:27:16 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/03/19 18:20:45 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,7 @@ t_token	*create_token(int type, char *value, int len)
 	if (!token)
 		return (NULL);
 	token->type = type;
-	token->value = value;
-	token->len = len;
+	token->value = ft_substr(value, 0, len);
 	return (token);
 }
 
