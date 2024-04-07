@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 11:25:41 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/02 10:48:42 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/04 09:37:40 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
  * Returns:
  * Status
  */
-int handle_env(t_info *info)
+int	handle_env(t_info *info)
 {
 	t_list	*current;
 	t_envp	*envp;

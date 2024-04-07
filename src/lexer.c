@@ -6,11 +6,10 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 13:35:22 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/13 16:50:23 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/04 17:29:07 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
 #include "lexer.h"
 
 /*
@@ -67,7 +66,11 @@ t_list	*lexer(char *line)
 	{
 		len = get_token(&token_lst, line + i);
 		if (!len)
+		{
+			if (token_lst)
+				ft_lstclear(&token_lst, free_token);
 			return (NULL);
+		}
 		i = i + len;
 	}
 	return (token_lst);

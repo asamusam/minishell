@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 11:25:50 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/02 09:47:28 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/07 09:17:01 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,9 @@
  * Returns:
  * Status
  */
-int update_env(t_list *envp_list, char *value)
+int	update_envp(t_list *envp_list, char *value)
 {
-	//free(((t_envp *)env_list->content)->value); TODO: check
+	free(((t_envp *)envp_list->content)->value);
 	if (value)
 		((t_envp *)envp_list->content)->value = ft_strdup(value);
 	return (0);
@@ -41,9 +41,9 @@ int update_env(t_list *envp_list, char *value)
  * Returns:
  * Status
  */
-t_list *create_envp_node(char *key, char *value)
+t_list	*create_envp_node(char *key, char *value)
 {
-	t_envp *node;
+	t_envp	*node;
 
 	if (!key)
 		return (NULL);
@@ -58,7 +58,7 @@ t_list *create_envp_node(char *key, char *value)
 }
 
 /*
- * Checks if there's already an env var with the same key. If there's it updates it, otherwise it creates a new list node with those values
+ * Updates or create env var
  *
  * Arguments:
  * - env var key
@@ -67,7 +67,7 @@ t_list *create_envp_node(char *key, char *value)
  * Returns:
  * Status
  */
-int check_envs(t_info *info, char *key, char *value)
+int	check_envs(t_info *info, char *key, char *value)
 {
 	t_list	*current;
 	char	*list_key;
@@ -78,7 +78,7 @@ int check_envs(t_info *info, char *key, char *value)
 		list_key = ((t_envp *)current->content)->key;
 		if (!ft_strcmp(list_key, key))
 		{
-			update_env(current, value);
+			update_envp(current, value);
 			return (0);
 		}
 		current = current->next;
@@ -87,111 +87,40 @@ int check_envs(t_info *info, char *key, char *value)
 	return (0);
 }
 
-int	find_equal(char *input)
-{
-	int	len;
-	int	i;
-
-	i = 0;
-	len = ft_strlen(input);
-	while (input[i] && i < len)
-	{
-		if (input[i] == '=')
-			return (i);
-		i++;
-	}
-	return (-1);
-}
-
-
-void	get_keyval(char *input, char **key, char **value)
-{
-	int	equal_len;
-	int	len;
-
-	equal_len = find_equal(input);
-	len = ft_strlen(input);
-	if (equal_len == len - 1)
-	{
-		*key = ft_substr(input, 0, len - 1);
-		*value = NULL;
-	}
-	else
-	{
-		*key = ft_substr(input, 0, equal_len);
-		*value = ft_substr(input, equal_len + 1, len - equal_len);
-	}
-}
-
-int	check_input(char *input)
-{
-	int	i;
-	int	equal_len;
-
-	i = 0;
-	equal_len = find_equal(input);
-	if (equal_len == -1)
-		equal_len = ft_strlen(input);
-	if (equal_len == 0 || (!ft_isalpha(input[i]) && input[i] != '_'))
-		return (0);
-	while (input[++i] && i < equal_len)
-	{
-		if (!ft_isalnum(input[i]) && input[i++] != '_')
-			return (0);
-	}
-	return (1);
-}
-
-int	print_export(t_info *info)
-{
-	t_list	*current;
-	t_envp	*envp;
-
-	current = info->envp_list;
-	while (current)
-	{
-		envp = (t_envp *)current->content;
-		ft_printf("declare -x %s=%s\n", envp->key, envp->value);
-		current = current->next;
-	}
-	return (0);
-}
-
 /*
  * Handles export builtin command
  *
  * Arguments:
- * - t_list args
- * - t_info info
+ * - args - variable attributes
+ * - info - info sturcture
  *
  * Returns:
  * Status
  */
-int handle_export(t_list *args, t_info *info)
+int	handle_export(t_list *args, t_info *info)
 {
-	char	*input;
 	char	**keyval;
 	char	*key;
 	char	*value;
 
 	if (!args->next)
 		return (print_export(info));
-	input = (char *)(args->next)->content;
-	if (!check_input(input))
+	if (!check_input((char *)(args->next)->content))
 		return (print_error("bash: export: not a valid identifier\n", 1));
 	if (info->is_multiple_proc)
-		return(0);
-	if (find_equal(input) == -1)
+		return (0);
+	if (find_equal((char *)(args->next)->content) == -1)
 	{
-		key = ft_strdup(input);
+		key = ft_strdup((char *)(args->next)->content);
 		value = NULL;
 	}
 	else
-		get_keyval(input, &key, &value);
-	if (!info->envp_list) // if no env set
+		get_keyval((char *)(args->next)->content, &key, &value);
+	if (!info->envp_list)
 		info->envp_list = create_envp_node(key, value);
 	else
 		check_envs(info, key, value);
+	update_envstr(info);
 	free(key);
 	if (value)
 		free(value);

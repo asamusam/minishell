@@ -6,12 +6,22 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 11:22:34 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/02 11:33:35 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/07 09:18:53 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/exec.h"
 
+/*
+ * Updates PWD and OLDPWD env variables
+ *
+ * Arguments:
+ * - info - info structure
+ * - newpwd - newpwd name variable 
+ * cd
+ * Returns:
+ * 0 on success, 1 on error
+ */
 int	update_envp_pwd(t_info *info, char *newpwd)
 {
 	char	*oldpwd;
@@ -35,15 +45,25 @@ int	update_envp_pwd(t_info *info, char *newpwd)
 		}
 		envp_list = envp_list->next;
 	}
+	update_envstr(info);
 	return (0);
 }
 
+/*
+ * Looks for home directory if valid it updates the enp pwd/oldpwd
+ *
+ * Arguments:
+ * - info - info structure
+ * 
+ * Returns:
+ * 0 on success, 1 on error
+ */
 int	dir_home(t_info *info)
 {
 	char	*dir;
-	
+
 	dir = info->home;
-	if (dir == NULL) // 1. If no directory operand is given and the HOME environment variable is empty or undefined, the default behavior is implementation-defined and no further steps shall be taken.
+	if (dir == NULL)
 		return (print_error("bash: cd: HOME not set\n", 0));
 	if (access(dir, F_OK) == -1)
 		return (print_error("bash: cd: d: No such file or directory\n", 0));
@@ -51,20 +71,40 @@ int	dir_home(t_info *info)
 	return (0);
 }
 
+/*
+ * Checks if the absolute path is valid and if so updates the envp pwd/oldpwd
+ *
+ * Arguments:
+ * - dir - aboslute path
+ * - info - info structure
+ * 
+ * Returns:
+ * 0 on success, 1 on error
+ */
 int	dir_abs_path(t_info *info, char *dir)
 {
 	if (access(dir, F_OK) == -1)
 		return (print_error("bash: cd: d: No such file or directory\n", 0));
 	update_envp_pwd(info, dir);
-	return(0);
+	return (0);
 }
 
+/*
+ * Checks if the dir is valid and if so updates the envp pwd/oldpwd
+ *
+ * Arguments:
+ * - dir - directory name
+ * - info - info structure
+ * 
+ * Returns:
+ * 0 on success, 1 on error
+ */
 int	dir_rel_path(t_info *info, char *dir)
 {
 	char	*dirpath;
 	char	*cdpath;
 	char	*tmp;
-	
+
 	cdpath = info->pwd;
 	if (!cdpath)
 		return (print_error("No path available\n", 0));
@@ -72,30 +112,40 @@ int	dir_rel_path(t_info *info, char *dir)
 	dirpath = ft_strjoin(tmp, dir);
 	free (tmp);
 	if (access(dirpath, F_OK) == -1)
-		return (print_error("bash: cd: d: No such file or directory\n", 0));
+		return (print_error("bash: cd: ", 0));//TODO:dir name
 	update_envp_pwd(info, dirpath);
 	free(dirpath);
-	return(0);
+	return (0);
 }
 
+/*
+ * Checks the num of arguments and if valid checks if abs or relative path
+ *
+ * Arguments:
+ * - args - the command string to check
+ * - info - info structure
+ * 
+ * Returns:
+ * 0 on success, 1 on error
+ */
 int	handle_cd(t_list *args, t_info *info)
 {
 	char	*dir;
 	char	**cdpaths;
-	t_list *current;
+	t_list	*current;
 
 	if (args->next && args->next->next)
 		return (print_error("bash: cd: too many arguments\n", 0));
-	else if (!args->next) // no directory provided
-		return(dir_home(info));
+	else if (!args->next)
+		return (dir_home(info));
 	else
 	{
 		current = args->next;
 		dir = (char *)current->content;
-		if (!ft_strncmp(dir, "/", 1)) // absolute path
+		if (!ft_strncmp(dir, "/", 1))
 			return (dir_abs_path(info, dir));
 		else
-			return(dir_rel_path(info, dir));
+			return (dir_rel_path(info, dir));
 	}
 	return (0);
 }

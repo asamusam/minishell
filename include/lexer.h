@@ -3,17 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:48:43 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/13 17:05:25 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/07 08:58:04 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LEXER_H
 # define LEXER_H
 # include <stdlib.h>
-# include "minishell.h"
+#include "minishell.h"
+# include "../libft/include/libft.h" //TODO: replace with "libft"
 
 // lexer_token_func_spec.c
 

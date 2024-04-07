@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 11:26:05 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/02 12:01:10 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/07 09:17:53 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,36 @@ void	del_content(void *content)
 	content = NULL;
 }
 
+/* Deletes envp node
+ * 
+ *
+ * Arguments:
+ * - tmp - temp node
+ * - current - current node
+ * - t_info *struct
+ *
+ * Returns:
+ * 0 if the variable is found and deleted, 1 otherwise
+ */
+int	handle_del(t_list *tmp, t_list *current, t_info *info)
+{
+	if (!tmp)
+	{
+		tmp = current->next;
+		ft_lstdelone(current, del_content);
+		info->envp_list = tmp;
+		current = info->envp_list;
+	}
+	else
+	{
+		tmp->next = current->next;
+		ft_lstdelone(current, del_content);
+		current = tmp;
+	}
+	update_envstr(info);
+	return (0);
+}
+
 /* Loops through envp_list and if finds a match it deletes it
  * 
  *
@@ -43,7 +73,7 @@ void	del_content(void *content)
  * Returns:
  * 0 if the variable is found and deleted, 1 otherwise
  */
-int del_env(char *envp_key, t_info *info)
+int	del_env(char *envp_key, t_info *info)
 {
 	t_list	*tmp;
 	t_list	*current;
@@ -53,22 +83,7 @@ int del_env(char *envp_key, t_info *info)
 	while (current)
 	{
 		if (!ft_strcmp(envp_key, ((t_envp *)current->content)->key))
-		{
-			if (!tmp)
-			{
-				tmp = current->next;
-				ft_lstdelone(current, del_content);
-				info->envp_list = tmp;
-				current = info->envp_list;
-			}
-			else
-			{
-				tmp->next = current->next;
-				ft_lstdelone(current, del_content);
-				current = tmp;
-			}
-			return (0);
-		}
+			return (handle_del(tmp, current, info));
 		tmp = current;
 		if (current)
 			current = current->next;
@@ -86,10 +101,10 @@ int del_env(char *envp_key, t_info *info)
  * Returns:
  * 0 if all the var are deleted, 1 otherwise
  */
-int handle_unset(t_list *args, t_info *info)
+int	handle_unset(t_list *args, t_info *info)
 {
-	int status;
-	t_list *current;
+	int		status;
+	t_list	*current;
 
 	status = 0;
 	if (args->next && !info->is_multiple_proc)

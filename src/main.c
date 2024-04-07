@@ -3,46 +3,61 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 14:55:35 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/13 16:50:58 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/07 12:15:45 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	shell_loop(char **envp)
+void	shell_loop(t_info *minishell)
 {
 	char	*line;
 	t_list	*tokens;
+	t_list	*commands;
 
-	(void)envp;
-	set_signal_handler();
 	line = readline("-->");
 	while (line)
 	{
 		if (*line)
 		{
+			g_signal = 0;
 			add_history(rl_line_buffer);
 			tokens = lexer(line);
 			if (tokens)
-				ft_lstiter(tokens, print_token); // run parser here
+			{
+				commands = parser(tokens, minishell);
+				// executor goes here (if commands)
+				ft_lstiter(commands, print_command); // temporary
+				ft_lstclear(&commands, free_command); // temporary
+			}
 		}
-		ft_lstclear(&tokens, free);
+		if (g_signal == SIGINT)
+			minishell->exit_code = g_signal + 128; // for cases where we get ctrl-c before the executor (heredoc or interactive mode)
+		else
+			minishell->exit_code = 0; // temporary (normally, the executor sets the exit code)
 		free(line);
 		line = readline("-->");
 	}
 	printf("exit\n");
+	ft_lstclear(&minishell->envp_list, free_envvar);
 	rl_clear_history();
-	exit(EXIT_SUCCESS);
+	exit(minishell->exit_code);
 }
 
 int	main(int ac, char **av, char **envp)
 {
+	t_info	minishell;
+
 	(void)av;
 	if (ac == 1)
-		shell_loop(envp);
+	{
+		set_signal_handler();
+		init(envp, &minishell);
+		shell_loop(&minishell);
+	}
 	else
 	{
 		ft_putstr_fd("We don't accept arguments for now.", STDERR_FILENO);
