@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 12:17:56 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/07 08:58:17 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/09 12:22:29 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,13 @@ int		handle_input(t_command *command, t_info *info);
 int		print_export(t_info *info);
 int		find_equal(char *input);
 int		check_input(char *input);
+int		update_envstr(t_info *info);
+int		handle_cmd_process(t_pipe *pipet, t_command *command, t_info *info);
+int		handle_lst_cmd_process(t_pipe *pipet, t_command *command, t_info *info);
+int		handle_last_redirection(t_pipe *pipet, t_command *command);
+int		handle_redirections(t_pipe *pipet, t_command *command);
+int		handle_bltn_process(t_pipe *pipet, t_command *command, t_info *info);
+int		handle_blt_redirections(t_pipe *pipet, t_command *command);
 char	*get_cmd(char **path, char *command);
 char	**get_args(t_list *arg_lst);
 char	*find_envp_line(char *key, char **envp);
@@ -54,6 +61,11 @@ void	del_lst_content(void *content);
 void	del_env_content(void *content);
 void	free_info(t_info *info);
 void	get_keyval(char *input, char **key, char **value);
-t_list *create_envp_node(char *key, char *value);
-int	update_envstr(t_info *info);
+t_list	*create_envp_node(char *key, char *value);
+t_info	*create_info(char **envp);
+void	set_envp(t_info *info, char **envp);
+char	**copy_envp(char **envp);
+int		update_envstr(t_info *info);
+void	set_pwds(t_info *info);
+
 #endif

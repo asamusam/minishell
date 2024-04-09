@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 11:25:50 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/07 09:17:01 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/09 12:31:26 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,6 @@ int	check_envs(t_info *info, char *key, char *value)
  */
 int	handle_export(t_list *args, t_info *info)
 {
-	char	**keyval;
 	char	*key;
 	char	*value;
 

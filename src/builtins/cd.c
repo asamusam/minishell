@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 11:22:34 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/07 09:18:53 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/07 14:02:57 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,7 +131,6 @@ int	dir_rel_path(t_info *info, char *dir)
 int	handle_cd(t_list *args, t_info *info)
 {
 	char	*dir;
-	char	**cdpaths;
 	t_list	*current;
 
 	if (args->next && args->next->next)
