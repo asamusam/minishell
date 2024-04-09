@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 17:18:43 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/09 12:40:41 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/09 14:42:18 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <signal.h>
-# include "../libft/include/libft.h" //TODO: replace with "libft"
+# include "libft.h"
 
 extern volatile sig_atomic_t	g_signal;
 

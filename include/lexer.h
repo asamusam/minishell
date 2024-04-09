@@ -6,15 +6,14 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:48:43 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/07 08:58:04 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/09 14:48:26 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LEXER_H
 # define LEXER_H
 # include <stdlib.h>
-#include "minishell.h"
-# include "../libft/include/libft.h" //TODO: replace with "libft"
+# include "minishell.h"
 
 // lexer_token_func_spec.c
 

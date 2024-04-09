@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 15:00:30 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/07 08:34:57 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/09 14:48:26 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 # define SYNTAX_ERROR "minishell: syntax error"
 # define FAIL 0
 # define SUCCESS 1
-# include "../libft/include/libft.h" //TODO: replace with "libft"
+# include "libft.h"
 # include "minishell.h"
 # include "unistd.h"
 # include "fcntl.h"
