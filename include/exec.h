@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 12:17:56 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/09 12:22:29 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/09 15:25:55 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ void	del_env_content(void *content);
 void	free_info(t_info *info);
 void	get_keyval(char *input, char **key, char **value);
 t_list	*create_envp_node(char *key, char *value);
-t_info	*create_info(char **envp);
+t_info	*create_info(t_info *info, char **envp);
 void	set_envp(t_info *info, char **envp);
 char	**copy_envp(char **envp);
 int		update_envstr(t_info *info);

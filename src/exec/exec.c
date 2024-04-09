@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 09:04:55 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/09 14:13:17 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/09 15:07:12 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,6 @@ int create_process(t_command *command, t_info *info, t_pipe *pipet)
  */
 int	exec(t_list *commands, t_info *info)
 {
-	int		prev_pipe;
 	int		status;
 	t_list	*current;
 	t_pipe	*pipet;

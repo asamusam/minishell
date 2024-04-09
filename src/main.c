@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 14:55:35 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/09 14:48:26 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/09 15:12:25 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,15 +29,17 @@ void	shell_loop(t_info *minishell)
 			if (tokens)
 			{
 				commands = parser(tokens, minishell);
+				if (commands)
+					minishell->exit_code = exec(commands, minishell);
 				// executor goes here (if commands)
-				ft_lstiter(commands, print_command); // temporary
-				ft_lstclear(&commands, free_command); // temporary
+				//ft_lstiter(commands, print_command); // temporary
+				//ft_lstclear(&commands, free_command); // temporary
 			}
+
+				
 		}
 		if (g_signal == SIGINT)
-			minishell->exit_code = g_signal + 128; // for cases where we get ctrl-c before the executor (heredoc or interactive mode)
-		else
-			minishell->exit_code = 0; // temporary (normally, the executor sets the exit code)
+			minishell->exit_code = g_signal + 128;
 		free(line);
 		line = readline("-->");
 	}

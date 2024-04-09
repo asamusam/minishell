@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 17:18:43 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/09 14:42:18 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/09 15:08:53 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,5 +101,9 @@ void	free_command(void *arg);
 // parser_print.c
 
 void	print_command(void *arg);
+
+// exec.c
+
+int		exec(t_list *commands, t_info *info);
 
 #endif

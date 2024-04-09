@@ -6,11 +6,12 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 17:57:54 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/09 14:48:26 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/09 15:26:45 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include "exec.h"
 
 /*
  * Copies envp array received by main function to a list,
@@ -61,6 +62,9 @@ void	create_envp_list(char **envp, t_info *minishell)
  */
 void	init(char **envp, t_info *minishell)
 {
-	create_envp_list(envp, minishell);
-	minishell->exit_code = 0;
+	create_info(minishell, envp);
+	set_envp(minishell, envp);
+	set_pwds(minishell);
+	//create_envp_list(envp, minishell);
+	//minishell->exit_code = 0;
 }

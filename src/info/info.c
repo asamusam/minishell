@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 10:53:47 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/08 13:18:23 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/09 15:25:33 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,16 +119,16 @@ void	set_envp(t_info *info, char **envp)
 	}
 }
 
-t_info	*create_info(char **envp)
+t_info	*create_info(t_info *info, char **envp)
 {
-	t_info	*info;
+	// t_info	*info;
 
-	info = malloc(sizeof(t_info));
-	if (!info)
-	{
-		print_error("Malloc error\n", 0);
-		return (NULL);
-	}
+	// info = malloc(sizeof(t_info));
+	// if (!info)
+	// {
+	// 	print_error("Malloc error\n", 0);
+	// 	return (NULL);
+	// }
 	info->envp = copy_envp(envp);
 	info->pwd = NULL;
 	info->oldpwd = NULL;
