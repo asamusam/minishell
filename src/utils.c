@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 15:57:01 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/04 17:02:04 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/10 15:36:03 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
  * to the standard error
  * 
  * Returns:
- * Zero.
+ * One.
  */
 int	print_error(char *message, int type)
 {
@@ -30,7 +30,7 @@ int	print_error(char *message, int type)
 		perror(message);
 	else if (type == STDERR)
 		ft_putendl_fd(message, STDERR_FILENO);
-	return (0);
+	return (FAIL);
 }
 
 /*
@@ -84,26 +84,4 @@ void	free_token(void *arg)
 	token = (t_token *)arg;
 	free(token->value);
 	free(token);
-}
-
-/*
- * Function: free_split
- * ----------------------------
- * Frees all the memory associated with ft_split() return.
- * 
- * Arguments:
- * - arr — array of strings returned by ft_split()
- * 
- * Returns:
- * Nothing.
- */
-void	free_split(char **arr)
-{
-	int	i;
-
-	i = 0;
-	while (arr[i])
-		free(arr[i++]);
-	free(arr[i]);
-	free(arr);
 }

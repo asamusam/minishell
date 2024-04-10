@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 14:55:35 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/09 15:12:25 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/10 15:41:45 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	shell_loop(t_info *minishell)
 	t_list	*commands;
 
 	line = readline("-->");
-	while (line)
+	while (!minishell->exit_flag && line)
 	{
 		if (*line)
 		{
@@ -30,21 +30,20 @@ void	shell_loop(t_info *minishell)
 			{
 				commands = parser(tokens, minishell);
 				if (commands)
+				{
 					minishell->exit_code = exec(commands, minishell);
-				// executor goes here (if commands)
-				//ft_lstiter(commands, print_command); // temporary
-				//ft_lstclear(&commands, free_command); // temporary
+					ft_lstclear(&commands, free_command);
+				}
 			}
-
-				
 		}
 		if (g_signal == SIGINT)
 			minishell->exit_code = g_signal + 128;
 		free(line);
-		line = readline("-->");
+		if (!minishell->exit_flag)
+			line = readline("-->");
 	}
 	printf("exit\n");
-	ft_lstclear(&minishell->envp_list, free_envvar);
+	free_minishell_info(minishell);
 	rl_clear_history();
 	exit(minishell->exit_code);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_redir.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 20:31:52 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/09 14:48:26 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/10 14:34:58 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int	handle_insource(char *delimiter)
 	fd = open("minishell_heredoc.txt", flag, mode);
 	if (fd == -1)
 		return (-1);
-	if (!get_input(delimiter, fd))
+	if (get_input(delimiter, fd) == FAIL)
 		return (-1);
 	return (fd);
 }
@@ -96,9 +96,9 @@ int	handle_redirect(int type, char *file, t_command *cmd)
 	if (type == REDIRECT_IN)
 		fd = open(file, O_RDONLY);
 	else if (type == REDIRECT_OUT)
-		fd = open(file,  O_WRONLY | O_CREAT | O_TRUNC, 0664);
+		fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0664);
 	else if (type == REDIRECT_APPEND)
-		fd = open(file,  O_WRONLY | O_CREAT | O_APPEND);
+		fd = open(file, O_WRONLY | O_CREAT | O_APPEND, 0664);
 	else
 		fd = handle_insource(file);
 	if (fd == -1)

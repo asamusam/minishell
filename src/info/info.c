@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   info.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 10:53:47 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/09 15:25:33 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/10 15:47:33 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,6 +136,7 @@ t_info	*create_info(t_info *info, char **envp)
 	info->path = NULL;
 	info->envp_list = NULL;
 	info->exit_code = 0;
+	info->exit_flag = 0;
 	info->is_multiple_proc = 0;
 	return (info);
 }

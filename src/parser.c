@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 13:16:41 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/03 18:30:38 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/10 14:27:35 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
  * - tokens — list of tokens
  * 
  * Returns:
- * Zero if there is an error and one if there is not.
+ * One if there is an error and zero if there is not.
  */
 int	check_syntax(t_list *tokens)
 {
@@ -44,7 +44,7 @@ int	check_syntax(t_list *tokens)
 		(REDIRECT_OUT <= prev_type && prev_type <= REDIRECT_INSOURCE))
 		return (print_error(SYNTAX_ERROR, STDERR));
 	else
-		return (1);
+		return (SUCCESS);
 }
 
 /*
@@ -94,7 +94,7 @@ t_list	*split_groups(t_list *tokens)
  * - minishell — general info structure
  * 
  * Returns:
- * One on success and zero if memory allocation fails.
+ * Zero on success and one if memory allocation fails.
  */
 int	expand_groups(t_list *groups, t_info *minishell)
 {
@@ -103,7 +103,7 @@ int	expand_groups(t_list *groups, t_info *minishell)
 	temp = groups;
 	while (temp)
 	{
-		if (!expand((t_list *)temp->content, minishell))
+		if (expand((t_list *)temp->content, minishell) == FAIL)
 			return (FAIL);
 		temp = temp->next;
 	}
@@ -127,12 +127,12 @@ t_list	*parser(t_list *tokens, t_info *minishell)
 	t_list	*groups;
 	t_list	*commands;
 
-	if (!check_syntax(tokens))
+	if (check_syntax(tokens) == FAIL)
 		return (free_tokens_return_null(tokens));
 	groups = split_groups(tokens);
 	if (!groups)
 		return (free_tokens_return_null(tokens));
-	if (!expand_groups(groups, minishell))
+	if (expand_groups(groups, minishell) == FAIL)
 		return (free_groups_return_null(groups));
 	commands = get_commands(groups);
 	if (!commands)

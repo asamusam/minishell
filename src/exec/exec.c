@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asamuilk <asamuilk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 09:04:55 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/09 19:17:09 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/10 15:57:41 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ int	last_process(t_command *command, t_info *info, t_pipe *pipet)
  * Returns:
  * Status
  */
-int create_process(t_command *command, t_info *info, t_pipe *pipet)
+int	create_process(t_command *command, t_info *info, t_pipe *pipet)
 {
 	int		status;
 
@@ -88,17 +88,17 @@ int	exec(t_list *commands, t_info *info)
 		return (status);
 	pipet = malloc(sizeof(t_pipe));
 	if (!pipet)
-		return (print_error("malloc error\n", 0)); // no need for a newline + constant PERROR + it returns 0 now, but should return 1
-	pipet->prev_pipe = dup(0); // like this it asks for the input (consider for example "echo test >> test.txt")
+		return (print_error("minishell exec", PERROR)); // newline is added automatically by perror() + we can use constant instead of raw value (defined in minishell.h)
+	pipet->prev_pipe = dup(0);
 	current = commands;
 	if (current && current->next)
-			info->is_multiple_proc = 1;
-	while (current && current->next && !info->exit_code) // need to think through the renewal of the exit code for the subsequent lines
+		info->is_multiple_proc = 1;
+	while (current && current->next && !info->exit_code) // exit_flag?
 	{
 		status = create_process((t_command *)(current->content), info, pipet);
 		current = current->next;
 	}
-	if (!info->exit_code)
+	if (!info->exit_code) // exit_flag?
 		status = last_process((t_command *)(current->content), info, pipet);
 	free(pipet);
 	return (status);

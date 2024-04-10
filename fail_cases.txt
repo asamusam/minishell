@@ -1,0 +1,3 @@
+echo test >>test.txt
+<test.txt						// if test.txt exists
+echo hey | cat

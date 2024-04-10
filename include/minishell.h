@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 17:18:43 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/09 15:08:53 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/10 15:35:51 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@
 // error handling
 # define PERROR 0
 # define STDERR 1
+# define FAIL 1
+# define SUCCESS 0
 
 # include <stdio.h>
 # include <stdlib.h>
@@ -66,7 +68,9 @@ typedef struct s_info
 
 // free.c
 
+void	free_split(char **arr);
 void	free_envvar(void *arg);
+void	free_minishell_info(t_info *minishell);
 
 // init.c
 
@@ -84,7 +88,6 @@ int		print_error(char *message, int type);
 void	print_envvar(void *arg);
 void	print_token(void *arg);
 void	free_token(void *arg);
-void	free_split(char **arr);
 
 // lexer.c
 
