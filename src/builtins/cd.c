@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 11:22:34 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/07 14:02:57 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/10 11:55:23 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,21 @@ int	update_envp_pwd(t_info *info, char *newpwd)
 		{
 			free(((t_envp *)envp_list->content)->value);
 			((t_envp *)envp_list->content)->value = ft_strdup(newpwd);
+			if (info->pwd)
+			{
+				free(info->pwd);
+				info->pwd = ft_strdup(newpwd);
+			}
 		}
 		else if (key && !ft_strncmp(key, "OLDPWD", 6))
 		{
 			free(((t_envp *)envp_list->content)->value);
 			((t_envp *)envp_list->content)->value = oldpwd;
+			if (info->oldpwd)
+			{
+				free(info->oldpwd);
+				info->oldpwd = ft_strdup(oldpwd);
+			}
 		}
 		envp_list = envp_list->next;
 	}
@@ -68,6 +78,7 @@ int	dir_home(t_info *info)
 	if (access(dir, F_OK) == -1)
 		return (print_error("bash: cd: d: No such file or directory\n", 0));
 	update_envp_pwd(info, dir);
+	chdir(dir);
 	return (0);
 }
 
@@ -83,9 +94,22 @@ int	dir_home(t_info *info)
  */
 int	dir_abs_path(t_info *info, char *dir)
 {
-	if (access(dir, F_OK) == -1)
+	char	*new_dir;
+	
+	if (dir[0] == '~')
+	{
+		if (!info->home)
+			return(print_error("no home defined\n", 1));
+		dir++;
+		new_dir = ft_strjoin(info->home, dir);
+	}
+	else
+		new_dir = ft_strdup(dir);
+	if (access(new_dir, F_OK) == -1)
 		return (print_error("bash: cd: d: No such file or directory\n", 0));
-	update_envp_pwd(info, dir);
+	update_envp_pwd(info, new_dir);
+	chdir(new_dir);
+	free(new_dir);
 	return (0);
 }
 
@@ -114,6 +138,7 @@ int	dir_rel_path(t_info *info, char *dir)
 	if (access(dirpath, F_OK) == -1)
 		return (print_error("bash: cd: ", 0));//TODO:dir name
 	update_envp_pwd(info, dirpath);
+	chdir(dirpath);
 	free(dirpath);
 	return (0);
 }
@@ -141,7 +166,7 @@ int	handle_cd(t_list *args, t_info *info)
 	{
 		current = args->next;
 		dir = (char *)current->content;
-		if (!ft_strncmp(dir, "/", 1))
+		if (!ft_strncmp(dir, "/", 1) || !ft_strncmp(dir, "~/", 2))
 			return (dir_abs_path(info, dir));
 		else
 			return (dir_rel_path(info, dir));

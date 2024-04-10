@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 11:25:50 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/09 12:31:26 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/10 12:06:57 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,6 +120,7 @@ int	handle_export(t_list *args, t_info *info)
 	else
 		check_envs(info, key, value);
 	update_envstr(info);
+	set_pwds(info);
 	free(key);
 	if (value)
 		free(value);

@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 11:26:05 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/07 09:17:53 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/10 12:07:31 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,5 +119,6 @@ int	handle_unset(t_list *args, t_info *info)
 			current = current->next;
 		}
 	}
+	set_pwds(info);
 	return (status);
 }

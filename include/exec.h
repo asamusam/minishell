@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 12:17:56 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/09 15:25:55 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/10 13:28:47 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,14 @@ typedef struct s_pipe
 	pid_t	pid;
 	int		pipefd[2];
 	int		prev_pipe;
+	int		orig_stdout;
+	int		orig_stdin;
 }	t_pipe
 ;
 
 int		handle_echo(t_list *args);
 int		handle_cd(t_list *args, t_info *info);
-int		handle_pwd(void);
+int		handle_pwd(t_info *t_info);
 int		update_env(t_list *env_list, char *value);
 int		check_envs(t_info *info, char *key, char *value);
 int		handle_export(t_list *args, t_info *info);

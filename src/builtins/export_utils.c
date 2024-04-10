@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 09:32:21 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/04 09:41:34 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/10 10:12:45 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ void	get_keyval(char *input, char **key, char **value)
 	if (equal_len == len - 1)
 	{
 		*key = ft_substr(input, 0, len - 1);
-		*value = NULL;
+		*value = ft_strdup("");
 	}
 	else
 	{

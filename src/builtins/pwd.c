@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 11:26:00 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/02 10:20:22 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/10 13:16:26 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,14 +21,14 @@
  * Returns:
  * Status
  */
-int	handle_pwd(void)
+int	handle_pwd(t_info *info)
 {
-	char	cwd[PATH_MAX];
-
-	if (getcwd(cwd, PATH_MAX))
+	if (info->pwd)
 	{
-		ft_putendl_fd(cwd, 1);
-		return (0);
+		ft_printf("%s\n", info->pwd);
+		return (SUCCESS);
 	}
-	return (1);
+	else
+		ft_printf("%s\n", getenv("PWD"));
+	return (FAIL);
 }

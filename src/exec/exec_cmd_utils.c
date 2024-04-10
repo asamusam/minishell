@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 12:36:09 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/08 13:06:23 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/10 11:56:48 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ int	handle_input(t_command *command, t_info *info)
 		free_split(args);
 		return (127);
 	}
-	chdir(info->pwd);
 	if (execve(cmd, args, info->envp) == -1)
 	{
 		free_split(args);

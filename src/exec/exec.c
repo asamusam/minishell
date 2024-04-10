@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 09:04:55 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/09 15:07:12 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/10 13:33:34 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,16 @@ int	last_process(t_command *command, t_info *info, t_pipe *pipet)
 	{
 		handle_last_redirection(pipet, command);
 		status = handle_builtin(command, info);
+		if (command->file_in >= 0)
+		{
+			dup2(pipet->orig_stdin, STDIN_FILENO);
+			close(pipet->orig_stdin);
+		}
+		else if (command->file_out >= 0)
+		{
+			dup2(pipet->orig_stdout, STDOUT_FILENO);
+			close(pipet->orig_stdout);
+		}
 	}
 	return (status);
 }
@@ -77,7 +87,7 @@ int create_process(t_command *command, t_info *info, t_pipe *pipet)
  * Returns:
  * Status
  */
-int	exec(t_list *commands, t_info *info)
+int		exec(t_list *commands, t_info *info)
 {
 	int		status;
 	t_list	*current;
@@ -90,6 +100,8 @@ int	exec(t_list *commands, t_info *info)
 	if (!pipet)
 		return (print_error("malloc error\n", 0));
 	pipet->prev_pipe = dup(0);
+	pipet->orig_stdin = dup(STDIN_FILENO);
+	pipet->orig_stdout = dup(STDOUT_FILENO);
 	current = commands;
 	if (current && current->next)
 			info->is_multiple_proc = 1;

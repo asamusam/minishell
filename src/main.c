@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 14:55:35 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/09 15:12:25 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/10 12:39:47 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,14 @@ void	shell_loop(t_info *minishell)
 	char	*line;
 	t_list	*tokens;
 	t_list	*commands;
+	char *prompt; //temp
 
-	line = readline("-->");
+	if (minishell->pwd)//temp
+		prompt = ft_strjoin(minishell->pwd, ">"); //temp
+	else//temp
+		prompt = "-->";//temp
+
+	line = readline(prompt); //temp 
 	while (line)
 	{
 		if (*line)
@@ -41,7 +47,11 @@ void	shell_loop(t_info *minishell)
 		if (g_signal == SIGINT)
 			minishell->exit_code = g_signal + 128;
 		free(line);
-		line = readline("-->");
+		if (minishell->pwd)//temp
+			prompt = ft_strjoin(minishell->pwd, ">"); //temp
+		else//temp
+			prompt = "-->";//temp
+		line = readline(prompt);// temp
 	}
 	printf("exit\n");
 	ft_lstclear(&minishell->envp_list, free_envvar);

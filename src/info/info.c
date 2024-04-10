@@ -6,28 +6,47 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 10:53:47 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/09 15:25:33 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/10 13:12:36 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/exec.h"
 
+void	free_pwds(t_info *info)
+{
+	if (info->pwd)
+		free(info->pwd);
+	if (info->oldpwd)
+		free(info->oldpwd);
+	if (info->home)
+		free(info->home);
+	if (info->path)
+		free_split(info->path);
+	info->pwd = NULL;
+	info->oldpwd = NULL;
+	info->home = NULL;
+	info->path = NULL;
+}
+
 void	set_pwds(t_info *info)
 {
 	t_list	*enpv_list;
 	char	*key;
+	char	*value;
 	char	*paths;
 
 	enpv_list = info->envp_list;
+	free_pwds(info);
 	while (enpv_list)
 	{
 		key = ((t_envp *)enpv_list->content)->key;
+		value = ((t_envp *)enpv_list->content)->value;
 		if (key && !ft_strcmp(key, "PWD"))
-			info->pwd = ((t_envp *)enpv_list->content)->value;
+			info->pwd = ft_strdup(value); //((t_envp *)enpv_list->content)->value;
 		else if (key && !ft_strcmp(key, "OLDPWD"))
-			info->oldpwd = ((t_envp *)enpv_list->content)->value;
+			info->oldpwd = ft_strdup(value);//((t_envp *)enpv_list->content)->value;
 		else if (key && !ft_strcmp(key, "HOME"))
-			info->home = ((t_envp *)enpv_list->content)->value;
+			info->home = ft_strdup(value);//((t_envp *)enpv_list->content)->value;
 		else if (key && !ft_strcmp(key, "PATH"))
 		{
 			paths = ft_strdup(((t_envp *)enpv_list->content)->value);
@@ -121,14 +140,6 @@ void	set_envp(t_info *info, char **envp)
 
 t_info	*create_info(t_info *info, char **envp)
 {
-	// t_info	*info;
-
-	// info = malloc(sizeof(t_info));
-	// if (!info)
-	// {
-	// 	print_error("Malloc error\n", 0);
-	// 	return (NULL);
-	// }
 	info->envp = copy_envp(envp);
 	info->pwd = NULL;
 	info->oldpwd = NULL;

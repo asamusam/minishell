@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 10:46:53 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/09 12:20:28 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/10 13:42:30 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,16 @@ int	handle_bltn_process(t_pipe *pipet, t_command *command, t_info *info)
 		handle_blt_redirections(pipet, command);
 		waitpid(pipet->pid, NULL, 0);
 		status = handle_builtin(command, info);
+		// if (command->file_in >= 0)
+		// {
+		// 	dup2(pipet->orig_stdin, STDIN_FILENO);
+		// 	close(pipet->orig_stdin);
+		// }
+		// else if (command->file_out >= 0)
+		// {
+		// 	dup2(pipet->orig_stdout, STDOUT_FILENO);
+		// 	close(pipet->orig_stdout);
+		// }
 		exit(status);
 	}
 	return (status);
@@ -88,7 +98,7 @@ int	handle_builtin(t_command *command, t_info *info)
 	else if (n == 2 && !info->is_multiple_proc)
 		return (handle_cd(args, info));
 	else if (n == 3)
-		return (handle_pwd());
+		return (handle_pwd(info));
 	else if (n == 4 && !info->is_multiple_proc)
 		return (handle_export(args, info));
 	else if (n == 5 && !info->is_multiple_proc)
@@ -97,6 +107,6 @@ int	handle_builtin(t_command *command, t_info *info)
 		return (handle_env(info));
 	else if (n == 7)
 		return (handle_exit(args, info));
-	return (0);
+	return (SUCCESS);
 }
 
