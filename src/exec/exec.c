@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 09:04:55 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/10 13:33:34 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/13 11:15:44 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,13 +103,11 @@ int		exec(t_list *commands, t_info *info)
 	pipet->orig_stdin = dup(STDIN_FILENO);
 	pipet->orig_stdout = dup(STDOUT_FILENO);
 	current = commands;
-	if (current && current->next)
-			info->is_multiple_proc = 1;
 	while (current && current->next && !info->exit_code)
 	{
 		status = create_process((t_command *)(current->content), info, pipet);
 		current = current->next;
-	}
+	};
 	if (!info->exit_code)
 		status = last_process((t_command *)(current->content), info, pipet);
 	free(pipet);

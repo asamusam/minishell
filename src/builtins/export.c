@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 11:25:50 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/10 12:06:57 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/13 09:46:15 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,10 +104,10 @@ int	handle_export(t_list *args, t_info *info)
 
 	if (!args->next)
 		return (print_export(info));
+	if (args->next && args->next->next)
+		return (0);
 	if (!check_input((char *)(args->next)->content))
 		return (print_error("bash: export: not a valid identifier\n", 1));
-	if (info->is_multiple_proc)
-		return (0);
 	if (find_equal((char *)(args->next)->content) == -1)
 	{
 		key = ft_strdup((char *)(args->next)->content);

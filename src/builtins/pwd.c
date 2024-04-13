@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 11:26:00 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/10 13:16:26 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/13 09:58:55 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,9 @@ int	handle_pwd(t_info *info)
 	if (info->pwd)
 	{
 		ft_printf("%s\n", info->pwd);
-		return (SUCCESS);
+		return (0);
 	}
 	else
 		ft_printf("%s\n", getenv("PWD"));
-	return (FAIL);
+	return (0);
 }

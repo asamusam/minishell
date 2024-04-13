@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 10:50:09 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/09 12:19:08 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/12 10:37:14 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ int	handle_redirections(t_pipe *pipet, t_command *command)
 
 int	handle_blt_redirections(t_pipe *pipet, t_command *command)
 {
+	close (pipet->pipefd[0]);//
 	if (command->file_out >= 0)
 	{
 		dup2 (command->file_out, STDOUT_FILENO);
@@ -67,9 +68,6 @@ int	handle_blt_redirections(t_pipe *pipet, t_command *command)
 		dup2 (command->file_in, STDIN_FILENO);
 		close(command->file_in);
 	}
-	else
-		dup2 (pipet->prev_pipe, STDIN_FILENO);
 	close(pipet->prev_pipe);
-	pipet->prev_pipe = pipet->pipefd[0];
 	return (0);
 }

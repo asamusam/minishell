@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 11:22:34 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/10 11:55:23 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/12 12:17:25 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ int	update_envp_pwd(t_info *info, char *newpwd)
 		}
 		envp_list = envp_list->next;
 	}
+	//free(oldpwd);
 	update_envstr(info);
 	return (0);
 }
@@ -74,9 +75,9 @@ int	dir_home(t_info *info)
 
 	dir = info->home;
 	if (dir == NULL)
-		return (print_error("bash: cd: HOME not set\n", 0));
+		return (print_error("minishell: cd: HOME not set\n", 0));
 	if (access(dir, F_OK) == -1)
-		return (print_error("bash: cd: d: No such file or directory\n", 0));
+		return (print_error("minishell: cd: d: No such file or directory\n", 0));
 	update_envp_pwd(info, dir);
 	chdir(dir);
 	return (0);
@@ -105,8 +106,9 @@ int	dir_abs_path(t_info *info, char *dir)
 	}
 	else
 		new_dir = ft_strdup(dir);
+	free(dir);
 	if (access(new_dir, F_OK) == -1)
-		return (print_error("bash: cd: d: No such file or directory\n", 0));
+		return (print_error("minishell: cd: d: No such file or directory\n", 0));
 	update_envp_pwd(info, new_dir);
 	chdir(new_dir);
 	free(new_dir);
@@ -135,12 +137,33 @@ int	dir_rel_path(t_info *info, char *dir)
 	tmp = ft_strjoin(cdpath, "/");
 	dirpath = ft_strjoin(tmp, dir);
 	free (tmp);
+	free (dir);
 	if (access(dirpath, F_OK) == -1)
 		return (print_error("bash: cd: ", 0));//TODO:dir name
 	update_envp_pwd(info, dirpath);
 	chdir(dirpath);
 	free(dirpath);
 	return (0);
+}
+
+char	*check_last_dir_slash(char *dir, char *path)
+{
+	int	len;
+
+	len = ft_strlen(path);
+	if (path[len - 1] == '/')
+	{
+		dir = malloc(sizeof(char) * len);
+		if (!dir)
+		{
+			print_error("malloc error\n", 0);
+			return (NULL);
+		}
+		ft_strlcpy(dir, path, len);
+	}
+	else
+		dir = ft_strdup(path);
+	return (dir);
 }
 
 /*
@@ -155,7 +178,8 @@ int	dir_rel_path(t_info *info, char *dir)
  */
 int	handle_cd(t_list *args, t_info *info)
 {
-	char	*dir;
+	char	*dir = NULL;
+	char	*path;
 	t_list	*current;
 
 	if (args->next && args->next->next)
@@ -165,7 +189,8 @@ int	handle_cd(t_list *args, t_info *info)
 	else
 	{
 		current = args->next;
-		dir = (char *)current->content;
+		path = (char *)current->content;
+		dir = check_last_dir_slash(dir, path);
 		if (!ft_strncmp(dir, "/", 1) || !ft_strncmp(dir, "~/", 2))
 			return (dir_abs_path(info, dir));
 		else

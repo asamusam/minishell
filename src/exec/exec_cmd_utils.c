@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 12:36:09 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/10 11:56:48 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/11 10:27:24 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,8 +143,6 @@ int	handle_lst_cmd_process(t_pipe *pipet, t_command *command, t_info *info)
 {
 	int		status;
 
-	if (!command)
-		return (1);
 	status = 0;
 	pipet->pid = fork();
 	if (pipet->pid == -1)

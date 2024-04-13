@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 10:53:47 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/10 13:12:36 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/13 09:42:48 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,11 +80,12 @@ int	update_envstr(t_info *info)
 		if (((t_envp *)curr->content)->value)
 			info->envp[i] = ft_strjoin(tmp, ((t_envp *)curr->content)->value);
 		else
-			info->envp[i] = ft_strdup(tmp);
+			info->envp[i] = ft_strdup(tmp); //TODO: empty str
 		free(tmp);
 		i++;
 		curr = curr->next;
 	}
+	info->envp[i] = NULL;
 	return (0);
 }
 
@@ -147,6 +148,5 @@ t_info	*create_info(t_info *info, char **envp)
 	info->path = NULL;
 	info->envp_list = NULL;
 	info->exit_code = 0;
-	info->is_multiple_proc = 0;
 	return (info);
 }

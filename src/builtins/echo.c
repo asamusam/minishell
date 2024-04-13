@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 11:26:35 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/04 11:16:55 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/12 09:52:31 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,10 +36,10 @@ int	handle_echo(t_list *args)
 	}
 	while (current)
 	{
-		ft_putstr_fd((char *)current->content, 1);
+		ft_printf("%s", (char *)current->content);//ft_putstr_fd((char *)current->content, 1);
 		current = current->next;
 	}
 	if (!is_n)
-		ft_putstr_fd("\n", 1);
+		ft_printf("\n", 1);
 	return (0);
 }

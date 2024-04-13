@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 10:46:53 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/10 13:42:30 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/12 12:22:09 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,26 +24,16 @@ int	handle_bltn_process(t_pipe *pipet, t_command *command, t_info *info)
 		return (print_error("Fork error\n", 0));
 	if (pipet->pid == 0)
 	{
-		close (pipet->pipefd[0]);
-		close (pipet->pipefd[1]);
-		close (pipet->prev_pipe);
+		handle_blt_redirections(pipet, command);
+		status = handle_builtin(command, info);
+		exit(SUCCESS);
 	}
 	else
-	{
-		handle_blt_redirections(pipet, command);
+	{		
+		close (pipet->pipefd[1]);
+		close (pipet->prev_pipe);
+		pipet->prev_pipe = pipet->pipefd[0];
 		waitpid(pipet->pid, NULL, 0);
-		status = handle_builtin(command, info);
-		// if (command->file_in >= 0)
-		// {
-		// 	dup2(pipet->orig_stdin, STDIN_FILENO);
-		// 	close(pipet->orig_stdin);
-		// }
-		// else if (command->file_out >= 0)
-		// {
-		// 	dup2(pipet->orig_stdout, STDOUT_FILENO);
-		// 	close(pipet->orig_stdout);
-		// }
-		exit(status);
 	}
 	return (status);
 }
@@ -95,13 +85,13 @@ int	handle_builtin(t_command *command, t_info *info)
 	n = is_buitin(args->content);
 	if (n == 1)
 		return (handle_echo(args));
-	else if (n == 2 && !info->is_multiple_proc)
+	else if (n == 2)
 		return (handle_cd(args, info));
 	else if (n == 3)
 		return (handle_pwd(info));
-	else if (n == 4 && !info->is_multiple_proc)
+	else if (n == 4)
 		return (handle_export(args, info));
-	else if (n == 5 && !info->is_multiple_proc)
+	else if (n == 5)
 		return (handle_unset(args, info));
 	else if (n == 6)
 		return (handle_env(info));

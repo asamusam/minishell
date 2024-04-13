@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 11:26:05 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/10 12:07:31 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/13 09:41:21 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,11 +55,15 @@ int	handle_del(t_list *tmp, t_list *current, t_info *info)
 	}
 	else
 	{
-		tmp->next = current->next;
+		if (current && current->next)
+			tmp->next = current->next;
+		else
+			tmp->next = NULL;
 		ft_lstdelone(current, del_content);
 		current = tmp;
 	}
 	update_envstr(info);
+	set_pwds(info);
 	return (0);
 }
 
@@ -88,6 +92,7 @@ int	del_env(char *envp_key, t_info *info)
 		if (current)
 			current = current->next;
 	}
+	set_pwds(info);
 	return (1);
 }
 
@@ -107,7 +112,7 @@ int	handle_unset(t_list *args, t_info *info)
 	t_list	*current;
 
 	status = 0;
-	if (args->next && !info->is_multiple_proc)
+	if (args->next)
 	{
 		current = args->next;
 		while (current)
@@ -119,6 +124,5 @@ int	handle_unset(t_list *args, t_info *info)
 			current = current->next;
 		}
 	}
-	set_pwds(info);
 	return (status);
 }
