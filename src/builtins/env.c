@@ -6,11 +6,11 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 11:25:41 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/11 08:45:55 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/13 15:01:54 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/exec.h"
+#include "exec.h"
 
 /*
  * Replicates env builtin command
@@ -33,5 +33,5 @@ int	handle_env(t_info *info)
 		ft_printf("%s=%s\n", envp->key, envp->value);
 		current = current->next;
 	}
-	return (0);
+	return (SUCCESS);
 }

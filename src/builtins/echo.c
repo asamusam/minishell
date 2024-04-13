@@ -6,11 +6,11 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 11:26:35 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/12 09:52:31 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/13 15:06:25 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/exec.h"
+#include "exec.h"
 
 /*
  * Replicates echo builtin command, checks for -n option
@@ -36,10 +36,10 @@ int	handle_echo(t_list *args)
 	}
 	while (current)
 	{
-		ft_printf("%s", (char *)current->content);//ft_putstr_fd((char *)current->content, 1);
+		ft_putstr_fd((char *)current->content, STDOUT_FILENO);
 		current = current->next;
 	}
 	if (!is_n)
-		ft_printf("\n", 1);
-	return (0);
+		ft_putstr_fd("\n", STDOUT_FILENO);
+	return (SUCCESS);
 }

@@ -6,11 +6,11 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 09:32:21 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/10 10:12:45 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/13 15:01:54 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/exec.h"
+#include "exec.h"
 
 /*
  * Prints all envp variables with export cmd format
@@ -33,7 +33,7 @@ int	print_export(t_info *info)
 		ft_printf("declare -x %s=%s\n", envp->key, envp->value);
 		current = current->next;
 	}
-	return (0);
+	return (SUCCESS);
 }
 
 /*
@@ -114,7 +114,7 @@ int	check_input(char *input)
 	while (input[++i] && i < equal_len)
 	{
 		if (!ft_isalnum(input[i]) && input[i++] != '_')
-			return (0);
+			return (SUCCESS);
 	}
-	return (1);
+	return (FAIL);
 }

@@ -6,11 +6,11 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 11:26:05 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/13 09:41:21 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/13 15:01:54 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/exec.h"
+#include "exec.h"
 
 /* Frees the content of a t_list node
  * 
@@ -64,7 +64,7 @@ int	handle_del(t_list *tmp, t_list *current, t_info *info)
 	}
 	update_envstr(info);
 	set_pwds(info);
-	return (0);
+	return (SUCCESS);
 }
 
 /* Loops through envp_list and if finds a match it deletes it
@@ -93,7 +93,7 @@ int	del_env(char *envp_key, t_info *info)
 			current = current->next;
 	}
 	set_pwds(info);
-	return (1);
+	return (SUCCESS);
 }
 
 /*
@@ -111,7 +111,7 @@ int	handle_unset(t_list *args, t_info *info)
 	int		status;
 	t_list	*current;
 
-	status = 0;
+	status = SUCCESS;
 	if (args->next)
 	{
 		current = args->next;

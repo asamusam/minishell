@@ -6,11 +6,11 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 10:50:09 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/12 10:37:14 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/13 15:01:54 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/exec.h"
+#include "exec.h"
 
 int	handle_last_redirection(t_pipe *pipet, t_command *command)
 {
@@ -27,7 +27,7 @@ int	handle_last_redirection(t_pipe *pipet, t_command *command)
 		dup2(command->file_out, STDOUT_FILENO);
 		close(command->file_out);
 	}
-	return (0);
+	return (SUCCESS);
 }
 
 int	handle_redirections(t_pipe *pipet, t_command *command)
@@ -49,7 +49,7 @@ int	handle_redirections(t_pipe *pipet, t_command *command)
 	else
 		dup2 (pipet->pipefd[1], STDOUT_FILENO);
 	close (pipet->pipefd[1]);
-	return (0);
+	return (SUCCESS);
 }
 
 int	handle_blt_redirections(t_pipe *pipet, t_command *command)
@@ -69,5 +69,5 @@ int	handle_blt_redirections(t_pipe *pipet, t_command *command)
 		close(command->file_in);
 	}
 	close(pipet->prev_pipe);
-	return (0);
+	return (SUCCESS);
 }

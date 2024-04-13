@@ -6,11 +6,11 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 12:36:09 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/07 13:49:44 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/13 15:24:13 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/exec.h"
+#include "exec.h"
 
 /*
  * Divides the input in cmd and args and exec them
@@ -28,12 +28,12 @@ int	handle_input(t_command *command, t_info *info)
 	char	*cmd;
 
 	if (!command)
-		return (1);
+		return (FAIL); //TODO:
 	args = get_args(command->args);
 	cmd = get_cmd(info->path, args[0]);
 	if (!cmd)
 	{
-		print_error("Cmd error\n", 0); // TODO: get correct error
+		print_error("Cmd error", 0); // TODO: get correct error
 		free_split(args);
 		return (127); //command not found status
 	}
@@ -41,9 +41,9 @@ int	handle_input(t_command *command, t_info *info)
 	if (execve(cmd, args, info->envp) == -1)
 	{
 		free_split(args);
-		return (print_error("Execve error\n", 0));
+		return (print_error("Execve error", 0));
 	}
-	return (0);
+	return (SUCCESS);
 }
 
 /*

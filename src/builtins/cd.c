@@ -6,11 +6,11 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 11:22:34 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/12 12:17:25 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/13 15:48:20 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/exec.h"
+#include "exec.h"
 
 /*
  * Updates PWD and OLDPWD env variables
@@ -35,29 +35,30 @@ int	update_envp_pwd(t_info *info, char *newpwd)
 		key = ((t_envp *)envp_list->content)->key;
 		if (key && !ft_strncmp(key, "PWD", 3))
 		{
-			free(((t_envp *)envp_list->content)->value);
+			//free(((t_envp *)envp_list->content)->value);
 			((t_envp *)envp_list->content)->value = ft_strdup(newpwd);
 			if (info->pwd)
 			{
-				free(info->pwd);
+				//free(info->pwd);
 				info->pwd = ft_strdup(newpwd);
 			}
 		}
 		else if (key && !ft_strncmp(key, "OLDPWD", 6))
 		{
-			free(((t_envp *)envp_list->content)->value);
+			//free(((t_envp *)envp_list->content)->value);
 			((t_envp *)envp_list->content)->value = oldpwd;
 			if (info->oldpwd)
 			{
-				free(info->oldpwd);
+				//free(info->oldpwd);//error
 				info->oldpwd = ft_strdup(oldpwd);
 			}
 		}
 		envp_list = envp_list->next;
 	}
-	//free(oldpwd);
+	//if (oldpwd)
+	//	free(oldpwd);
 	update_envstr(info);
-	return (0);
+	return (SUCCESS);
 }
 
 /*
@@ -78,9 +79,8 @@ int	dir_home(t_info *info)
 		return (print_error("minishell: cd: HOME not set\n", 0));
 	if (access(dir, F_OK) == -1)
 		return (print_error("minishell: cd: d: No such file or directory\n", 0));
-	update_envp_pwd(info, dir);
 	chdir(dir);
-	return (0);
+	return (SUCCESS);
 }
 
 /*
@@ -112,7 +112,7 @@ int	dir_abs_path(t_info *info, char *dir)
 	update_envp_pwd(info, new_dir);
 	chdir(new_dir);
 	free(new_dir);
-	return (0);
+	return (SUCCESS);
 }
 
 /*
@@ -143,7 +143,7 @@ int	dir_rel_path(t_info *info, char *dir)
 	update_envp_pwd(info, dirpath);
 	chdir(dirpath);
 	free(dirpath);
-	return (0);
+	return (SUCCESS);
 }
 
 char	*check_last_dir_slash(char *dir, char *path)
@@ -196,5 +196,5 @@ int	handle_cd(t_list *args, t_info *info)
 		else
 			return (dir_rel_path(info, dir));
 	}
-	return (0);
+	return (SUCCESS);
 }

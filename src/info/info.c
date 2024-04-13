@@ -6,47 +6,28 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 10:53:47 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/13 09:42:48 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/13 15:50:00 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/exec.h"
-
-void	free_pwds(t_info *info)
-{
-	if (info->pwd)
-		free(info->pwd);
-	if (info->oldpwd)
-		free(info->oldpwd);
-	if (info->home)
-		free(info->home);
-	if (info->path)
-		free_split(info->path);
-	info->pwd = NULL;
-	info->oldpwd = NULL;
-	info->home = NULL;
-	info->path = NULL;
-}
+#include "exec.h"
 
 void	set_pwds(t_info *info)
 {
 	t_list	*enpv_list;
 	char	*key;
-	char	*value;
 	char	*paths;
 
 	enpv_list = info->envp_list;
-	free_pwds(info);
 	while (enpv_list)
 	{
 		key = ((t_envp *)enpv_list->content)->key;
-		value = ((t_envp *)enpv_list->content)->value;
 		if (key && !ft_strcmp(key, "PWD"))
-			info->pwd = ft_strdup(value); //((t_envp *)enpv_list->content)->value;
+			info->pwd = ((t_envp *)enpv_list->content)->value;
 		else if (key && !ft_strcmp(key, "OLDPWD"))
-			info->oldpwd = ft_strdup(value);//((t_envp *)enpv_list->content)->value;
+			info->oldpwd = ((t_envp *)enpv_list->content)->value;
 		else if (key && !ft_strcmp(key, "HOME"))
-			info->home = ft_strdup(value);//((t_envp *)enpv_list->content)->value;
+			info->home = ((t_envp *)enpv_list->content)->value;
 		else if (key && !ft_strcmp(key, "PATH"))
 		{
 			paths = ft_strdup(((t_envp *)enpv_list->content)->value);
@@ -80,7 +61,7 @@ int	update_envstr(t_info *info)
 		if (((t_envp *)curr->content)->value)
 			info->envp[i] = ft_strjoin(tmp, ((t_envp *)curr->content)->value);
 		else
-			info->envp[i] = ft_strdup(tmp); //TODO: empty str
+			info->envp[i] = ft_strdup(tmp);
 		free(tmp);
 		i++;
 		curr = curr->next;
@@ -148,5 +129,6 @@ t_info	*create_info(t_info *info, char **envp)
 	info->path = NULL;
 	info->envp_list = NULL;
 	info->exit_code = 0;
+	info->exit_flag = 0;
 	return (info);
 }

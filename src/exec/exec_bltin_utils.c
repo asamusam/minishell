@@ -6,19 +6,19 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 10:46:53 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/12 12:22:09 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/13 15:16:19 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/exec.h"
+#include "exec.h"
 
 int	handle_bltn_process(t_pipe *pipet, t_command *command, t_info *info)
 {
 	int	status;
 
 	if (!command)
-		return (1);
-	status = 0;
+		return (FAIL);
+	status = SUCCESS;
 	pipet->pid = fork();
 	if (pipet->pid == -1)
 		return (print_error("Fork error\n", 0));
@@ -26,7 +26,7 @@ int	handle_bltn_process(t_pipe *pipet, t_command *command, t_info *info)
 	{
 		handle_blt_redirections(pipet, command);
 		status = handle_builtin(command, info);
-		exit(SUCCESS);
+		exit(status);
 	}
 	else
 	{		
@@ -97,6 +97,6 @@ int	handle_builtin(t_command *command, t_info *info)
 		return (handle_env(info));
 	else if (n == 7)
 		return (handle_exit(args, info));
-	return (SUCCESS);
+	return (0);
 }
 

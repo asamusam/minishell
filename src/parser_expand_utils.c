@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 16:18:54 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/04 14:17:18 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/10 14:43:51 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,11 +22,11 @@
  * - i — value by which to increment the given index
  * 
  * Returns:
- * One on success and zero if memory allocation fails.
+ * Zero on success and one if memory allocation fails.
  */
 int	expand_special(char **dst, char *to_join, int *index, int i)
 {
-	if (!concat_strings(dst, to_join))
+	if (concat_strings(dst, to_join) == FAIL)
 		return (FAIL);
 	*index += i;
 	return (SUCCESS);
@@ -39,7 +39,7 @@ int	expand_special(char **dst, char *to_join, int *index, int i)
  * - str — a string to be freed
  * 
  * Returns:
- * Zero.
+ * One.
  */
 int	free_and_fail(char *str)
 {

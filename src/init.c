@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 17:57:54 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/10 12:35:01 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/09 15:26:45 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
  * Returns:
  * Nothing.
  */
-int	create_envp_list(char **envp, t_info *minishell)
+void	create_envp_list(char **envp, t_info *minishell)
 {
 	int		i;
 	char	**split;
@@ -36,8 +36,6 @@ int	create_envp_list(char **envp, t_info *minishell)
 	while (envp[i])
 	{
 		var = malloc(sizeof(t_envp));
-		if (!var)
-			return (print_error("malloc error\n", 0));
 		split = ft_split(envp[i], '=');
 		if (!var || !split)
 			exit(EXIT_FAILURE);
@@ -50,7 +48,6 @@ int	create_envp_list(char **envp, t_info *minishell)
 		ft_lstadd_back(&minishell->envp_list, ft_lstnew(var));
 		i ++;
 	}
-	return (SUCCESS);
 }
 
 /*

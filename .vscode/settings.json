@@ -12,7 +12,7 @@
 		"functional": "c",
 		"tuple": "c",
 		"type_traits": "c",
-		"utility": "c",
-		"ranges": "c"
-	}
+		"utility": "c"
+	},
+	"C_Cpp.errorSquiggles": "disabled"
 }

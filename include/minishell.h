@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 17:18:43 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/10 12:30:56 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/13 15:50:16 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@
 // error handling
 # define PERROR 0
 # define STDERR 1
+# define FAIL 1
+# define SUCCESS 0
 
 # include <stdio.h>
 # include <stdlib.h>
@@ -60,17 +62,18 @@ typedef struct s_info
 	t_list			*envp_list;
 	int				envp_flag; // TODO:
 	int				exit_flag;
-	int				is_multiple_proc;
 	int				exit_code;
 }	t_info;
 
 // free.c
 
+void	free_split(char **arr);
 void	free_envvar(void *arg);
+void	free_minishell_info(t_info *minishell);
 
 // init.c
 
-int	create_envp_list(char **envp, t_info *minishell);
+void	create_envp_list(char **envp, t_info *minishell);
 void	init(char **envp, t_info *minishell);
 
 // signals.c
@@ -84,7 +87,6 @@ int		print_error(char *message, int type);
 void	print_envvar(void *arg);
 void	print_token(void *arg);
 void	free_token(void *arg);
-void	free_split(char **arr);
 
 // lexer.c
 

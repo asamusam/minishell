@@ -1,0 +1,3 @@
+echo test >>test.txt ->fixed
+<test.txt						// if test.txt exists -> fixed
+echo hey | cat -> fixed

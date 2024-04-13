@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 14:08:43 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/04 22:01:53 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/10 14:43:02 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
  * - index — pointer to the index to increment
  * 
  * Returns:
- * One on success and zero if memory allocation fails.
+ * Zero on success and one if memory allocation fails.
  */
 int	expand_dollar(char *key, char **dst, t_info *minishell, int *index)
 {
@@ -45,7 +45,7 @@ int	expand_dollar(char *key, char **dst, t_info *minishell, int *index)
 		while (key[j] && (ft_isalnum(key[j]) || key[j] == '_'))
 			j ++;
 		var = get_envp_value(key + i, j - i, minishell);
-		if (var && !concat_strings(dst, ft_strdup(var)))
+		if (var && concat_strings(dst, ft_strdup(var)) == FAIL)
 			return (FAIL);
 		*index += j;
 	}
@@ -61,7 +61,7 @@ int	expand_dollar(char *key, char **dst, t_info *minishell, int *index)
  * - minishell — general info structure
  * 
  * Returns:
- * One on success and zero if memory allocation fails.
+ * Zero on success and one if memory allocation fails.
  */
 int	expand_token(t_token *token, t_info *minishell)
 {
@@ -78,15 +78,15 @@ int	expand_token(t_token *token, t_info *minishell)
 	i = 0;
 	while (dollar)
 	{
-		if (!concat_strings(&before, \
-			ft_substr(token->value, i, dollar - token->value - i)))
+		if (concat_strings(&before, ft_substr(token->value, i, \
+			dollar - token->value - i)) == FAIL)
 			return (free_and_fail(before));
 		i = dollar - token->value;
-		if (!expand_dollar(dollar, &before, minishell, &i))
+		if (expand_dollar(dollar, &before, minishell, &i) == FAIL)
 			return (free_and_fail(before));
 		dollar = ft_strchr(token->value + i, '$');
 	}
-	if (!concat_strings(&before, ft_strdup(token->value + i)))
+	if (concat_strings(&before, ft_strdup(token->value + i)) == FAIL)
 		return (free_and_fail(before));
 	change_token_value(token, before);
 	return (SUCCESS);
@@ -135,7 +135,7 @@ t_list	*merge_nodes(t_list	*dst, t_list *src)
  * - merge — pointer to the merging destination node of the token list
  * 
  * Returns:
- * One on success and zero if memory allocation fails.
+ * Zero on success and one if memory allocation fails.
  */
 int	merge_tokens(t_list **tokens, t_token **token, t_list *merge)
 {
@@ -156,7 +156,7 @@ int	merge_tokens(t_list **tokens, t_token **token, t_list *merge)
  * - minishell — general info structure
  * 
  * Returns:
- * One on success and zero if memory allocation fails.
+ * Zero on success and one if memory allocation fails.
  */
 int	expand(t_list *tokens, t_info *minishell)
 {
@@ -171,9 +171,9 @@ int	expand(t_list *tokens, t_info *minishell)
 		token = (t_token *)tokens->content;
 		if (is_expandable(token->type))
 		{
-			if (prev != REDIRECT_INSOURCE && !expand_token(token, minishell))
+			if (prev != REDIRECT_INSOURCE && expand_token(token, minishell))
 				return (print_error("minishell parser", PERROR));
-			if (is_expandable(prev) && !merge_tokens(&tokens, &token, merge))
+			if (is_expandable(prev) && merge_tokens(&tokens, &token, merge))
 				return (print_error("minishell parser", PERROR));
 			else
 				merge = tokens;
