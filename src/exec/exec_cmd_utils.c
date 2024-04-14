@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 12:36:09 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/14 12:31:06 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/14 13:50:11 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
  * Returns:
  * Status
  */
-int	handle_input(t_command *command, t_info *info)
+int	handle_input(t_command *command, t_info *minishell)
 {
 	char	**args;
 	char	*cmd;
@@ -30,14 +30,14 @@ int	handle_input(t_command *command, t_info *info)
 	if (!command)
 		return (FAIL); //TODO:
 	args = get_args(command->args);
-	cmd = get_cmd(info->path, args[0]);
+	cmd = get_cmd(minishell->path, args[0]);
 	if (!cmd)
 	{
 		print_error("Cmd error", 0);
 		free_split(args);
 		return (127);
 	}
-	if (execve(cmd, args, info->envp) == -1)
+	if (execve(cmd, args, minishell->envp) == -1)
 	{
 		free_split(args);
 		print_error("Execve error", 0);
@@ -115,7 +115,7 @@ char	**get_args(t_list *arg_lst)
 	return (args);
 }
 
-int	handle_cmd_process(t_pipe *pipet, t_command *command, t_info *info)
+int	handle_cmd_process(t_pipe *pipet, t_command *command, t_info *minishell)
 {
 	int	status;
 
@@ -130,7 +130,7 @@ int	handle_cmd_process(t_pipe *pipet, t_command *command, t_info *info)
 		if (g_signal == SIGINT) //TODO: check
 			exit(FAIL);
 		handle_redirections(pipet, command);
-		status = handle_input(command, info);
+		status = handle_input(command, minishell);
 	}
 	else
 	{
@@ -142,7 +142,7 @@ int	handle_cmd_process(t_pipe *pipet, t_command *command, t_info *info)
 	return (status);
 }
 
-int	handle_lst_cmd_process(t_pipe *pipet, t_command *command, t_info *info)
+int	handle_lst_cmd_process(t_pipe *pipet, t_command *command, t_info *minishell)
 {
 	int		status;
 
@@ -155,7 +155,7 @@ int	handle_lst_cmd_process(t_pipe *pipet, t_command *command, t_info *info)
 		if (g_signal == SIGINT) //TODO: check
 			exit(FAIL);
 		handle_last_redirection(pipet, command);
-		status = handle_input(command, info);
+		status = handle_input(command, minishell);
 	}
 	else
 	{

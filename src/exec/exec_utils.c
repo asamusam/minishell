@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 12:36:09 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/13 15:24:13 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/14 13:50:21 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
  * Returns:
  * Status
  */
-int	handle_input(t_command *command, t_info *info)
+int	handle_input(t_command *command, t_info *minishell)
 {
 	char	**args;
 	char	*cmd;
@@ -30,15 +30,15 @@ int	handle_input(t_command *command, t_info *info)
 	if (!command)
 		return (FAIL); //TODO:
 	args = get_args(command->args);
-	cmd = get_cmd(info->path, args[0]);
+	cmd = get_cmd(minishell->path, args[0]);
 	if (!cmd)
 	{
 		print_error("Cmd error", 0); // TODO: get correct error
 		free_split(args);
 		return (127); //command not found status
 	}
-	chdir(info->pwd);
-	if (execve(cmd, args, info->envp) == -1)
+	chdir(minishell->pwd);
+	if (execve(cmd, args, minishell->envp) == -1)
 	{
 		free_split(args);
 		return (print_error("Execve error", 0));

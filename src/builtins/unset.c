@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 11:26:05 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/13 15:01:54 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/14 13:49:01 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,14 +44,14 @@ void	del_content(void *content)
  * Returns:
  * 0 if the variable is found and deleted, 1 otherwise
  */
-int	handle_del(t_list *tmp, t_list *current, t_info *info)
+int	handle_del(t_list *tmp, t_list *current, t_info *minishell)
 {
 	if (!tmp)
 	{
 		tmp = current->next;
 		ft_lstdelone(current, del_content);
-		info->envp_list = tmp;
-		current = info->envp_list;
+		minishell->envp_list = tmp;
+		current = minishell->envp_list;
 	}
 	else
 	{
@@ -62,8 +62,8 @@ int	handle_del(t_list *tmp, t_list *current, t_info *info)
 		ft_lstdelone(current, del_content);
 		current = tmp;
 	}
-	update_envstr(info);
-	set_pwds(info);
+	update_envstr(minishell);
+	set_pwds(minishell);
 	return (SUCCESS);
 }
 
@@ -77,22 +77,22 @@ int	handle_del(t_list *tmp, t_list *current, t_info *info)
  * Returns:
  * 0 if the variable is found and deleted, 1 otherwise
  */
-int	del_env(char *envp_key, t_info *info)
+int	del_env(char *envp_key, t_info *minishell)
 {
 	t_list	*tmp;
 	t_list	*current;
 
-	current = info->envp_list;
+	current = minishell->envp_list;
 	tmp = NULL;
 	while (current)
 	{
 		if (!ft_strcmp(envp_key, ((t_envp *)current->content)->key))
-			return (handle_del(tmp, current, info));
+			return (handle_del(tmp, current, minishell));
 		tmp = current;
 		if (current)
 			current = current->next;
 	}
-	set_pwds(info);
+	set_pwds(minishell);
 	return (SUCCESS);
 }
 
@@ -106,7 +106,7 @@ int	del_env(char *envp_key, t_info *info)
  * Returns:
  * 0 if all the var are deleted, 1 otherwise
  */
-int	handle_unset(t_list *args, t_info *info)
+int	handle_unset(t_list *args, t_info *minishell)
 {
 	int		status;
 	t_list	*current;
@@ -118,9 +118,9 @@ int	handle_unset(t_list *args, t_info *info)
 		while (current)
 		{
 			if (!status)
-				status = del_env((char *)current->content, info);
+				status = del_env((char *)current->content, minishell);
 			else
-				del_env((char *)current->content, info);
+				del_env((char *)current->content, minishell);
 			current = current->next;
 		}
 	}

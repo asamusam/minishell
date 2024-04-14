@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 09:04:55 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/13 15:15:15 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/14 13:50:55 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
  * Returns:
  * Status
  */
-int	last_process(t_command *command, t_info *info, t_pipe *pipet)
+int	last_process(t_command *command, t_info *minishell, t_pipe *pipet)
 {
 	int		status;
 
@@ -31,11 +31,11 @@ int	last_process(t_command *command, t_info *info, t_pipe *pipet)
 		return (FAIL);
 	status = SUCCESS;
 	if (!is_buitin(command->args->content))
-		status = handle_lst_cmd_process(pipet, command, info);
+		status = handle_lst_cmd_process(pipet, command, minishell);
 	else
 	{
 		handle_last_redirection(pipet, command);
-		status = handle_builtin(command, info);
+		status = handle_builtin(command, minishell);
 		if (command->file_in >= 0)
 		{
 			if (dup2(pipet->orig_stdin, STDIN_FILENO) == -1)
@@ -65,7 +65,7 @@ int	last_process(t_command *command, t_info *info, t_pipe *pipet)
  * Returns:
  * Status
  */
-int create_process(t_command *command, t_info *info, t_pipe *pipet)
+int create_process(t_command *command, t_info *minishell, t_pipe *pipet)
 {
 	int		status;
 
@@ -75,9 +75,9 @@ int create_process(t_command *command, t_info *info, t_pipe *pipet)
 	if (pipe(pipet->pipefd) == -1)
 		return (print_error("Pipe error\n", 0));
 	if (!is_buitin(command->args->content))
-		status = handle_cmd_process(pipet, command, info);
+		status = handle_cmd_process(pipet, command, minishell);
 	else
-		status = handle_bltn_process(pipet, command, info);
+		status = handle_bltn_process(pipet, command, minishell);
 	return (status);
 }
 
@@ -91,7 +91,7 @@ int create_process(t_command *command, t_info *info, t_pipe *pipet)
  * Returns:
  * Status
  */
-int		exec(t_list *commands, t_info *info)
+int		exec(t_list *commands, t_info *minishell)
 {
 	int		status;
 	t_list	*current;
@@ -107,13 +107,13 @@ int		exec(t_list *commands, t_info *info)
 	pipet->orig_stdin = dup(STDIN_FILENO);
 	pipet->orig_stdout = dup(STDOUT_FILENO);
 	current = commands;
-	while (current && current->next && !info->exit_code)
+	while (current && current->next && !minishell->exit_code)
 	{
-		status = create_process((t_command *)(current->content), info, pipet);
+		status = create_process((t_command *)(current->content), minishell, pipet);
 		current = current->next;
 	};
-	if (!info->exit_code)
-		status = last_process((t_command *)(current->content), info, pipet);
+	if (!minishell->exit_code)
+		status = last_process((t_command *)(current->content), minishell, pipet);
 	free(pipet);
 	return (status);
 }

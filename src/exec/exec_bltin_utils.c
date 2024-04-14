@@ -6,13 +6,13 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 10:46:53 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/14 12:30:10 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/14 13:49:32 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
-int	handle_bltn_process(t_pipe *pipet, t_command *command, t_info *info)
+int	handle_bltn_process(t_pipe *pipet, t_command *command, t_info *minishell)
 {
 	int	status;
 
@@ -25,7 +25,7 @@ int	handle_bltn_process(t_pipe *pipet, t_command *command, t_info *info)
 	if (pipet->pid == 0)
 	{
 		handle_blt_redirections(pipet, command);
-		status = handle_builtin(command, info);
+		status = handle_builtin(command, minishell);
 		if (g_signal == SIGINT) //TODO: check
 			exit(FAIL);
 		exit(status);
@@ -78,7 +78,7 @@ int	is_buitin(char *cmd)
  * Returns:
  * Number corresponding to cmd, 0 if not built-in
  */
-int	handle_builtin(t_command *command, t_info *info)
+int	handle_builtin(t_command *command, t_info *minishell)
 {
 	int		n;
 	t_list	*args;
@@ -88,17 +88,17 @@ int	handle_builtin(t_command *command, t_info *info)
 	if (n == 1)
 		return (handle_echo(args));
 	else if (n == 2)
-		return (handle_cd(args, info));
+		return (handle_cd(args, minishell));
 	else if (n == 3)
-		return (handle_pwd(info));
+		return (handle_pwd(minishell));
 	else if (n == 4)
-		return (handle_export(args, info));
+		return (handle_export(args, minishell));
 	else if (n == 5)
-		return (handle_unset(args, info));
+		return (handle_unset(args, minishell));
 	else if (n == 6)
-		return (handle_env(info));
+		return (handle_env(minishell));
 	else if (n == 7)
-		return (handle_exit(args, info));
+		return (handle_exit(args, minishell));
 	return (0);
 }
 

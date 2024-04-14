@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 11:25:41 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/13 15:01:54 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/14 13:47:15 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,12 @@
  * Returns:
  * Status
  */
-int	handle_env(t_info *info)
+int	handle_env(t_info *minishell)
 {
 	t_list	*current;
 	t_envp	*envp;
 
-	current = info->envp_list;
+	current = minishell->envp_list;
 	while (current)
 	{
 		envp = (t_envp *)current->content;

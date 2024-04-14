@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 11:25:50 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/13 15:01:54 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/14 13:48:20 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,12 +67,12 @@ t_list	*create_envp_node(char *key, char *value)
  * Returns:
  * Status
  */
-int	check_envs(t_info *info, char *key, char *value)
+int	check_envs(t_info *minishell, char *key, char *value)
 {
 	t_list	*current;
 	char	*list_key;
 
-	current = info->envp_list;
+	current = minishell->envp_list;
 	while (current)
 	{
 		list_key = ((t_envp *)current->content)->key;
@@ -83,7 +83,7 @@ int	check_envs(t_info *info, char *key, char *value)
 		}
 		current = current->next;
 	}
-	ft_lstadd_back(&info->envp_list, create_envp_node(key, value));
+	ft_lstadd_back(&minishell->envp_list, create_envp_node(key, value));
 	return (0);
 }
 

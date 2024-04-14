@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 09:32:21 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/13 15:01:54 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/14 13:47:39 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,12 @@
  * Returns:
  * Zero
  */
-int	print_export(t_info *info)
+int	print_export(t_info *minishell)
 {
 	t_list	*current;
 	t_envp	*envp;
 
-	current = info->envp_list;
+	current = minishell->envp_list;
 	while (current)
 	{
 		envp = (t_envp *)current->content;

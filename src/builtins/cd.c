@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 11:22:34 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/14 11:14:53 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/14 13:46:46 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,14 +22,14 @@
  * Returns:
  * 0 on success, 1 on error
  */
-int	update_envp_pwd(t_info *info, char *newpwd)
+int	update_envp_pwd(t_info *minishell, char *newpwd)
 {
 	char	*oldpwd;
 	char	*key;
 	t_list	*envp_list;
 
-	envp_list = info->envp_list;
-	oldpwd = ft_strdup(info->pwd);
+	envp_list = minishell->envp_list;
+	oldpwd = ft_strdup(minishell->pwd);
 	while (envp_list)
 	{
 		key = ((t_envp *)envp_list->content)->key;
@@ -37,17 +37,17 @@ int	update_envp_pwd(t_info *info, char *newpwd)
 		{
 			free(((t_envp *)envp_list->content)->value);
 			((t_envp *)envp_list->content)->value = ft_strdup(newpwd);
-			info->pwd = ((t_envp *)envp_list->content)->value;
+			minishell->pwd = ((t_envp *)envp_list->content)->value;
 		}
 		else if (key && !ft_strncmp(key, "OLDPWD", 6))
 		{
 			free(((t_envp *)envp_list->content)->value);
 			((t_envp *)envp_list->content)->value = oldpwd;
-			info->oldpwd = ((t_envp *)envp_list->content)->value;
+			minishell->oldpwd = ((t_envp *)envp_list->content)->value;
 		}
 		envp_list = envp_list->next;
 	}
-	update_envstr(info);
+	update_envstr(minishell);
 	return (SUCCESS);
 }
 
@@ -60,16 +60,16 @@ int	update_envp_pwd(t_info *info, char *newpwd)
  * Returns:
  * 0 on success, 1 on error
  */
-int	dir_home(t_info *info)
+int	dir_home(t_info *minishell)
 {
 	char	*dir;
 
-	dir = info->home;
+	dir = minishell->home;
 	if (dir == NULL)
 		return (print_error("minishell: cd: HOME not set\n", 0));
 	if (access(dir, F_OK) == -1)
 		return (print_error("minishell: cd: d: No such file or directory\n", 0));
-	update_envp_pwd(info, dir);
+	update_envp_pwd(minishell, dir);
 	chdir(dir);
 	return (SUCCESS);
 }
@@ -84,23 +84,23 @@ int	dir_home(t_info *info)
  * Returns:
  * 0 on success, 1 on error
  */
-int	dir_abs_path(t_info *info, char *dir)
+int	dir_abs_path(t_info *minishell, char *dir)
 {
 	char	*new_dir;
 	
 	if (dir[0] == '~')
 	{
-		if (!info->home)
+		if (!minishell->home)
 			return(print_error("no home defined\n", 1));
 		dir++;
-		new_dir = ft_strjoin(info->home, dir);
+		new_dir = ft_strjoin(minishell->home, dir);
 	}
 	else
 		new_dir = ft_strdup(dir);
 	free(dir);
 	if (access(new_dir, F_OK) == -1)
 		return (print_error("minishell: cd: d: No such file or directory\n", 0));
-	update_envp_pwd(info, new_dir);
+	update_envp_pwd(minishell, new_dir);
 	chdir(new_dir);
 	free(new_dir);
 	return (SUCCESS);
@@ -116,13 +116,13 @@ int	dir_abs_path(t_info *info, char *dir)
  * Returns:
  * 0 on success, 1 on error
  */
-int	dir_rel_path(t_info *info, char *dir)
+int	dir_rel_path(t_info *minishell, char *dir)
 {
 	char	*dirpath;
 	char	*cdpath;
 	char	*tmp;
 
-	cdpath = info->pwd;
+	cdpath = minishell->pwd;
 	if (!cdpath)
 		return (print_error("No path available\n", 0));
 	tmp = ft_strjoin(cdpath, "/");
@@ -134,7 +134,7 @@ int	dir_rel_path(t_info *info, char *dir)
 		free (dirpath);
 		return (print_error("bash: cd: ", 0));//TODO:dir name
 	}
-	update_envp_pwd(info, dirpath);
+	update_envp_pwd(minishell, dirpath);
 	chdir(dirpath);
 	free(dirpath);
 	return (SUCCESS);
@@ -170,7 +170,7 @@ char	*check_last_dir_slash(char *dir, char *path)
  * Returns:
  * 0 on success, 1 on error
  */
-int	handle_cd(t_list *args, t_info *info)
+int	handle_cd(t_list *args, t_info *minishell)
 {
 	char	*dir = NULL;
 	char	*path;
@@ -179,16 +179,16 @@ int	handle_cd(t_list *args, t_info *info)
 	if (args->next && args->next->next)
 		return (print_error("bash: cd: too many arguments\n", 0));
 	else if (!args->next)
-		return (dir_home(info));
+		return (dir_home(minishell));
 	else
 	{
 		current = args->next;
 		path = (char *)current->content;
 		dir = check_last_dir_slash(dir, path);
 		if (!ft_strncmp(dir, "/", 1) || !ft_strncmp(dir, "~/", 2))
-			return (dir_abs_path(info, dir));
+			return (dir_abs_path(minishell, dir));
 		else
-			return (dir_rel_path(info, dir));
+			return (dir_rel_path(minishell, dir));
 	}
 	return (SUCCESS);
 }

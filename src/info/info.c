@@ -6,41 +6,41 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 10:53:47 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/14 13:40:52 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/14 13:51:34 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
-void	set_pwds(t_info *info)
+void	set_pwds(t_info *minishell)
 {
 	t_list	*enpv_list;
 	char	*key;
 	char	*paths;
 
-	enpv_list = info->envp_list;
+	enpv_list = minishell->envp_list;
 	while (enpv_list)
 	{
 		key = ((t_envp *)enpv_list->content)->key;
 		if (key && !ft_strcmp(key, "PWD"))
-			info->pwd = ((t_envp *)enpv_list->content)->value;
+			minishell->pwd = ((t_envp *)enpv_list->content)->value;
 		else if (key && !ft_strcmp(key, "OLDPWD"))
-			info->oldpwd = ((t_envp *)enpv_list->content)->value;
+			minishell->oldpwd = ((t_envp *)enpv_list->content)->value;
 		else if (key && !ft_strcmp(key, "HOME"))
-			info->home = ((t_envp *)enpv_list->content)->value;
+			minishell->home = ((t_envp *)enpv_list->content)->value;
 		else if (key && !ft_strcmp(key, "PATH"))
 		{
 			paths = ft_strdup(((t_envp *)enpv_list->content)->value);
-			if (info->path)
-				free_split(info->path);
-			info->path = ft_split(paths, ':');
+			if (minishell->path)
+				free_split(minishell->path);
+			minishell->path = ft_split(paths, ':');
 			free(paths);
 		}
 		enpv_list = enpv_list->next;
 	}
 }
 
-int	update_envstr(t_info *info)
+int	update_envstr(t_info *minishell)
 {
 	int		i;
 	int		len;
@@ -48,25 +48,25 @@ int	update_envstr(t_info *info)
 	t_list	*curr;
 
 	i = 0;
-	curr = info->envp_list;
-	free_split(info->envp);
-	len = ft_lstsize(info->envp_list);
-	info->envp = malloc(sizeof(char *) * (len + 1));
-	if (!info->envp)
+	curr = minishell->envp_list;
+	free_split(minishell->envp);
+	len = ft_lstsize(minishell->envp_list);
+	minishell->envp = malloc(sizeof(char *) * (len + 1));
+	if (!minishell->envp)
 		return (print_error("malloc error\n", 0));
 	i = 0;
 	while (curr)
 	{
 		tmp = ft_strjoin(((t_envp *)curr->content)->key, "=");
 		if (((t_envp *)curr->content)->value)
-			info->envp[i] = ft_strjoin(tmp, ((t_envp *)curr->content)->value);
+			minishell->envp[i] = ft_strjoin(tmp, ((t_envp *)curr->content)->value);
 		else
-			info->envp[i] = ft_strdup(tmp);
+			minishell->envp[i] = ft_strdup(tmp);
 		free(tmp);
 		i++;
 		curr = curr->next;
 	}
-	info->envp[i] = NULL;
+	minishell->envp[i] = NULL;
 	return (0);
 }
 
@@ -93,7 +93,7 @@ char	**copy_envp(char **envp)
 	return (envp_copy);
 }
 
-void	set_envp(t_info *info, char **envp)
+void	set_envp(t_info *minishell, char **envp)
 {
 	char	**keyval;
 	char	*key;
@@ -109,10 +109,10 @@ void	set_envp(t_info *info, char **envp)
 			value = ft_strdup(keyval[1]);
 		else
 			value = NULL;
-		if (!info->envp_list)
-			info->envp_list = create_envp_node(key, value);
+		if (!minishell->envp_list)
+			minishell->envp_list = create_envp_node(key, value);
 		else
-			check_envs(info, key, value);
+			check_envs(minishell, key, value);
 		free_split(keyval);
 		free(key);
 		free(value);
