@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 10:46:53 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/13 15:16:19 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/14 12:30:10 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@ int	handle_bltn_process(t_pipe *pipet, t_command *command, t_info *info)
 	{
 		handle_blt_redirections(pipet, command);
 		status = handle_builtin(command, info);
+		if (g_signal == SIGINT) //TODO: check
+			exit(FAIL);
 		exit(status);
 	}
 	else

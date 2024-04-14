@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 17:57:54 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/09 15:26:45 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/14 13:40:43 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,9 +62,14 @@ void	create_envp_list(char **envp, t_info *minishell)
  */
 void	init(char **envp, t_info *minishell)
 {
-	create_info(minishell, envp);
+	minishell->envp = copy_envp(envp);
+	minishell->envp_list = NULL;
+	minishell->pwd = NULL;
+	minishell->oldpwd = NULL;
+	minishell->home = NULL;
+	minishell->path = NULL;
+	minishell->exit_code = 0;
+	minishell->exit_flag = 0;
 	set_envp(minishell, envp);
 	set_pwds(minishell);
-	//create_envp_list(envp, minishell);
-	//minishell->exit_code = 0;
 }

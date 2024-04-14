@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 11:22:34 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/13 15:48:20 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/14 11:14:53 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,28 +35,18 @@ int	update_envp_pwd(t_info *info, char *newpwd)
 		key = ((t_envp *)envp_list->content)->key;
 		if (key && !ft_strncmp(key, "PWD", 3))
 		{
-			//free(((t_envp *)envp_list->content)->value);
+			free(((t_envp *)envp_list->content)->value);
 			((t_envp *)envp_list->content)->value = ft_strdup(newpwd);
-			if (info->pwd)
-			{
-				//free(info->pwd);
-				info->pwd = ft_strdup(newpwd);
-			}
+			info->pwd = ((t_envp *)envp_list->content)->value;
 		}
 		else if (key && !ft_strncmp(key, "OLDPWD", 6))
 		{
-			//free(((t_envp *)envp_list->content)->value);
+			free(((t_envp *)envp_list->content)->value);
 			((t_envp *)envp_list->content)->value = oldpwd;
-			if (info->oldpwd)
-			{
-				//free(info->oldpwd);//error
-				info->oldpwd = ft_strdup(oldpwd);
-			}
+			info->oldpwd = ((t_envp *)envp_list->content)->value;
 		}
 		envp_list = envp_list->next;
 	}
-	//if (oldpwd)
-	//	free(oldpwd);
 	update_envstr(info);
 	return (SUCCESS);
 }
@@ -79,6 +69,7 @@ int	dir_home(t_info *info)
 		return (print_error("minishell: cd: HOME not set\n", 0));
 	if (access(dir, F_OK) == -1)
 		return (print_error("minishell: cd: d: No such file or directory\n", 0));
+	update_envp_pwd(info, dir);
 	chdir(dir);
 	return (SUCCESS);
 }
@@ -139,7 +130,10 @@ int	dir_rel_path(t_info *info, char *dir)
 	free (tmp);
 	free (dir);
 	if (access(dirpath, F_OK) == -1)
+	{
+		free (dirpath);
 		return (print_error("bash: cd: ", 0));//TODO:dir name
+	}
 	update_envp_pwd(info, dirpath);
 	chdir(dirpath);
 	free(dirpath);

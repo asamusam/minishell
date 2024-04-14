@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 11:18:10 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/13 15:19:41 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/14 13:19:37 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,5 @@ int	handle_exit(t_list *args, t_info *info)
 	if (status == -1)
 		return (print_error("exit status error\n", 1));
 	info->exit_flag = 1;
-	info->exit_code = status;
 	return (status);
 }

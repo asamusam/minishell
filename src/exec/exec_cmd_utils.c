@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 12:36:09 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/13 15:24:02 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/14 12:31:06 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,6 +127,8 @@ int	handle_cmd_process(t_pipe *pipet, t_command *command, t_info *info)
 		return (print_error("Fork error\n", 0));
 	if (pipet->pid == 0)
 	{
+		if (g_signal == SIGINT) //TODO: check
+			exit(FAIL);
 		handle_redirections(pipet, command);
 		status = handle_input(command, info);
 	}
@@ -150,6 +152,8 @@ int	handle_lst_cmd_process(t_pipe *pipet, t_command *command, t_info *info)
 		return (print_error("Fork error\n", 0));
 	if (pipet->pid == 0)
 	{
+		if (g_signal == SIGINT) //TODO: check
+			exit(FAIL);
 		handle_last_redirection(pipet, command);
 		status = handle_input(command, info);
 	}

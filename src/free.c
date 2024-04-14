@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 17:02:42 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/10 15:42:30 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/14 11:10:07 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,9 @@ void	free_envvar(void *arg)
  */
 void	free_minishell_info(t_info *minishell)
 {
+	//free(minishell->home);
+	//free(minishell->oldpwd);
+	//free(minishell->pwd);
 	free_split(minishell->path);
 	free_split(minishell->envp);
 	ft_lstclear(&minishell->envp_list, free_envvar);

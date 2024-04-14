@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 14:55:35 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/13 15:51:17 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/14 13:27:15 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,15 +17,15 @@ void	shell_loop(t_info *minishell)
 	char	*line;
 	t_list	*tokens;
 	t_list	*commands;
-	//char *prompt; //temp
+	char *prompt; //temp
 
-	// if (minishell->pwd)//temp
-	// 	prompt = ft_strjoin(minishell->pwd, ">"); //temp
-	// else//temp
-	// 	prompt = "-->";//temp
+	if (minishell->pwd)//temp
+		prompt = ft_strjoin(minishell->pwd, ">"); //temp
+	else//temp
+		prompt = "-->";//temp
 
-	//line = readline(prompt); //temp 
-	line = readline("-->");
+	line = readline(prompt); //temp 
+	//line = readline("-->");
 	while (!minishell->exit_flag && line)
 	{
 		if (*line)
@@ -46,15 +46,20 @@ void	shell_loop(t_info *minishell)
 		if (g_signal == SIGINT)
 			minishell->exit_code = g_signal + 128;
 		free(line);
-		// if (minishell->pwd && !minishell->exit_flag)//temp
-		// 	prompt = ft_strjoin(minishell->pwd, ">"); //temp
-		// else if (!minishell->exit_flag)//temp
-		// 	prompt = "-->";//temp
-		// if (!minishell->exit_flag) // temp
-		// 	line = readline(prompt);// temp
-		if (!minishell->exit_flag)
-			line = readline("-->");
+		if (minishell->pwd && !minishell->exit_flag)//temp
+		{											//temp
+			free(prompt);							//temp
+			prompt = ft_strjoin(minishell->pwd, ">"); //temp
+		}//temp
+		else if (!minishell->exit_flag)//temp
+			prompt = "-->";//temp
+		if (!minishell->exit_flag) // temp
+			line = readline(prompt);// temp
+		printf("exit code: %d\n", minishell->exit_code);
+		//if (!minishell->exit_flag)
+		//	line = readline("-->");
 	}
+	free(prompt); //temp
 	printf("exit\n");
 	free_minishell_info(minishell);
 	rl_clear_history();

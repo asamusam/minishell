@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 10:53:47 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/13 15:50:00 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/14 13:40:52 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,15 +120,3 @@ void	set_envp(t_info *info, char **envp)
 	}
 }
 
-t_info	*create_info(t_info *info, char **envp)
-{
-	info->envp = copy_envp(envp);
-	info->pwd = NULL;
-	info->oldpwd = NULL;
-	info->home = NULL;
-	info->path = NULL;
-	info->envp_list = NULL;
-	info->exit_code = 0;
-	info->exit_flag = 0;
-	return (info);
-}
