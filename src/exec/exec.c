@@ -3,14 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 09:04:55 by mmughedd          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2024/04/15 10:34:41 by mmughedd         ###   ########.fr       */
-=======
-/*   Updated: 2024/04/10 15:57:41 by asamuilk         ###   ########.fr       */
->>>>>>> free
+/*   Updated: 2024/04/15 15:15:17 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,11 +65,7 @@ int	last_process(t_command *command, t_info *minishell, t_pipe *pipet)
  * Returns:
  * Status
  */
-<<<<<<< HEAD
 int create_process(t_command *command, t_info *minishell, t_pipe *pipet)
-=======
-int	create_process(t_command *command, t_info *info, t_pipe *pipet)
->>>>>>> free
 {
 	int		status;
 
@@ -115,25 +107,13 @@ int		exec(t_list *commands, t_info *minishell)
 	pipet->orig_stdin = dup(STDIN_FILENO);
 	pipet->orig_stdout = dup(STDOUT_FILENO);
 	current = commands;
-<<<<<<< HEAD
 	while (current && current->next && !minishell->exit_flag)
-=======
-	if (current && current->next)
-		info->is_multiple_proc = 1;
-	while (current && current->next && !info->exit_code) // exit_flag?
->>>>>>> free
 	{
 		status = create_process((t_command *)(current->content), minishell, pipet);
 		current = current->next;
-<<<<<<< HEAD
 	};
 	if (!minishell->exit_flag)
 		status = last_process((t_command *)(current->content), minishell, pipet);
-=======
-	}
-	if (!info->exit_code) // exit_flag?
-		status = last_process((t_command *)(current->content), info, pipet);
->>>>>>> free
 	free(pipet);
 	return (status);
 }

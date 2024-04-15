@@ -3,14 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   info.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 10:53:47 by mmughedd          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2024/04/15 09:42:27 by mmughedd         ###   ########.fr       */
-=======
-/*   Updated: 2024/04/10 15:47:33 by asamuilk         ###   ########.fr       */
->>>>>>> free
+/*   Updated: 2024/04/15 15:15:27 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,27 +123,3 @@ void	set_envp(t_info *minishell, char **envp)
 	}
 }
 
-<<<<<<< HEAD
-=======
-t_info	*create_info(t_info *info, char **envp)
-{
-	// t_info	*info;
-
-	// info = malloc(sizeof(t_info));
-	// if (!info)
-	// {
-	// 	print_error("Malloc error\n", 0);
-	// 	return (NULL);
-	// }
-	info->envp = copy_envp(envp);
-	info->pwd = NULL;
-	info->oldpwd = NULL;
-	info->home = NULL;
-	info->path = NULL;
-	info->envp_list = NULL;
-	info->exit_code = 0;
-	info->exit_flag = 0;
-	info->is_multiple_proc = 0;
-	return (info);
-}
->>>>>>> free
