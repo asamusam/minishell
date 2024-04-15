@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 10:53:47 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/14 13:51:34 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/15 09:42:27 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,11 @@ void	set_pwds(t_info *minishell)
 	char	*paths;
 
 	enpv_list = minishell->envp_list;
+	if (minishell->path)
+	{
+		free_split(minishell->path);
+		minishell->path = NULL;
+	}
 	while (enpv_list)
 	{
 		key = ((t_envp *)enpv_list->content)->key;
@@ -31,8 +36,6 @@ void	set_pwds(t_info *minishell)
 		else if (key && !ft_strcmp(key, "PATH"))
 		{
 			paths = ft_strdup(((t_envp *)enpv_list->content)->value);
-			if (minishell->path)
-				free_split(minishell->path);
 			minishell->path = ft_split(paths, ':');
 			free(paths);
 		}

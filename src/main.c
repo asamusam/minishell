@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 14:55:35 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/14 13:27:15 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/15 10:43:41 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ void	shell_loop(t_info *minishell)
 				}
 			}
 		}
+		printf("exit code: %d\n", minishell->exit_code);//tmp
 		if (g_signal == SIGINT)
 			minishell->exit_code = g_signal + 128;
 		free(line);
@@ -55,7 +56,6 @@ void	shell_loop(t_info *minishell)
 			prompt = "-->";//temp
 		if (!minishell->exit_flag) // temp
 			line = readline(prompt);// temp
-		printf("exit code: %d\n", minishell->exit_code);
 		//if (!minishell->exit_flag)
 		//	line = readline("-->");
 	}

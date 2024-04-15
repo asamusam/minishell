@@ -6,45 +6,11 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 12:36:09 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/14 13:50:11 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/15 14:50:01 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
-
-/*
- * Divides the input in cmd and args and exec them
- *
- * Arguments:
- * - input
- * - info struct
- * 
- * Returns:
- * Status
- */
-int	handle_input(t_command *command, t_info *minishell)
-{
-	char	**args;
-	char	*cmd;
-
-	if (!command)
-		return (FAIL); //TODO:
-	args = get_args(command->args);
-	cmd = get_cmd(minishell->path, args[0]);
-	if (!cmd)
-	{
-		print_error("Cmd error", 0);
-		free_split(args);
-		return (127);
-	}
-	if (execve(cmd, args, minishell->envp) == -1)
-	{
-		free_split(args);
-		print_error("Execve error", 0);
-		return (126);
-	}
-	return (FAIL);
-}
 
 /*
  * Checks if the string provided is a valid cmd
@@ -69,7 +35,7 @@ char	*get_cmd(char **path, char *command)
 		else
 			return (NULL);
 	}
-	else
+	else if (path && *path)
 	{
 		i = 0;
 		while (path[i])
@@ -115,9 +81,46 @@ char	**get_args(t_list *arg_lst)
 	return (args);
 }
 
+/*
+ * Divides the input in cmd and args and exec them
+ *
+ * Arguments:
+ * - input
+ * - info struct
+ * 
+ * Returns:
+ * Status
+ */
+int	handle_input(t_command *command, t_info *minishell)
+{
+	char	**args;
+	char	*cmd;
+
+	if (!command)
+		return (FAIL); //TODO:
+	args = get_args(command->args);
+	cmd = get_cmd(minishell->path, args[0]);
+	if (!cmd)
+	{
+		print_error("Cmd error", 0);
+		free_split(args);
+		return (127);
+	}
+	if (execve(cmd, args, minishell->envp) == -1)
+	{
+		free_split(args);
+		print_error("Execve error", 0);
+		return (126);
+	}
+	return (FAIL);
+}
+
 int	handle_cmd_process(t_pipe *pipet, t_command *command, t_info *minishell)
 {
 	int	status;
+	int	wait_result;
+	int	child_status;
+	int	child_exit_status;
 
 	if (!command)
 		return (FAIL); //TODO:
@@ -131,20 +134,31 @@ int	handle_cmd_process(t_pipe *pipet, t_command *command, t_info *minishell)
 			exit(FAIL);
 		handle_redirections(pipet, command);
 		status = handle_input(command, minishell);
+		exit(status);
 	}
 	else
 	{
 		close(pipet->pipefd[1]);
 		close(pipet->prev_pipe);
 		pipet->prev_pipe = pipet->pipefd[0];
-		waitpid(pipet->pid, NULL, 0);
+		wait_result = waitpid(pipet->pid, &child_status, 0);
+		if (WIFEXITED(child_status))
+		{
+			child_exit_status = WEXITSTATUS(child_status);
+			return (child_exit_status);
+		}
 	}
 	return (status);
 }
 
+
+
 int	handle_lst_cmd_process(t_pipe *pipet, t_command *command, t_info *minishell)
 {
 	int		status;
+	int		wait_result;
+	int		child_status;
+	int		child_exit_status;
 
 	status = SUCCESS;
 	pipet->pid = fork();
@@ -152,15 +166,19 @@ int	handle_lst_cmd_process(t_pipe *pipet, t_command *command, t_info *minishell)
 		return (print_error("Fork error\n", 0));
 	if (pipet->pid == 0)
 	{
-		if (g_signal == SIGINT) //TODO: check
-			exit(FAIL);
 		handle_last_redirection(pipet, command);
 		status = handle_input(command, minishell);
+		exit(status);
 	}
 	else
 	{
 		close(pipet->prev_pipe);
-		waitpid(pipet->pid, NULL, 0);
+		wait_result = waitpid(pipet->pid, &child_status, 0);
+		if (WIFEXITED(child_status))
+		{
+			child_exit_status = WEXITSTATUS(child_status);
+			return (child_exit_status);
+		}
 	}
 	return (status);
 }

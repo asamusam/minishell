@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 09:04:55 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/14 13:50:55 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/15 10:34:41 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	last_process(t_command *command, t_info *minishell, t_pipe *pipet)
 	int		status;
 
 	if (!command)
-		return (FAIL);
+		return (FAIL); //TODO:
 	status = SUCCESS;
 	if (!is_buitin(command->args->content))
 		status = handle_lst_cmd_process(pipet, command, minishell);
@@ -70,7 +70,7 @@ int create_process(t_command *command, t_info *minishell, t_pipe *pipet)
 	int		status;
 
 	if (!command)
-		return (FAIL);
+		return (FAIL); //TODO:
 	status = SUCCESS;
 	if (pipe(pipet->pipefd) == -1)
 		return (print_error("Pipe error\n", 0));
@@ -98,7 +98,7 @@ int		exec(t_list *commands, t_info *minishell)
 	t_pipe	*pipet;
 
 	status = SUCCESS;
-	if (!commands || !commands->content)
+	if (!commands || !commands->content || !((t_command *)(commands->content))->args)
 		return (status); //TODO:
 	pipet = malloc(sizeof(t_pipe));
 	if (!pipet)
@@ -107,12 +107,12 @@ int		exec(t_list *commands, t_info *minishell)
 	pipet->orig_stdin = dup(STDIN_FILENO);
 	pipet->orig_stdout = dup(STDOUT_FILENO);
 	current = commands;
-	while (current && current->next && !minishell->exit_code)
+	while (current && current->next && !minishell->exit_flag)
 	{
 		status = create_process((t_command *)(current->content), minishell, pipet);
 		current = current->next;
 	};
-	if (!minishell->exit_code)
+	if (!minishell->exit_flag)
 		status = last_process((t_command *)(current->content), minishell, pipet);
 	free(pipet);
 	return (status);

@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 10:46:53 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/14 13:49:32 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/15 10:37:50 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,10 @@
 int	handle_bltn_process(t_pipe *pipet, t_command *command, t_info *minishell)
 {
 	int	status;
+	int	wait_result;
+	int	child_status;
+	int	child_exit_status;
+
 
 	if (!command)
 		return (FAIL);
@@ -35,7 +39,12 @@ int	handle_bltn_process(t_pipe *pipet, t_command *command, t_info *minishell)
 		close (pipet->pipefd[1]);
 		close (pipet->prev_pipe);
 		pipet->prev_pipe = pipet->pipefd[0];
-		waitpid(pipet->pid, NULL, 0);
+		wait_result = waitpid(pipet->pid, &child_status, 0);
+		if (WIFEXITED(child_status))
+		{
+			child_exit_status = WEXITSTATUS(child_status);
+			return (child_exit_status);
+		}
 	}
 	return (status);
 }

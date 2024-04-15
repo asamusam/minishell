@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 11:26:05 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/14 13:49:01 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/15 10:47:26 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ int	del_env(char *envp_key, t_info *minishell)
 			current = current->next;
 	}
 	set_pwds(minishell);
-	return (SUCCESS);
+	return (FAIL);
 }
 
 /*

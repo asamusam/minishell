@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 11:22:34 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/14 13:46:46 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/15 06:06:11 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,9 +180,13 @@ int	handle_cd(t_list *args, t_info *minishell)
 		return (print_error("bash: cd: too many arguments\n", 0));
 	else if (!args->next)
 		return (dir_home(minishell));
+	current = args->next;
+	if (!ft_strcmp((char *)current->content, ".."))
+	{
+		return (SUCCESS); //TODO:
+	}
 	else
 	{
-		current = args->next;
 		path = (char *)current->content;
 		dir = check_last_dir_slash(dir, path);
 		if (!ft_strncmp(dir, "/", 1) || !ft_strncmp(dir, "~/", 2))
