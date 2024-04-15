@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 09:04:55 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/15 15:15:17 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/15 23:57:31 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int	last_process(t_command *command, t_info *minishell, t_pipe *pipet)
  * Returns:
  * Status
  */
-int create_process(t_command *command, t_info *minishell, t_pipe *pipet)
+int	create_process(t_command *command, t_info *minishell, t_pipe *pipet)
 {
 	int		status;
 
@@ -91,7 +91,7 @@ int create_process(t_command *command, t_info *minishell, t_pipe *pipet)
  * Returns:
  * Status
  */
-int		exec(t_list *commands, t_info *minishell)
+int	exec(t_list *commands, t_info *minishell)
 {
 	int		status;
 	t_list	*current;
@@ -107,12 +107,12 @@ int		exec(t_list *commands, t_info *minishell)
 	pipet->orig_stdin = dup(STDIN_FILENO);
 	pipet->orig_stdout = dup(STDOUT_FILENO);
 	current = commands;
-	while (current && current->next && !minishell->exit_flag)
+	while (!status && current && current->next && !minishell->exit_flag)
 	{
 		status = create_process((t_command *)(current->content), minishell, pipet);
 		current = current->next;
-	};
-	if (!minishell->exit_flag)
+	}
+	if (!status && !minishell->exit_flag)
 		status = last_process((t_command *)(current->content), minishell, pipet);
 	free(pipet);
 	return (status);

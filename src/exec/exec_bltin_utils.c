@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_bltin_utils.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 10:46:53 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/15 10:37:50 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/16 00:10:29 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,39 +14,40 @@
 
 int	handle_bltn_process(t_pipe *pipet, t_command *command, t_info *minishell)
 {
-	int	status;
-	int	wait_result;
-	int	child_status;
-	int	child_exit_status;
-
+	int		child_status;
+	void	(*parent_handler)(int);
 
 	if (!command)
 		return (FAIL);
-	status = SUCCESS;
 	pipet->pid = fork();
 	if (pipet->pid == -1)
 		return (print_error("Fork error\n", 0));
 	if (pipet->pid == 0)
 	{
+		signal(SIGINT, SIG_DFL);
+		signal(SIGQUIT, SIG_DFL);
 		handle_blt_redirections(pipet, command);
-		status = handle_builtin(command, minishell);
-		if (g_signal == SIGINT) //TODO: check
-			exit(FAIL);
-		exit(status);
+		exit(handle_builtin(command, minishell));
 	}
 	else
-	{		
+	{
+		parent_handler = signal(SIGINT, SIG_IGN);
 		close (pipet->pipefd[1]);
 		close (pipet->prev_pipe);
 		pipet->prev_pipe = pipet->pipefd[0];
-		wait_result = waitpid(pipet->pid, &child_status, 0);
+		waitpid(pipet->pid, &child_status, 0);
+		signal(SIGINT, parent_handler);
 		if (WIFEXITED(child_status))
+			return (WEXITSTATUS(child_status));
+		else
 		{
-			child_exit_status = WEXITSTATUS(child_status);
-			return (child_exit_status);
+			if (WTERMSIG(child_status) == SIGINT)
+				ft_putchar_fd('\n', STDOUT_FILENO);
+			else if (WTERMSIG(child_status) == SIGQUIT)
+				ft_putendl_fd("Quit (core dumped)", STDOUT_FILENO);
+			return (128 + WTERMSIG(child_status));
 		}
 	}
-	return (status);
 }
 
 /*
