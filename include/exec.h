@@ -3,23 +3,27 @@
 /*                                                        :::      ::::::::   */
 /*   exec.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: asamuilk <asamuilk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 12:17:56 by mmughedd          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2024/04/14 13:52:30 by mmughedd         ###   ########.fr       */
+=======
+/*   Updated: 2024/04/09 18:49:52 by asamuilk         ###   ########.fr       */
+>>>>>>> free
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef EXEC_H
 # define EXEC_H
 
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <linux/limits.h>
-#include <stdbool.h>
-#include <fcntl.h>
-#include "minishell.h"
-#include "parser.h"
+# include <sys/types.h>
+# include <sys/wait.h>
+# include <linux/limits.h>
+# include <stdbool.h>
+# include <fcntl.h>
+# include "minishell.h"
+# include "parser.h"
 
 typedef struct s_pipe
 {
@@ -41,9 +45,15 @@ int		handle_unset(t_list *args, t_info *minishell);
 int		handle_env(t_info *minishell);
 int		handle_exit(t_list *args, t_info *minishell);
 int		is_buitin(char *cmd);
+<<<<<<< HEAD
 int		handle_builtin(t_command *command,  t_info *minishell);
 int		handle_input(t_command *command, t_info *minishell);
 int		print_export(t_info *minishell);
+=======
+int		handle_builtin(t_command *command, t_info *info);
+int		handle_input(t_command *command, t_info *info);
+int		print_export(t_info *info);
+>>>>>>> free
 int		find_equal(char *input);
 int		check_input(char *input);
 int		update_envstr(t_info *minishell);

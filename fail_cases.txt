@@ -1,3 +1,9 @@
+<<<<<<< HEAD
 echo test >>test.txt ->fixed
 <test.txt						// if test.txt exists -> fixed
 echo hey | cat -> fixed
+=======
+echo test >>test.txt
+<test.txt						// if test.txt exists
+echo hey | cat
+>>>>>>> free
