@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 09:04:55 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/15 23:57:31 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/16 15:08:56 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,16 +39,16 @@ int	last_process(t_command *command, t_info *minishell, t_pipe *pipet)
 		if (command->file_in >= 0)
 		{
 			if (dup2(pipet->orig_stdin, STDIN_FILENO) == -1)
-				print_error("dup2 error\n", 0);
+				print_error("minishell: dup2 error", PERROR);
 			if (close(pipet->orig_stdin) == -1)
-				print_error("close error\n", 0);
+				print_error("minishell: close error", PERROR);
 		}
 		else if (command->file_out >= 0)
 		{
 			if (dup2(pipet->orig_stdout, STDOUT_FILENO) == -1)
-				print_error("dup2 error\n", 0);
+				print_error("minishell: dup2 error", PERROR);
 			if (close(pipet->orig_stdout) == -1)
-				print_error("close error\n", 0);
+				print_error("minishell: close error", PERROR);
 		}
 	}
 	return (status);
@@ -73,12 +73,29 @@ int	create_process(t_command *command, t_info *minishell, t_pipe *pipet)
 		return (FAIL); //TODO:
 	status = SUCCESS;
 	if (pipe(pipet->pipefd) == -1)
-		return (print_error("Pipe error\n", 0));
+		return (print_error("minishell: pipe error", PERROR));
 	if (!is_buitin(command->args->content))
-		status = handle_cmd_process(pipet, command, minishell);
+		status = handle_cmd_prlsocess(pipet, command, minishell);
 	else
 		status = handle_bltn_process(pipet, command, minishell);
 	return (status);
+}
+
+int	create_pipet(t_pipe **pipet)
+{
+	*pipet = malloc(sizeof(t_pipe));
+	if (!*pipet)
+		return (print_error("minishell exec", PERROR));
+	(*pipet)->prev_pipe = dup(0);
+	if ((*pipet)->prev_pipe == -1)
+		return(print_error("minishell: dup2 error", PERROR));
+	(*pipet)->orig_stdin = dup(STDIN_FILENO);
+	if ((*pipet)->orig_stdin == -1)
+		return(print_error("minishell: dup2 error", PERROR));
+	(*pipet)->orig_stdout = dup(STDOUT_FILENO);
+	if ((*pipet)->orig_stdout == -1)
+		return(print_error("minishell: dup2 error", PERROR));
+	return (SUCCESS);
 }
 
 /*
@@ -94,18 +111,14 @@ int	create_process(t_command *command, t_info *minishell, t_pipe *pipet)
 int	exec(t_list *commands, t_info *minishell)
 {
 	int		status;
-	t_list	*current;
-	t_pipe	*pipet;
+	t_list	*current = NULL;
+	t_pipe	*pipet = NULL;
 
 	status = SUCCESS;
 	if (!commands || !commands->content || !((t_command *)(commands->content))->args)
 		return (status); //TODO:
-	pipet = malloc(sizeof(t_pipe));
-	if (!pipet)
-		return (print_error("minishell exec", PERROR)); // newline is added automatically by perror() + we can use constant instead of raw value (defined in minishell.h)
-	pipet->prev_pipe = dup(0);
-	pipet->orig_stdin = dup(STDIN_FILENO);
-	pipet->orig_stdout = dup(STDOUT_FILENO);
+	if (create_pipet(&pipet) == FAIL)
+		return (FAIL);
 	current = commands;
 	while (!status && current && current->next && !minishell->exit_flag)
 	{

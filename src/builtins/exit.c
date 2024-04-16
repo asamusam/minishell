@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 11:18:10 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/15 12:25:29 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/16 09:28:50 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,11 @@ int	check_status(char *arg)
 	while (arg[i])
 	{
 		if (!ft_isdigit(arg[i++]))
-			return (status = -1);
+			return (-1);
 	}
 	status = ft_atoi(arg);
-	if (status < 0 || status > 255)
-		status = -1;
+	//if (status < 0 || status > 255)
+	//	status = -1; TODO: check
 	return (status);
 }
 
@@ -53,12 +53,15 @@ int	handle_exit(t_list *args, t_info *minishell)
 	int	status;
 
 	status = SUCCESS;
-	if (args->next && args->next->next)
-		return (print_error("exit: too many args\n", 1));
 	if (args->next)
 		status = check_status((char *)(args->next)->content);
 	if (status == -1)
-		return (print_error("exit status error\n", 1));
+	{
+		minishell->exit_flag = 1;
+		return(print_error("minishell: exit: numeric argument required", PERROR));
+	}
+	else if (args->next && args->next->next)
+		return (print_error("minishell: exit: too many args", PERROR));
 	minishell->exit_flag = 1;
 	return (status);
 }

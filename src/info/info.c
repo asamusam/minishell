@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 10:53:47 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/15 15:15:27 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/16 14:27:42 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ int	update_envstr(t_info *minishell)
 	len = ft_lstsize(minishell->envp_list);
 	minishell->envp = malloc(sizeof(char *) * (len + 1));
 	if (!minishell->envp)
-		return (print_error("malloc error\n", 0));
+		return (print_error("malloc error\n", STDERR));
 	i = 0;
 	while (curr)
 	{
@@ -86,7 +86,7 @@ char	**copy_envp(char **envp)
 	envp_copy = malloc(sizeof(char *) * (i + 1));
 	if (!envp_copy)
 	{
-		print_error("malloc error\n", 0);
+		print_error("malloc error\n", STDERR);
 		return (NULL);
 	}
 	envp_copy[i] = NULL;

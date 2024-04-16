@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 11:25:50 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/14 13:48:20 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/16 14:24:49 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	update_envp(t_list *envp_list, char *value)
 	free(((t_envp *)envp_list->content)->value);
 	if (value)
 		((t_envp *)envp_list->content)->value = ft_strdup(value);
-	return (0);
+	return (SUCCESS);
 }
 
 /*
@@ -49,7 +49,7 @@ t_list	*create_envp_node(char *key, char *value)
 		return (NULL);
 	node = malloc(sizeof(t_envp));
 	if (!node)
-		print_error("malloc error\n", 1);
+		print_error("malloc error", PERROR);
 	node->key = ft_strdup(key);
 	node->value = NULL;
 	if (value)
@@ -79,12 +79,12 @@ int	check_envs(t_info *minishell, char *key, char *value)
 		if (!ft_strcmp(list_key, key))
 		{
 			update_envp(current, value);
-			return (0);
+			return (SUCCESS);
 		}
 		current = current->next;
 	}
 	ft_lstadd_back(&minishell->envp_list, create_envp_node(key, value));
-	return (0);
+	return (SUCCESS);
 }
 
 /*
@@ -107,7 +107,7 @@ int	handle_export(t_list *args, t_info *info)
 	if (args->next && args->next->next)
 		return (0);
 	if (!check_input((char *)(args->next)->content))
-		return (print_error("bash: export: not a valid identifier\n", 1));
+		return (print_error("minishell: export: not a valid identifier\n", STDERR));
 	if (find_equal((char *)(args->next)->content) == -1)
 	{
 		key = ft_strdup((char *)(args->next)->content);
