@@ -32,7 +32,10 @@ void	run_line(char *line, t_info *minishell)
 	if (tokens)
 		commands = parser(tokens, minishell);
 	if (commands)
+	{	
 		minishell->exit_code = exec(commands, minishell);
+		ft_lstclear(&commands, free_command);
+	}
 	else
 		minishell->exit_code = FAIL;
 }
