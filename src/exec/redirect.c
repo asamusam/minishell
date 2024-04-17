@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 10:50:09 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/16 15:15:19 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/17 12:40:53 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,18 +15,18 @@
 int	redir_in(t_command *command)
 {
 	if (dup2(command->file_in, STDIN_FILENO) == -1)
-		return(print_error("minishell: dup2 error", PERROR));
+		return (print_error(DUP2_ERROR, PERROR));
 	if (close(command->file_in) == -1)
-		return(print_error("minishell: close error", PERROR));
+		return (print_error(CLOSE_ERROR, PERROR));
 	return (SUCCESS);
 }
 
 int	redir_out(t_command *command)
 {
 	if (dup2(command->file_out, STDOUT_FILENO) == -1)
-		return(print_error("minishell: dup2 error", PERROR));
+		return (print_error(DUP2_ERROR, PERROR));
 	if (close(command->file_out) == -1)
-		return(print_error("minishell: close error", PERROR));
+		return (print_error(CLOSE_ERROR, PERROR));
 	return (SUCCESS);
 }
 
@@ -35,16 +35,16 @@ int	handle_last_redirection(t_pipe *pipet, t_command *command)
 	int	status;
 
 	status = SUCCESS;
-	if (command->file_in >= 0)
+	if (!status && command->file_in >= 0)
 		status = redir_in(command);
 	else
 	{
-		if(dup2(pipet->prev_pipe, STDIN_FILENO) == -1)
-			return(print_error("minishell: dup2 error", PERROR));
+		if (!status && dup2(pipet->prev_pipe, STDIN_FILENO) == -1)
+			return (print_error(DUP2_ERROR, PERROR));
 	}
-	if (close(pipet->prev_pipe) && !status)
-		return(print_error("minishell: close error", PERROR));
-	if (command->file_out >= 0 && !status)
+	if (!status && close(pipet->prev_pipe))
+		return (print_error(CLOSE_ERROR, PERROR));
+	if (!status && command->file_out >= 0)
 		status = redir_out(command);
 	return (status);
 }
@@ -54,44 +54,48 @@ int	handle_redirections(t_pipe *pipet, t_command *command)
 	int	status;
 
 	status = SUCCESS;
-	close (pipet->pipefd[0]);
-	if (command->file_in >= 0)
+	if (!status && close(pipet->pipefd[0]) == -1)
+		return (print_error(CLOSE_ERROR, PERROR));
+	if (!status && command->file_in >= 0)
 		status = redir_in(command);
 	else
 	{
-		if(dup2(pipet->prev_pipe, STDIN_FILENO) == -1)
-			return(print_error("minishell: dup2 error", PERROR));
+		if (!status && dup2(pipet->prev_pipe, STDIN_FILENO) == -1)
+			return (print_error(DUP2_ERROR, PERROR));
 	}
-	if (close(pipet->prev_pipe) && !status)
-		return(print_error("minishell: close error", PERROR));
-	if (command->file_out >= 0 && !status)
+	if (!status && close(pipet->prev_pipe) == -1)
+		return (print_error(CLOSE_ERROR, PERROR));
+	if (!status && command->file_out >= 0)
 		status = redir_out(command);
 	else
 	{
-		if(dup2(pipet->pipefd[1], STDOUT_FILENO) == -1)
-			return(print_error("minishell: dup2 error", PERROR));
+		if (!status && dup2(pipet->pipefd[1], STDOUT_FILENO) == -1)
+			return (print_error(DUP2_ERROR, PERROR));
 	}
-	if (close (pipet->pipefd[1]) == -1)
-		return(print_error("minishell: close error", PERROR));
+	if (!status && close (pipet->pipefd[1]) == -1)
+		return (print_error(CLOSE_ERROR, PERROR));
 	return (status);
 }
 
 int	handle_blt_redirections(t_pipe *pipet, t_command *command)
 {
-	close (pipet->pipefd[0]);
-	if (command->file_out >= 0)
-	{
-		dup2 (command->file_out, STDOUT_FILENO);
-		close(command->file_out);
-	}
+	int	status;
+
+	status = SUCCESS;
+	if (!status && close(pipet->pipefd[0]) == -1)
+		return (print_error(CLOSE_ERROR, PERROR));
+	if (!status && command->file_out >= 0)
+		status = redir_out(command);
 	else
-		dup2 (pipet->pipefd[1], STDOUT_FILENO);
-	close (pipet->pipefd[1]);
-	if (command->file_in >= 0)
 	{
-		dup2 (command->file_in, STDIN_FILENO);
-		close(command->file_in);
+		if (!status && dup2(pipet->pipefd[1], STDOUT_FILENO) == -1)
+			return (print_error(DUP2_ERROR, PERROR));
 	}
-	close(pipet->prev_pipe);
-	return (SUCCESS);
+	if (!status && close (pipet->pipefd[1]) == -1)
+		return (print_error(CLOSE_ERROR, PERROR));
+	if (!status && command->file_in >= 0)
+		status = redir_in(command);
+	if (!status && close(pipet->prev_pipe) == -1)
+		return (print_error(CLOSE_ERROR, PERROR));
+	return (status);
 }

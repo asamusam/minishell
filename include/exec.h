@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 12:17:56 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/15 15:14:56 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/17 14:10:16 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,24 @@
 # include <fcntl.h>
 # include "minishell.h"
 # include "parser.h"
+
+# define MALLOC_ERROR "minishell: malloc error"
+# define PIPE_ERROR "minishell: pipe error"
+# define FORK_ERROR "minishell: fork error"
+# define CLOSE_ERROR "minishell: close error"
+# define CD_ERROR "minishell: cd"
+# define DUP_ERROR "minishell: dup error"
+# define DUP2_ERROR "minishell: dup2 error"
+# define DIR_ERROR "minishell: cd: No such file or directory"
+# define HOME_ERROR "minishell: cd: HOME not set\n"
+# define ARGS_ERROR "minishell: cd: too many arguments\n"
+# define NUM_ARG_ERROR "minishell: exit: numeric argument required\n"
+# define EX_ARGS_ERROR "minishell: exit: too many args\n"
+# define EXPORT_ERROR "minishell: export: not a valid identifier\n"
+# define PIPET_ERROR "minishell: pipet error\n"
+# define WAIT_ERROR "minishell: wait error"
+# define COMMAND_ERROR "minishell: command error"
+# define EXECVE_ERROR "minishell: execve error"
 
 typedef struct s_pipe
 {
@@ -41,7 +59,7 @@ int		handle_unset(t_list *args, t_info *minishell);
 int		handle_env(t_info *minishell);
 int		handle_exit(t_list *args, t_info *minishell);
 int		is_buitin(char *cmd);
-int		handle_builtin(t_command *command,  t_info *minishell);
+int		handle_builtin(t_command *command, t_info *minishell);
 int		handle_input(t_command *command, t_info *minishell);
 int		print_export(t_info *minishell);
 int		find_equal(char *input);
@@ -54,6 +72,10 @@ int		handle_redirections(t_pipe *pipet, t_command *command);
 int		handle_bltn_process(t_pipe *pipet, t_command *command, t_info *minishell);
 int		handle_blt_redirections(t_pipe *pipet, t_command *command);
 int		update_envstr(t_info *minishell);
+int		update_envp_pwd(t_info *minishell, char *newpwd);
+int		update_envp(t_list *envp_list, char *value);
+int		handle_parent(t_pipe *pipet);
+int		handle_last_parent(t_pipe *pipet);
 char	*get_cmd(char **path, char *command);
 char	**get_args(t_list *arg_lst);
 char	*find_envp_line(char *key, char **envp);

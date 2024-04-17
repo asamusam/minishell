@@ -6,11 +6,20 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 10:53:47 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/16 14:27:42 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/17 12:18:06 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
+
+void	free_mini_path(t_info *minishell)
+{
+	if (minishell->path)
+	{
+		free_split(minishell->path);
+		minishell->path = NULL;
+	}
+}
 
 void	set_pwds(t_info *minishell)
 {
@@ -19,11 +28,7 @@ void	set_pwds(t_info *minishell)
 	char	*paths;
 
 	enpv_list = minishell->envp_list;
-	if (minishell->path)
-	{
-		free_split(minishell->path);
-		minishell->path = NULL;
-	}
+	free_mini_path(minishell);
 	while (enpv_list)
 	{
 		key = ((t_envp *)enpv_list->content)->key;
@@ -43,57 +48,41 @@ void	set_pwds(t_info *minishell)
 	}
 }
 
+void	update_str(t_list *envp_list, t_info *mini, int i)
+{
+	char	*tmp;
+	t_envp	*keyval;
+
+	keyval = (t_envp *)envp_list->content;
+	tmp = ft_strjoin(keyval->key, "=");
+	if (keyval->value)
+		mini->envp[i] = ft_strjoin(tmp, keyval->value);
+	else
+		mini->envp[i] = ft_strdup(tmp);
+	free(tmp);
+}
+
 int	update_envstr(t_info *minishell)
 {
 	int		i;
 	int		len;
-	char	*tmp;
 	t_list	*curr;
 
-	i = 0;
 	curr = minishell->envp_list;
 	free_split(minishell->envp);
 	len = ft_lstsize(minishell->envp_list);
 	minishell->envp = malloc(sizeof(char *) * (len + 1));
 	if (!minishell->envp)
-		return (print_error("malloc error\n", STDERR));
+		return (print_error(MALLOC_ERROR, PERROR));
 	i = 0;
 	while (curr)
 	{
-		tmp = ft_strjoin(((t_envp *)curr->content)->key, "=");
-		if (((t_envp *)curr->content)->value)
-			minishell->envp[i] = ft_strjoin(tmp, ((t_envp *)curr->content)->value);
-		else
-			minishell->envp[i] = ft_strdup(tmp);
-		free(tmp);
+		update_str(curr, minishell, i);
 		i++;
 		curr = curr->next;
 	}
 	minishell->envp[i] = NULL;
 	return (0);
-}
-
-char	**copy_envp(char **envp)
-{
-	int		i;
-	char	**envp_copy;
-
-	if (!*envp)
-		return (NULL);
-	i = 0;
-	while (envp[i])
-		i++;
-	envp_copy = malloc(sizeof(char *) * (i + 1));
-	if (!envp_copy)
-	{
-		print_error("malloc error\n", STDERR);
-		return (NULL);
-	}
-	envp_copy[i] = NULL;
-	i = -1;
-	while (envp[++i])
-		envp_copy[i] = ft_strdup(envp[i]);
-	return (envp_copy);
 }
 
 void	set_envp(t_info *minishell, char **envp)
@@ -122,4 +111,3 @@ void	set_envp(t_info *minishell, char **envp)
 		current++;
 	}
 }
-

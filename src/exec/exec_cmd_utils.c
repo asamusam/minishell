@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 12:36:09 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/16 15:16:42 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/17 14:37:14 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,11 @@ char	**get_args(t_list *arg_lst)
 	i = 0;
 	current = arg_lst;
 	args = malloc(sizeof(char *) * (len + 1));
+	if (!args)
+	{
+		print_error(MALLOC_ERROR, PERROR);
+		return (NULL);
+	}
 	while (i < len && current)
 	{
 		args[i++] = ft_strdup((char *)(current->content));
@@ -96,95 +101,56 @@ int	handle_input(t_command *command, t_info *minishell)
 	char	**args;
 	char	*cmd;
 
-	if (!command)
-		return (FAIL); //TODO:
+	args = NULL;
+	cmd = NULL;
 	args = get_args(command->args);
-	cmd = get_cmd(minishell->path, args[0]);
+	if (args)
+		cmd = get_cmd(minishell->path, args[0]);
 	if (!cmd)
 	{
-		print_error("Cmd error", 0);
+		print_error(COMMAND_ERROR, PERROR);
 		free_split(args);
-		return (127);
+		return (126);
 	}
 	if (execve(cmd, args, minishell->envp) == -1)
 	{
 		free_split(args);
-		print_error("Execve error", 0);
-		return (126);
+		print_error(EXECVE_ERROR, PERROR);
+		return (127);
 	}
 	return (FAIL);
 }
 
 int	handle_cmd_process(t_pipe *pipet, t_command *command, t_info *minishell)
 {
-	int		child_status;
-	void	(*parent_handler)(int);
-
-	if (!command)
-		return (FAIL); //TODO:
 	pipet->pid = fork();
 	if (pipet->pid == -1)
-		return (print_error("Fork error\n", 0));
+		return (print_error(FORK_ERROR, PERROR));
 	if (pipet->pid == 0)
 	{
 		signal(SIGINT, SIG_DFL);
 		signal(SIGQUIT, SIG_DFL);
-		handle_redirections(pipet, command);
+		if (handle_redirections(pipet, command) == FAIL)
+			exit(FAIL);
 		exit(handle_input(command, minishell));
 	}
 	else
-	{
-		parent_handler = signal(SIGINT, SIG_IGN);
-		close(pipet->pipefd[1]);
-		close(pipet->prev_pipe);
-		pipet->prev_pipe = pipet->pipefd[0];
-		waitpid(pipet->pid, &child_status, 0);
-		signal(SIGINT, parent_handler);
-		if (WIFEXITED(child_status))
-			return (WEXITSTATUS(child_status));
-		else
-		{
-			if (WTERMSIG(child_status) == SIGINT)
-				ft_putchar_fd('\n', STDOUT_FILENO);
-			else if (WTERMSIG(child_status) == SIGQUIT)
-				ft_putendl_fd("Quit (core dumped)", STDOUT_FILENO);
-			return (128 + WTERMSIG(child_status));
-		}
-	}
+		return (handle_parent(pipet));
 }
-
-
 
 int	handle_lst_cmd_process(t_pipe *pipet, t_command *command, t_info *minishell)
 {
-	int		child_status;
-	void	(*parent_handler)(int);
-
 	pipet->pid = fork();
 	if (pipet->pid == -1)
-		return (print_error("Fork error\n", 0));
+		return (print_error(FORK_ERROR, PERROR));
 	if (pipet->pid == 0)
 	{
 		signal(SIGINT, SIG_DFL);
 		signal(SIGQUIT, SIG_DFL);
-		handle_last_redirection(pipet, command);
+		if (handle_last_redirection(pipet, command) == FAIL)
+			exit(FAIL);
 		exit(handle_input(command, minishell));
 	}
 	else
-	{
-		parent_handler = signal(SIGINT, SIG_IGN);
-		close(pipet->prev_pipe);
-		waitpid(pipet->pid, &child_status, 0);
-		signal(SIGINT, parent_handler);
-		if (WIFEXITED(child_status))
-			return (WEXITSTATUS(child_status));
-		else
-		{
-			if (WTERMSIG(child_status) == SIGINT)
-				ft_putchar_fd('\n', STDOUT_FILENO);
-			else if (WTERMSIG(child_status) == SIGQUIT)
-				ft_putendl_fd("Quit (core dumped)", STDOUT_FILENO);
-			return (128 + WTERMSIG(child_status));
-		}
-	}
+		return (handle_last_parent(pipet));
 }

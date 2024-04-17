@@ -6,56 +6,11 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 11:25:50 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/16 14:24:49 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/17 12:04:40 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
-
-/*
- * Updates a env var value in the env_list list
- *
- * Arguments:
- * - t_list env_list
- * - env var key
- * - env var value
- *
- * Returns:
- * Status
- */
-int	update_envp(t_list *envp_list, char *value)
-{
-	free(((t_envp *)envp_list->content)->value);
-	if (value)
-		((t_envp *)envp_list->content)->value = ft_strdup(value);
-	return (SUCCESS);
-}
-
-/*
- * Creates an envp_node in the t_envp struct
- *
- * Arguments:
- * - env var key
- * - env var value
- *
- * Returns:
- * Status
- */
-t_list	*create_envp_node(char *key, char *value)
-{
-	t_envp	*node;
-
-	if (!key)
-		return (NULL);
-	node = malloc(sizeof(t_envp));
-	if (!node)
-		print_error("malloc error", PERROR);
-	node->key = ft_strdup(key);
-	node->value = NULL;
-	if (value)
-		node->value = ft_strdup(value);
-	return (ft_lstnew((void *)node));
-}
 
 /*
  * Updates or create env var
@@ -87,6 +42,17 @@ int	check_envs(t_info *minishell, char *key, char *value)
 	return (SUCCESS);
 }
 
+void	handle_key_val(t_list *args, char **key, char **value)
+{
+	if (find_equal((char *)(args->next)->content) == -1)
+	{
+		*key = ft_strdup((char *)(args->next)->content);
+		*value = NULL;
+	}
+	else
+		get_keyval((char *)(args->next)->content, key, value);
+}
+
 /*
  * Handles export builtin command
  *
@@ -107,14 +73,10 @@ int	handle_export(t_list *args, t_info *info)
 	if (args->next && args->next->next)
 		return (0);
 	if (!check_input((char *)(args->next)->content))
-		return (print_error("minishell: export: not a valid identifier\n", STDERR));
-	if (find_equal((char *)(args->next)->content) == -1)
-	{
-		key = ft_strdup((char *)(args->next)->content);
-		value = NULL;
-	}
-	else
-		get_keyval((char *)(args->next)->content, &key, &value);
+		return (print_error(EXPORT_ERROR, STDERR));
+	handle_key_val(args, &key, &value);
+	if (!key)
+		return (FAIL);
 	if (!info->envp_list)
 		info->envp_list = create_envp_node(key, value);
 	else
