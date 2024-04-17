@@ -34,9 +34,14 @@ void	run_line(char *line, t_info *minishell)
 	if (tokens)
 		commands = parser(tokens, minishell);
 	if (commands)
+<<<<<<< HEAD
 	{
 		minishell->exit_code = exec_test(commands, minishell);
 		//minishell->exit_code = exec(commands, minishell);
+=======
+	{	
+		minishell->exit_code = exec(commands, minishell);
+>>>>>>> 57904fc (Update main.c)
 		ft_lstclear(&commands, free_command);
 	}
 	else
