@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: asamuilk <asamuilk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 09:04:55 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/17 14:41:37 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/17 17:09:36 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ int	exec(t_list *commands, t_info *minishell)
 	t_command	*cmd;
 
 	status = SUCCESS;
-	if (!commands->content)
+	if (!((t_command *)commands->content)->args)
 		return (status);
 	if (create_pipet(&pipet) == FAIL)
 		return (FAIL);

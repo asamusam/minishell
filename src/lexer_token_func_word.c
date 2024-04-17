@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer_token_func_word.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: asamuilk <asamuilk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 16:21:27 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/04 17:28:48 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/17 16:49:13 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,16 @@ int	add_word(t_list **token_lst, char *line)
 		i ++;
 	token = create_token(WORD, line, i);
 	if (!token)
-		return (print_error("Failed to allocate a token", PERROR));
+	{
+		print_error("Failed to allocate a token", PERROR);
+		return (-1);
+	}
 	node = add_token(token_lst, token);
 	if (!node)
-		return (print_error("Failed to allocate a token node", PERROR));
+	{
+		print_error("Failed to allocate a token node", PERROR);
+		return (-1);
+	}
 	return (i);
 }
 
@@ -62,10 +68,16 @@ int	add_separator(t_list **token_lst, char *line)
 		i ++;
 	token = create_token(SEPARATOR, " ", 1);
 	if (!token)
-		return (print_error("Failed to allocate a token", PERROR));
+	{
+		print_error("Failed to allocate a token", PERROR);
+		return (-1);
+	}
 	node = add_token(token_lst, token);
 	if (!node)
-		return (print_error("Failed to allocate a token node", PERROR));
+	{
+		print_error("Failed to allocate a token node", PERROR);
+		return (-1);
+	}
 	return (i);
 }
 
@@ -89,16 +101,16 @@ int	add_exp_field(t_list **token_lst, char *line)
 	while (line[i] && line[i] != '\"')
 		i ++;
 	if (!line[i])
-		return (print_error("Syntax error: unclosed double quotes", STDERR));
+		return (print_error(SYNTAX_ERROR, STDERR) - 2);
 	if (i - 1)
 		token = create_token(EXP_FIELD, line + 1, i - 1);
 	else
 		token = create_token(EXP_FIELD, "", i - 1);
 	if (!token)
-		return (print_error("Failed to allocate a token", PERROR));
+		return (print_error("Failed to allocate a token", PERROR) - 2);
 	node = add_token(token_lst, token);
 	if (!node)
-		return (print_error("Failed to allocate a token node", PERROR));
+		return (print_error("Failed to allocate a token node", PERROR) - 2);
 	return (i + 1);
 }
 
@@ -122,15 +134,15 @@ int	add_field(t_list **token_lst, char *line)
 	while (line[i] && line[i] != '\'')
 		i ++;
 	if (!line[i])
-		return (print_error("Syntax error: unclosed single quotes", STDERR));
+		return (print_error(SYNTAX_ERROR, STDERR) - 2);
 	if (i - 1)
 		token = create_token(FIELD, line + 1, i - 1);
 	else
 		token = create_token(FIELD, "", i - 1);
 	if (!token)
-		return (print_error("Failed to allocate a token", PERROR));
+		return (print_error("Failed to allocate a token", PERROR) - 2);
 	node = add_token(token_lst, token);
 	if (!node)
-		return (print_error("Failed to allocate a token node", PERROR));
+		return (print_error("Failed to allocate a token node", PERROR) - 2);
 	return (i + 1);
 }
