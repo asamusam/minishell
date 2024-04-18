@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 14:55:35 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/18 15:22:46 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/18 22:13:47 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,20 +24,21 @@ void	run_line(char *line, t_info *minishell)
 {
 	t_list	*tokens;
 	t_list	*commands;
+	int		status;
 
 	g_signal = 0;
 	commands = NULL;
 	add_history(line);
-	tokens = lexer(line);
+	tokens = lexer(line, &status);
 	if (tokens)
-		commands = parser(tokens, minishell);
+		commands = parser(tokens, minishell, &status);
 	if (commands)
 	{
 		minishell->exit_code = exec(commands, minishell);
 		ft_lstclear(&commands, free_command);
 	}
 	else
-		minishell->exit_code = FAIL;
+		minishell->exit_code = status;
 }
 
 void	shell_loop(t_info *minishell)

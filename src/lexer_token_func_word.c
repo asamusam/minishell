@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   lexer_token_func_word.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asamuilk <asamuilk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 16:21:27 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/17 16:49:13 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/18 22:46:38 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lexer.h"
-#include "fcntl.h"
 
 /*
  * Adds token of type WORD to the token list.
@@ -101,7 +100,7 @@ int	add_exp_field(t_list **token_lst, char *line)
 	while (line[i] && line[i] != '\"')
 		i ++;
 	if (!line[i])
-		return (print_error(SYNTAX_ERROR, STDERR) - 2);
+		return (print_error(SYNTAX_ERROR, STDERR) - 3);
 	if (i - 1)
 		token = create_token(EXP_FIELD, line + 1, i - 1);
 	else
@@ -134,7 +133,7 @@ int	add_field(t_list **token_lst, char *line)
 	while (line[i] && line[i] != '\'')
 		i ++;
 	if (!line[i])
-		return (print_error(SYNTAX_ERROR, STDERR) - 2);
+		return (print_error(SYNTAX_ERROR, STDERR) - 3);
 	if (i - 1)
 		token = create_token(FIELD, line + 1, i - 1);
 	else

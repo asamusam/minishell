@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 12:17:56 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/18 15:30:52 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/18 22:13:30 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,5 +90,5 @@ void	get_keyval(char *input, char **key, char **value);
 void	set_envp(t_info *minishell, char **envp);
 void	set_pwds(t_info *minishell);
 t_list	*create_envp_node(char *key, char *value);
-int	handle_last_blt_redirection(t_pipe *pipet, t_command *command);
+int		handle_last_blt_redirection(t_pipe *pipet, t_command *command);
 #endif
