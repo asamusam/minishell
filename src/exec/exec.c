@@ -86,13 +86,13 @@ int	create_pipet(t_pipe **pipet)
 		return (print_error(PIPET_ERROR, STDERR));
 	(*pipet)->prev_pipe = dup(0);
 	if ((*pipet)->prev_pipe == -1)
-		return (print_error(DUP2_ERROR, PERROR));
+		return (print_error(DUP_ERROR, PERROR));
 	(*pipet)->orig_stdin = dup(STDIN_FILENO);
 	if ((*pipet)->orig_stdin == -1)
-		return (print_error(DUP2_ERROR, PERROR));
+		return (print_error(DUP_ERROR, PERROR));
 	(*pipet)->orig_stdout = dup(STDOUT_FILENO);
 	if ((*pipet)->orig_stdout == -1)
-		return (print_error(DUP2_ERROR, PERROR));
+		return (print_error(DUP_ERROR, PERROR));
 	return (SUCCESS);
 }
 

@@ -36,7 +36,7 @@
 # define EXPORT_ERROR "minishell: export: not a valid identifier"
 # define PIPET_ERROR "minishell: pipet error"
 # define WAIT_ERROR "minishell: wait error"
-# define COMMAND_ERROR "minishell: command error"
+# define COMMAND_ERROR "minishell: command error: command not found"
 # define EXECVE_ERROR "minishell: execve error"
 
 typedef struct s_pipe
