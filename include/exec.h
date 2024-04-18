@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 12:17:56 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/17 22:11:29 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/18 15:13:18 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,7 @@ typedef struct s_pipe
 	int		prev_pipe;
 	int		orig_stdout;
 	int		orig_stdin;
-}	t_pipe
-;
+}	t_pipe;
 
 int		handle_echo(t_list *args);
 int		handle_cd(t_list *args, t_info *minishell);
@@ -90,5 +89,17 @@ void	get_keyval(char *input, char **key, char **value);
 void	set_envp(t_info *minishell, char **envp);
 void	set_pwds(t_info *minishell);
 t_list	*create_envp_node(char *key, char *value);
+
+// new_exec
+
+int		redir_stdin(int	*original_stdin, int fd);
+int		redir_stdout(int *original_stdout, int fd);
+int		restore_stdin(int original_stdin, int fd);
+int		restore_stdout(int original_stdout, int fd);
+int		close_pipes(int **pipes, int i, int i_max);
+void	free_pipes(int **pipes, int size);
+int		free_pipes_return_fail(int **pipes, int size, char *error_type);
+int		run_command(t_command *command, t_info *minishell, int in, int out);
+
 
 #endif

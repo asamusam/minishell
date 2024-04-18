@@ -6,7 +6,7 @@ CFILES := src/main.c src/utils.c src/signals.c src/init.c src/free.c \
 		  src/builtins/exit.c  src/builtins/cd.c src/builtins/export.c src/builtins/env_var_utils.c\
 		  src/builtins/export_utils.c src/builtins/pwd.c src/builtins/unset.c src/builtins/env.c src/builtins/echo.c \
 		  src/exec/exec.c src/exec/exec_utils.c src/exec/exec_cmd_utils.c src/exec/redirect.c src/exec/exec_bltin_utils.c src/info/info.c \
-		  src/exec/exec_test.c
+		  src/new_exec/execute.c src/new_exec/fork.c src/new_exec/redirect.c src/new_exec/utils.c
 OFILES := $(CFILES:.c=.o)
 HEREDOC := minishell_heredoc.txt
 INCLUDE := include
