@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer_token_func_spec.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: asamuilk <asamuilk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 16:21:27 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/03/13 16:45:37 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/17 16:45:11 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,16 @@ int	add_pipe(t_list **token_lst, char *line)
 	len = 1;
 	token = create_token(PIPE, line, len);
 	if (!token)
-		return (print_error("Failed to allocate a token", PERROR));
+	{
+		print_error("Failed to allocate a token", PERROR);
+		return (-1);
+	}
 	node = add_token(token_lst, token);
 	if (!node)
-		return (print_error("Failed to allocate a token node", PERROR));
+	{
+		print_error("Failed to allocate a token node", PERROR);
+		return (-1);
+	}
 	return (len);
 }
 
@@ -57,10 +63,16 @@ int	add_redir_insource(t_list **token_lst, char *line)
 	len = 2;
 	token = create_token(REDIRECT_INSOURCE, line, len);
 	if (!token)
-		return (print_error("Failed to allocate a token", PERROR));
+	{
+		print_error("Failed to allocate a token", PERROR);
+		return (-1);
+	}
 	node = add_token(token_lst, token);
 	if (!node)
-		return (print_error("Failed to allocate a token node", PERROR));
+	{
+		print_error("Failed to allocate a token node", PERROR);
+		return (-1);
+	}
 	return (len);
 }
 
@@ -83,10 +95,16 @@ int	add_redir_in(t_list **token_lst, char *line)
 	len = 1;
 	token = create_token(REDIRECT_IN, line, len);
 	if (!token)
-		return (print_error("Failed to allocate a token", PERROR));
+	{
+		print_error("Failed to allocate a token", PERROR);
+		return (-1);
+	}
 	node = add_token(token_lst, token);
 	if (!node)
-		return (print_error("Failed to allocate a token node", PERROR));
+	{
+		print_error("Failed to allocate a token node", PERROR);
+		return (-1);
+	}
 	return (len);
 }
 
@@ -109,10 +127,16 @@ int	add_redir_append(t_list **token_lst, char *line)
 	len = 2;
 	token = create_token(REDIRECT_APPEND, line, len);
 	if (!token)
-		return (print_error("Failed to allocate a token", PERROR));
+	{
+		print_error("Failed to allocate a token", PERROR);
+		return (-1);
+	}
 	node = add_token(token_lst, token);
 	if (!node)
-		return (print_error("Failed to allocate a token node", PERROR));
+	{
+		print_error("Failed to allocate a token node", PERROR);
+		return (-1);
+	}
 	return (len);
 }
 
@@ -135,9 +159,15 @@ int	add_redir_out(t_list **token_lst, char *line)
 	len = 1;
 	token = create_token(REDIRECT_OUT, line, len);
 	if (!token)
-		return (print_error("Failed to allocate a token", PERROR));
+	{
+		print_error("Failed to allocate a token", PERROR);
+		return (-1);
+	}
 	node = add_token(token_lst, token);
 	if (!node)
-		return (print_error("Failed to allocate a token node", PERROR));
+	{
+		print_error("Failed to allocate a token node", PERROR);
+		return (-1);
+	}
 	return (len);
 }

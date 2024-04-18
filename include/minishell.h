@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 17:18:43 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/15 15:14:05 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/18 15:26:36 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@
 # define STDERR 1
 # define FAIL 1
 # define SUCCESS 0
+# define SYNTAX_ERROR "minishell: syntax error"
 
 # include <stdio.h>
 # include <stdlib.h>
@@ -53,14 +54,12 @@ typedef struct s_envp
 
 typedef struct s_info
 {
-	//t_builtin_ptr	builtins;
 	char			**path;
 	char			**envp;
 	char			*pwd;
 	char			*oldpwd;
 	char			*home;
 	t_list			*envp_list;
-	int				envp_flag; // TODO:
 	int				exit_flag;
 	int				exit_code;
 }	t_info;

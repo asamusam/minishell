@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: asamuilk <asamuilk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 11:18:10 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/17 11:56:59 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/17 18:46:43 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ int	handle_exit(t_list *args, t_info *minishell)
 {
 	int	status;
 
-	status = SUCCESS;
+	status = minishell->exit_code;
 	if (args->next)
 		status = check_status((char *)(args->next)->content);
 	if (status == -1)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 12:17:56 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/18 11:18:46 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/18 15:30:52 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,18 +58,18 @@ int		handle_export(t_list *args, t_info *minishell);
 int		handle_unset(t_list *args, t_info *minishell);
 int		handle_env(t_info *minishell);
 int		handle_exit(t_list *args, t_info *minishell);
-int		is_buitin(char *cmd);
+int		is_builtin(char *cmd);
 int		handle_builtin(t_command *command, t_info *minishell);
 int		handle_input(t_command *command, t_info *minishell);
 int		print_export(t_info *minishell);
 int		find_equal(char *input);
 int		check_input(char *input);
 int		update_envstr(t_info *minishell);
-int		handle_cmd_process(t_pipe *pipet, t_command *command, t_info *minishell);
-int		handle_lst_cmd_process(t_pipe *pipet, t_command *command, t_info *minishell);
+int		handle_cmd_ps(t_pipe *pipet, t_command *command, t_info *minishell);
+int		handle_lst_cmd_ps(t_pipe *pipet, t_command *command, t_info *minishell);
 int		handle_last_redirection(t_pipe *pipet, t_command *command);
 int		handle_redirections(t_pipe *pipet, t_command *command);
-int		handle_bltn_process(t_pipe *pipet, t_command *command, t_info *minishell);
+int		handle_bltn_ps(t_pipe *pipet, t_command *command, t_info *minishell);
 int		handle_blt_redirections(t_pipe *pipet, t_command *command);
 int		update_envstr(t_info *minishell);
 int		update_envp_pwd(t_info *minishell, char *newpwd);

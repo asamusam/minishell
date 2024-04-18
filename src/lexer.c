@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: asamuilk <asamuilk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 13:35:22 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/04 17:29:07 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/17 17:00:30 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ t_list	*lexer(char *line)
 	while (line[i])
 	{
 		len = get_token(&token_lst, line + i);
-		if (!len)
+		if (len == -1)
 		{
 			if (token_lst)
 				ft_lstclear(&token_lst, free_token);

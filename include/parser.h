@@ -3,16 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   parser.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: asamuilk <asamuilk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 15:00:30 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/10 14:21:43 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/17 16:48:35 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PARSER_H
 # define PARSER_H
-# define SYNTAX_ERROR "minishell: syntax error"
 # include "libft.h"
 # include "minishell.h"
 # include "unistd.h"

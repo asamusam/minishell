@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 09:04:55 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/18 11:19:08 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/18 15:30:47 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@ int	last_process(t_command *command, t_info *minishell, t_pipe *pipet)
 	int		status;
 
 	status = SUCCESS;
-	if (!is_buitin(command->args->content))
-		status = handle_lst_cmd_process(pipet, command, minishell);
+	if (!is_builtin(command->args->content))
+		status = handle_lst_cmd_ps(pipet, command, minishell);
 	else
 	{
 		status = handle_last_blt_redirection(pipet, command);
@@ -71,11 +71,11 @@ int	create_process(t_command *command, t_info *minishell, t_pipe *pipet)
 		return (FAIL);
 	status = SUCCESS;
 	if (pipe(pipet->pipefd) == -1)
-		return (PIPE_ERROR, PERROR);
-	if (!is_buitin(command->args->content))
-		status = handle_cmd_process(pipet, command, minishell);
+		return (print_error(PIPE_ERROR, PERROR));
+	if (!is_builtin(command->args->content))
+		status = handle_cmd_ps(pipet, command, minishell);
 	else
-		status = handle_bltn_process(pipet, command, minishell);
+		status = handle_bltn_ps(pipet, command, minishell);
 	return (status);
 }
 
@@ -114,7 +114,7 @@ int	exec(t_list *commands, t_info *minishell)
 	t_command	*cmd;
 
 	status = SUCCESS;
-	if (!commands->content)
+	if (!((t_command *)commands->content)->args)
 		return (status);
 	if (create_pipet(&pipet) == FAIL)
 		return (FAIL);

@@ -3,67 +3,59 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 14:55:35 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/17 11:49:41 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/18 15:22:46 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	shell_loop(t_info *minishell)
+void	exit_clean(t_info *minishell)
 {
-	char	*line;
-	t_list	*tokens;
-	t_list	*commands;
-	char *prompt; //temp
-
-	if (minishell->pwd)//temp
-		prompt = ft_strjoin(minishell->pwd, ">"); //temp
-	else//temp
-		prompt = "-->";//temp
-
-	line = readline(prompt); //temp 
-	//line = readline("-->");
-	while (!minishell->exit_flag && line)
-	{
-		if (*line)
-		{
-			g_signal = 0;
-			add_history(rl_line_buffer);
-			tokens = lexer(line);
-			if (tokens)
-			{
-				commands = parser(tokens, minishell);
-				if (commands)
-				{
-					minishell->exit_code = exec(commands, minishell);
-					ft_lstclear(&commands, free_command);
-				}
-			}
-		}
-		printf("exit code: %d\n", minishell->exit_code);//tmp
-		if (g_signal == SIGINT)
-			minishell->exit_code = g_signal + 128;
-		free(line);
-		if (minishell->pwd && !minishell->exit_flag)//temp
-		{											//temp
-			free(prompt);							//temp
-			prompt = ft_strjoin(minishell->pwd, ">"); //temp
-		}//temp
-		else if (!minishell->exit_flag)//temp
-			prompt = "-->";//temp
-		if (!minishell->exit_flag) // temp
-			line = readline(prompt);// temp
-		//if (!minishell->exit_flag)
-		//	line = readline("-->");
-	}
-	free(prompt); //temp
 	printf("exit\n");
 	free_minishell_info(minishell);
 	rl_clear_history();
 	exit(minishell->exit_code);
+}
+
+void	run_line(char *line, t_info *minishell)
+{
+	t_list	*tokens;
+	t_list	*commands;
+
+	g_signal = 0;
+	commands = NULL;
+	add_history(line);
+	tokens = lexer(line);
+	if (tokens)
+		commands = parser(tokens, minishell);
+	if (commands)
+	{
+		minishell->exit_code = exec(commands, minishell);
+		ft_lstclear(&commands, free_command);
+	}
+	else
+		minishell->exit_code = FAIL;
+}
+
+void	shell_loop(t_info *minishell)
+{
+	char	*line;
+
+	while (!minishell->exit_flag)
+	{
+		line = readline("-->");
+		if (!line)
+			exit_clean(minishell);
+		else if (!*line && g_signal)
+			minishell->exit_code = g_signal + 128;
+		else
+			run_line(line, minishell);
+		free(line);
+	}
+	exit_clean(minishell);
 }
 
 int	main(int ac, char **av, char **envp)
