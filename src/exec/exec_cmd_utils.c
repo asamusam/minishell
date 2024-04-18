@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 12:36:09 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/18 01:11:19 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/18 15:30:28 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,7 +121,7 @@ int	handle_input(t_command *command, t_info *minishell)
 	return (SUCCESS);
 }
 
-int	handle_cmd_process(t_pipe *pipet, t_command *command, t_info *minishell)
+int	handle_cmd_ps(t_pipe *pipet, t_command *command, t_info *minishell)
 {
 	pipet->pid = fork();
 	if (pipet->pid == -1)
@@ -138,7 +138,7 @@ int	handle_cmd_process(t_pipe *pipet, t_command *command, t_info *minishell)
 		return (handle_parent(pipet));
 }
 
-int	handle_lst_cmd_process(t_pipe *pipet, t_command *command, t_info *minishell)
+int	handle_lst_cmd_ps(t_pipe *pipet, t_command *command, t_info *minishell)
 {
 	pipet->pid = fork();
 	if (pipet->pid == -1)

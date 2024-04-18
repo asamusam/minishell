@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 09:04:55 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/17 22:11:29 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/18 15:30:47 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int	last_process(t_command *command, t_info *minishell, t_pipe *pipet)
 
 	status = SUCCESS;
 	if (!is_builtin(command->args->content))
-		status = handle_lst_cmd_process(pipet, command, minishell);
+		status = handle_lst_cmd_ps(pipet, command, minishell);
 	else
 	{
 		handle_last_redirection(pipet, command);
@@ -73,9 +73,9 @@ int	create_process(t_command *command, t_info *minishell, t_pipe *pipet)
 	if (pipe(pipet->pipefd) == -1)
 		return (print_error(PIPE_ERROR, PERROR));
 	if (!is_builtin(command->args->content))
-		status = handle_cmd_process(pipet, command, minishell);
+		status = handle_cmd_ps(pipet, command, minishell);
 	else
-		status = handle_bltn_process(pipet, command, minishell);
+		status = handle_bltn_ps(pipet, command, minishell);
 	return (status);
 }
 

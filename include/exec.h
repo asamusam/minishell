@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 12:17:56 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/17 22:11:29 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/18 15:30:52 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,11 +65,11 @@ int		print_export(t_info *minishell);
 int		find_equal(char *input);
 int		check_input(char *input);
 int		update_envstr(t_info *minishell);
-int		handle_cmd_process(t_pipe *pipet, t_command *command, t_info *minishell);
-int		handle_lst_cmd_process(t_pipe *pipet, t_command *command, t_info *minishell);
+int		handle_cmd_ps(t_pipe *pipet, t_command *command, t_info *minishell);
+int		handle_lst_cmd_ps(t_pipe *pipet, t_command *command, t_info *minishell);
 int		handle_last_redirection(t_pipe *pipet, t_command *command);
 int		handle_redirections(t_pipe *pipet, t_command *command);
-int		handle_bltn_process(t_pipe *pipet, t_command *command, t_info *minishell);
+int		handle_bltn_ps(t_pipe *pipet, t_command *command, t_info *minishell);
 int		handle_blt_redirections(t_pipe *pipet, t_command *command);
 int		update_envstr(t_info *minishell);
 int		update_envp_pwd(t_info *minishell, char *newpwd);
