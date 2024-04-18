@@ -119,14 +119,14 @@ int	exec(t_list *commands, t_info *minishell)
 	if (create_pipet(&pipet) == FAIL)
 		return (FAIL);
 	current = commands;
-	while (!status && current && current->next && !minishell->exit_flag)
+	while (status <= 1 && current && current->next && !minishell->exit_flag)
 	{
 		cmd = (t_command *)current->content;
 		status = create_process(cmd, minishell, pipet);
 		current = current->next;
 	}
 	cmd = (t_command *)current->content;
-	if (!status && !minishell->exit_flag)
+	if (status <= 1 && !minishell->exit_flag)
 		status = last_process(cmd, minishell, pipet);
 	free(pipet);
 	return (status);
