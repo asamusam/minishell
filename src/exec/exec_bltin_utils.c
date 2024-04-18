@@ -21,7 +21,7 @@ int	handle_bltn_ps(t_pipe *pipet, t_command *command, t_info *minishell)
 	{
 		signal(SIGINT, SIG_DFL);
 		signal(SIGQUIT, SIG_DFL);
-		if (handle_blt_redirections(pipet, command) == FAIL)
+		if (handle_redirections(pipet, command) == FAIL)
 			exit(FAIL);
 		exit(handle_builtin(command, minishell));
 	}

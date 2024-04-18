@@ -29,14 +29,14 @@
 # define DUP_ERROR "minishell: dup error"
 # define DUP2_ERROR "minishell: dup2 error"
 # define DIR_ERROR "minishell: cd: No such file or directory"
-# define HOME_ERROR "minishell: cd: HOME not set\n"
-# define ARGS_ERROR "minishell: cd: too many arguments\n"
-# define NUM_ARG_ERROR "minishell: exit: numeric argument required\n"
-# define EX_ARGS_ERROR "minishell: exit: too many args\n"
-# define EXPORT_ERROR "minishell: export: not a valid identifier\n"
-# define PIPET_ERROR "minishell: pipet error\n"
+# define HOME_ERROR "minishell: cd: HOME not set"
+# define ARGS_ERROR "minishell: cd: too many arguments"
+# define NUM_ARG_ERROR "minishell: exit: numeric argument required"
+# define EX_ARGS_ERROR "minishell: exit: too many args"
+# define EXPORT_ERROR "minishell: export: not a valid identifier"
+# define PIPET_ERROR "minishell: pipet error"
 # define WAIT_ERROR "minishell: wait error"
-# define COMMAND_ERROR "minishell: command error"
+# define COMMAND_ERROR "minishell: command error: command not found"
 # define EXECVE_ERROR "minishell: execve error"
 
 typedef struct s_pipe
@@ -90,5 +90,5 @@ void	get_keyval(char *input, char **key, char **value);
 void	set_envp(t_info *minishell, char **envp);
 void	set_pwds(t_info *minishell);
 t_list	*create_envp_node(char *key, char *value);
-
+int	handle_last_blt_redirection(t_pipe *pipet, t_command *command);
 #endif

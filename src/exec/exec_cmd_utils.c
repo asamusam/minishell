@@ -108,15 +108,15 @@ int	handle_input(t_command *command, t_info *minishell)
 		cmd = get_cmd(minishell->path, args[0]);
 	if (!cmd)
 	{
-		print_error(COMMAND_ERROR, PERROR);
+		print_error(COMMAND_ERROR, STDERR);
 		free_split(args);
-		return (126);
+		return (127);
 	}
 	if (execve(cmd, args, minishell->envp) == -1)
 	{
 		free_split(args);
 		print_error(EXECVE_ERROR, PERROR);
-		return (127);
+		return (126);
 	}
 	return (SUCCESS);
 }
