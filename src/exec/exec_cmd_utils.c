@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_cmd_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 12:36:09 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/17 14:37:14 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/18 01:11:19 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,7 @@ int	handle_input(t_command *command, t_info *minishell)
 		print_error(EXECVE_ERROR, PERROR);
 		return (127);
 	}
-	return (FAIL);
+	return (SUCCESS);
 }
 
 int	handle_cmd_process(t_pipe *pipet, t_command *command, t_info *minishell)

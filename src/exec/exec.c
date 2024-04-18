@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asamuilk <asamuilk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 09:04:55 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/17 17:09:36 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/17 22:11:29 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	last_process(t_command *command, t_info *minishell, t_pipe *pipet)
 	int		status;
 
 	status = SUCCESS;
-	if (!is_buitin(command->args->content))
+	if (!is_builtin(command->args->content))
 		status = handle_lst_cmd_process(pipet, command, minishell);
 	else
 	{
@@ -71,8 +71,8 @@ int	create_process(t_command *command, t_info *minishell, t_pipe *pipet)
 		return (FAIL);
 	status = SUCCESS;
 	if (pipe(pipet->pipefd) == -1)
-		return (PIPE_ERROR, PERROR);
-	if (!is_buitin(command->args->content))
+		return (print_error(PIPE_ERROR, PERROR));
+	if (!is_builtin(command->args->content))
 		status = handle_cmd_process(pipet, command, minishell);
 	else
 		status = handle_bltn_process(pipet, command, minishell);

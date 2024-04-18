@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 12:17:56 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/17 14:10:16 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/17 22:11:29 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ int		handle_export(t_list *args, t_info *minishell);
 int		handle_unset(t_list *args, t_info *minishell);
 int		handle_env(t_info *minishell);
 int		handle_exit(t_list *args, t_info *minishell);
-int		is_buitin(char *cmd);
+int		is_builtin(char *cmd);
 int		handle_builtin(t_command *command, t_info *minishell);
 int		handle_input(t_command *command, t_info *minishell);
 int		print_export(t_info *minishell);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_bltin_utils.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 10:46:53 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/17 14:00:18 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/17 22:11:29 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int	handle_bltn_process(t_pipe *pipet, t_command *command, t_info *minishell)
  * Returns:
  * Number corresponding to cmd, 0 if not built-in
  */
-int	is_buitin(char *cmd)
+int	is_builtin(char *cmd)
 {
 	if (!ft_strcmp("echo", cmd))
 		return (1);
@@ -73,7 +73,7 @@ int	handle_builtin(t_command *command, t_info *minishell)
 	t_list	*args;
 
 	args = command->args;
-	n = is_buitin(args->content);
+	n = is_builtin(args->content);
 	if (n == 1)
 		return (handle_echo(args));
 	else if (n == 2)
