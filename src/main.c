@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 14:55:35 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/18 03:18:15 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/18 15:22:46 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,6 @@ void	exit_clean(t_info *minishell)
 	exit(minishell->exit_code);
 }
 
-int	exec_test(t_list *commands, t_info *minishell);
-
 void	run_line(char *line, t_info *minishell)
 {
 	t_list	*tokens;
@@ -34,14 +32,8 @@ void	run_line(char *line, t_info *minishell)
 	if (tokens)
 		commands = parser(tokens, minishell);
 	if (commands)
-<<<<<<< HEAD
 	{
-		minishell->exit_code = exec_test(commands, minishell);
-		//minishell->exit_code = exec(commands, minishell);
-=======
-	{	
 		minishell->exit_code = exec(commands, minishell);
->>>>>>> 57904fc (Update main.c)
 		ft_lstclear(&commands, free_command);
 	}
 	else
