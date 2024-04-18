@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 09:04:55 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/17 14:41:37 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/18 11:19:08 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	last_process(t_command *command, t_info *minishell, t_pipe *pipet)
 		status = handle_lst_cmd_process(pipet, command, minishell);
 	else
 	{
-		handle_last_redirection(pipet, command);
+		status = handle_last_blt_redirection(pipet, command);
 		status = handle_builtin(command, minishell);
 		if (command->file_in >= 0)
 		{

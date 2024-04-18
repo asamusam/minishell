@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 11:26:35 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/17 14:27:08 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/18 11:11:47 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int	handle_echo(t_list *args)
 	is_n = false;
 	current = args;
 	current = current->next;
-	if (current && !ft_strcmp((char *)current->content, "-n"))
+	while (current && !ft_strcmp((char *)current->content, "-n"))
 	{
 		is_n = true;
 		current = current->next;
