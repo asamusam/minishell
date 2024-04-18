@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 21:39:09 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/18 03:10:57 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/18 13:37:37 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,12 +72,12 @@ void	child(t_command *command, t_info *minishell, int in, int out)
 	signal(SIGQUIT, SIG_DFL);
 	if (redir_stdin(&original_stdin, command->file_in) == FAIL)
 		exit(FAIL);
-	else if (in != -1)
-		dup2(in, STDIN_FILENO);
+	else if (in != -1 && dup2(in, STDIN_FILENO) == -1)
+		exit(FAIL);
 	if (redir_stdout(&original_stdout, command->file_out) == FAIL)
 		exit(FAIL);
-	else if (out != -1)
-		dup2(out, STDOUT_FILENO);
+	else if (out != -1 && dup2(out, STDOUT_FILENO) == -1)
+		exit(FAIL);
 	if (command->args)
 		status = handle_input(command, minishell);
 	else
@@ -166,6 +166,8 @@ int	close_pipes(int **pipes, int i, int i_max)
 	{
 		if (close(pipes[i][0]) == -1)
 			return (FAIL);
+		if (close(pipes[i][1]) == -1)
+			return (FAIL);
 	}
 	return (SUCCESS);
 }
@@ -194,11 +196,9 @@ int	run_pipe_segment(int i, int **pipes, t_list *commands, t_info *minishell)
 {
 	t_command	*command;
 	int			status;
-	int			size;
 
-	size = ft_lstsize(commands);
 	command = (t_command *)commands->content;
-	if (i > 0 && i < size - 1)
+	if (i > 0 && commands->next)
 		status = run_command(command, minishell, pipes[i - 1][0], pipes[i][1]);
 	else if (i == 0)
 		status = run_command(command, minishell, -1, pipes[i][1]);
