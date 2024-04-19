@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: asamuilk <asamuilk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 21:39:09 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/18 14:41:46 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/19 19:10:34 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,20 +43,20 @@ int	run_single_command(t_list *commands, t_info *minishell)
 	return (status);
 }
 
-int	run_pipe_segment(int i, int **pipes, t_list *commands, t_info *minishell)
+void	run_pipe_segment(int i, int **pipes, t_list *commands, t_info *minishell)
 {
 	t_command	*command;
-	int			status;
 
 	command = (t_command *)commands->content;
 	if (i > 0 && commands->next)
-		status = run_command(command, minishell, pipes[i - 1][0], pipes[i][1]);
+		minishell->processes[i] = run_command(command, minishell, pipes[i - 1][0], pipes[i][1]);
 	else if (i == 0)
-		status = run_command(command, minishell, -1, pipes[i][1]);
+		minishell->processes[i] = run_command(command, minishell, -1, pipes[i][1]);
 	else
-		status = run_command(command, minishell, pipes[i - 1][0], -1);
-	return (status);
+		minishell->processes[i] = run_command(command, minishell, pipes[i - 1][0], -1);
 }
+
+int	wait_last(t_info *minishell, int last);
 
 int	run_pipeline(t_list *commands, t_info *minishell)
 {
@@ -64,25 +64,43 @@ int	run_pipeline(t_list *commands, t_info *minishell)
 	int	i;
 	int	status;
 	int	size;
+	int	child_status;
 
 	i = 0;
 	status = SUCCESS;
 	size = ft_lstsize(commands);
 	pipes = malloc(sizeof(int *) * size);
-	while (commands && !status)
+	minishell->processes = malloc(sizeof(int) * size);
+	while (commands)
 	{
 		pipes[i] = malloc(2 * sizeof(int));
 		if (!pipes || !pipes[i])
 			return (free_pipes_return_fail(pipes, i, MALLOC_ERROR));
 		if (pipe(pipes[i]) == -1)
 			return (free_pipes_return_fail(pipes, i, PIPE_ERROR));
-		status = run_pipe_segment(i, pipes, commands, minishell);
+		run_pipe_segment(i, pipes, commands, minishell);
 		if (close_pipes(pipes, i, size - 1) == FAIL)
 			return (free_pipes_return_fail(pipes, i, PIPE_ERROR));
 		commands = commands->next;
 		i ++;
 	}
-	free_pipes(pipes, i);
+	signal(SIGINT, SIG_IGN);
+	status = wait_last(minishell, size - 1);
+	i = 0;
+	while (i < size)
+	{
+		waitpid(minishell->processes[i++], &child_status, 0);
+		if (WIFSIGNALED(child_status))
+		{
+			if (WTERMSIG(child_status) == SIGINT)
+				printf("\n");
+			else if (WTERMSIG(child_status) == SIGQUIT)
+				printf("Quit (core dumped)\n");
+		}
+	}
+	free(minishell->processes);
+	free_pipes(pipes, size);
+	signal(SIGINT, signal_handler);
 	return (status);
 }
 
