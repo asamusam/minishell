@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 09:04:55 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/18 15:30:47 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/18 22:26:34 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,9 +67,9 @@ int	create_process(t_command *command, t_info *minishell, t_pipe *pipet)
 {
 	int		status;
 
-	if (!command)
-		return (FAIL);
 	status = SUCCESS;
+	if (!command->args)
+		return (status);
 	if (pipe(pipet->pipefd) == -1)
 		return (print_error(PIPE_ERROR, PERROR));
 	if (!is_builtin(command->args->content))
@@ -114,19 +114,19 @@ int	exec(t_list *commands, t_info *minishell)
 	t_command	*cmd;
 
 	status = SUCCESS;
-	if (!((t_command *)commands->content)->args)
+	if (!((t_command *)commands->content)->args && !commands->next)
 		return (status);
 	if (create_pipet(&pipet) == FAIL)
 		return (FAIL);
 	current = commands;
-	while (status <= 1 && current && current->next && !minishell->exit_flag)
+	while (status <= 128 && current && current->next && !minishell->exit_flag)
 	{
 		cmd = (t_command *)current->content;
 		status = create_process(cmd, minishell, pipet);
 		current = current->next;
 	}
 	cmd = (t_command *)current->content;
-	if (status <= 1 && !minishell->exit_flag)
+	if (status <= 128 && !minishell->exit_flag)
 		status = last_process(cmd, minishell, pipet);
 	free(pipet);
 	return (status);

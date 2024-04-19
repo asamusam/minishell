@@ -90,5 +90,6 @@ void	get_keyval(char *input, char **key, char **value);
 void	set_envp(t_info *minishell, char **envp);
 void	set_pwds(t_info *minishell);
 t_list	*create_envp_node(char *key, char *value);
-int	handle_last_blt_redirection(t_pipe *pipet, t_command *command);
+int		handle_last_blt_redirection(t_pipe *pipet, t_command *command);
+
 #endif
