@@ -3,14 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asamuilk <asamuilk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 21:39:09 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/19 19:10:34 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/19 22:37:20 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
+
+void	waiting_signal_handler(int signal)
+{
+	if (signal == SIGINT)
+		printf("\n");
+	else if (signal == SIGQUIT)
+		printf("Quit (core dumped)\n");
+}
 
 int	run_builtin(t_command *command, t_info *minishell)
 {
@@ -30,33 +38,34 @@ int	run_builtin(t_command *command, t_info *minishell)
 	return (status);
 }
 
-int	run_single_command(t_list *commands, t_info *minishell)
+void	run_single_command(t_list *commands, t_info *minishell)
 {
-	int			status;
 	t_command	*command;
 
 	command = (t_command *)commands->content;
 	if (is_builtin(command->args->content))
-		status = run_builtin(command, minishell);
+	{
+		minishell->exit_code = run_builtin(command, minishell);
+		minishell->last_prc = 0;
+	}
 	else
-		status = run_command(command, minishell, -1, -1);
-	return (status);
+		minishell->last_prc = run_command(command, minishell, -1, -1);
 }
 
-void	run_pipe_segment(int i, int **pipes, t_list *commands, t_info *minishell)
+pid_t	run_pipe_part(int i, int **pipes, t_list *commands, t_info *minishell)
 {
 	t_command	*command;
+	pid_t		pid;
 
 	command = (t_command *)commands->content;
 	if (i > 0 && commands->next)
-		minishell->processes[i] = run_command(command, minishell, pipes[i - 1][0], pipes[i][1]);
+		pid = run_command(command, minishell, pipes[i - 1][0], pipes[i][1]);
 	else if (i == 0)
-		minishell->processes[i] = run_command(command, minishell, -1, pipes[i][1]);
+		pid = run_command(command, minishell, -1, pipes[i][1]);
 	else
-		minishell->processes[i] = run_command(command, minishell, pipes[i - 1][0], -1);
+		pid = run_command(command, minishell, pipes[i - 1][0], -1);
+	return (pid);
 }
-
-int	wait_last(t_info *minishell, int last);
 
 int	run_pipeline(t_list *commands, t_info *minishell)
 {
@@ -64,13 +73,11 @@ int	run_pipeline(t_list *commands, t_info *minishell)
 	int	i;
 	int	status;
 	int	size;
-	int	child_status;
 
 	i = 0;
 	status = SUCCESS;
 	size = ft_lstsize(commands);
 	pipes = malloc(sizeof(int *) * size);
-	minishell->processes = malloc(sizeof(int) * size);
 	while (commands)
 	{
 		pipes[i] = malloc(2 * sizeof(int));
@@ -78,41 +85,46 @@ int	run_pipeline(t_list *commands, t_info *minishell)
 			return (free_pipes_return_fail(pipes, i, MALLOC_ERROR));
 		if (pipe(pipes[i]) == -1)
 			return (free_pipes_return_fail(pipes, i, PIPE_ERROR));
-		run_pipe_segment(i, pipes, commands, minishell);
+		minishell->last_prc = run_pipe_part(i, pipes, commands, minishell);
 		if (close_pipes(pipes, i, size - 1) == FAIL)
 			return (free_pipes_return_fail(pipes, i, PIPE_ERROR));
 		commands = commands->next;
 		i ++;
 	}
-	signal(SIGINT, SIG_IGN);
-	status = wait_last(minishell, size - 1);
-	i = 0;
-	while (i < size)
-	{
-		waitpid(minishell->processes[i++], &child_status, 0);
-		if (WIFSIGNALED(child_status))
-		{
-			if (WTERMSIG(child_status) == SIGINT)
-				printf("\n");
-			else if (WTERMSIG(child_status) == SIGQUIT)
-				printf("Quit (core dumped)\n");
-		}
-	}
-	free(minishell->processes);
 	free_pipes(pipes, size);
-	signal(SIGINT, signal_handler);
 	return (status);
 }
 
-int	exec_test(t_list *commands, t_info *minishell)
+void	wait_for_children(t_info *minishell)
 {
 	int	status;
 
-	if (!((t_command *)commands->content)->args)
-		return (SUCCESS);
-	if (!commands->next)
-		status = run_single_command(commands, minishell);
+	signal(SIGINT, waiting_signal_handler);
+	signal(SIGQUIT, waiting_signal_handler);
+	if (waitpid(minishell->last_prc, &status, 0) == -1)
+		minishell->exit_code = print_error(WAIT_ERROR, PERROR);
+	if (WIFEXITED(status))
+		status = WEXITSTATUS(status);
 	else
-		status = run_pipeline(commands, minishell);
-	return (status);
+		status = 128 + WTERMSIG(status);
+	while (wait(NULL) != -1)
+		continue ;
+	minishell->exit_code = status;
+	signal(SIGINT, signal_handler);
+	signal(SIGQUIT, SIG_IGN);
+}
+
+void	exec_test(t_list *commands, t_info *minishell)
+{
+	if (!((t_command *)commands->content)->args && !commands->next)
+	{
+		minishell->exit_code = SUCCESS;
+		return ;
+	}
+	if (!commands->next)
+		run_single_command(commands, minishell);
+	else
+		run_pipeline(commands, minishell);
+	if (minishell->last_prc)
+		wait_for_children(minishell);
 }

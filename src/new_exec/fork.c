@@ -3,22 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   fork.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asamuilk <asamuilk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 14:31:52 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/19 19:09:03 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/19 21:54:32 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
-
-// void	child_signal_handler(int signal)
-// {
-// 	if (signal == SIGINT)
-// 		printf("\n");
-// 	else if (signal == SIGQUIT)
-// 		ft_putendl_fd("Quit (core dumped)", STDOUT_FILENO);
-// }
 
 void	child(t_command *command, t_info *minishell, int in, int out)
 {
@@ -49,20 +41,7 @@ void	child(t_command *command, t_info *minishell, int in, int out)
 	exit(status);
 }
 
-int	wait_last(t_info *minishell, int last)
-{
-	int		child_status;
-	//void	(*parent_handler)(int);
-
-	if (waitpid(minishell->processes[last], &child_status, 0) == -1)
-		return (print_error(WAIT_ERROR, PERROR));
-	if (WIFEXITED(child_status))
-		return (WEXITSTATUS(child_status));
-	else
-		return (128 + WTERMSIG(child_status));
-}
-
-int	run_command(t_command *command, t_info *minishell, int in, int out)
+pid_t	run_command(t_command *command, t_info *minishell, int in, int out)
 {
 	pid_t	pid;
 
