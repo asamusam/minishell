@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 17:18:43 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/18 15:26:36 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/18 21:33:55 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@
 # define FAIL 1
 # define SUCCESS 0
 # define SYNTAX_ERROR "minishell: syntax error"
+# define SYNTAX_FAIL 2
 
 # include <stdio.h>
 # include <stdlib.h>
@@ -89,11 +90,11 @@ void	free_token(void *arg);
 
 // lexer.c
 
-t_list	*lexer(char *line);
+t_list	*lexer(char *line, int *status);
 
 // parser.c
 
-t_list	*parser(t_list *tokens, t_info *minishell);
+t_list	*parser(t_list *tokens, t_info *minishell, int *status);
 
 // parser_free.c
 
