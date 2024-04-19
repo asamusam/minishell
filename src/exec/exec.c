@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 09:04:55 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/17 22:11:29 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/18 22:26:34 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,10 @@ int	last_process(t_command *command, t_info *minishell, t_pipe *pipet)
 
 	status = SUCCESS;
 	if (!is_builtin(command->args->content))
-		status = handle_lst_cmd_process(pipet, command, minishell);
+		status = handle_lst_cmd_ps(pipet, command, minishell);
 	else
 	{
-		handle_last_redirection(pipet, command);
+		status = handle_last_blt_redirection(pipet, command);
 		status = handle_builtin(command, minishell);
 		if (command->file_in >= 0)
 		{
@@ -67,15 +67,15 @@ int	create_process(t_command *command, t_info *minishell, t_pipe *pipet)
 {
 	int		status;
 
-	if (!command)
-		return (FAIL);
 	status = SUCCESS;
+	if (!command->args)
+		return (status);
 	if (pipe(pipet->pipefd) == -1)
 		return (print_error(PIPE_ERROR, PERROR));
 	if (!is_builtin(command->args->content))
-		status = handle_cmd_process(pipet, command, minishell);
+		status = handle_cmd_ps(pipet, command, minishell);
 	else
-		status = handle_bltn_process(pipet, command, minishell);
+		status = handle_bltn_ps(pipet, command, minishell);
 	return (status);
 }
 
@@ -86,13 +86,13 @@ int	create_pipet(t_pipe **pipet)
 		return (print_error(PIPET_ERROR, STDERR));
 	(*pipet)->prev_pipe = dup(0);
 	if ((*pipet)->prev_pipe == -1)
-		return (print_error(DUP2_ERROR, PERROR));
+		return (print_error(DUP_ERROR, PERROR));
 	(*pipet)->orig_stdin = dup(STDIN_FILENO);
 	if ((*pipet)->orig_stdin == -1)
-		return (print_error(DUP2_ERROR, PERROR));
+		return (print_error(DUP_ERROR, PERROR));
 	(*pipet)->orig_stdout = dup(STDOUT_FILENO);
 	if ((*pipet)->orig_stdout == -1)
-		return (print_error(DUP2_ERROR, PERROR));
+		return (print_error(DUP_ERROR, PERROR));
 	return (SUCCESS);
 }
 
@@ -114,19 +114,19 @@ int	exec(t_list *commands, t_info *minishell)
 	t_command	*cmd;
 
 	status = SUCCESS;
-	if (!((t_command *)commands->content)->args)
+	if (!((t_command *)commands->content)->args && !commands->next)
 		return (status);
 	if (create_pipet(&pipet) == FAIL)
 		return (FAIL);
 	current = commands;
-	while (!status && current && current->next && !minishell->exit_flag)
+	while (status <= 128 && current && current->next && !minishell->exit_flag)
 	{
 		cmd = (t_command *)current->content;
 		status = create_process(cmd, minishell, pipet);
 		current = current->next;
 	}
 	cmd = (t_command *)current->content;
-	if (!status && !minishell->exit_flag)
+	if (status <= 128 && !minishell->exit_flag)
 		status = last_process(cmd, minishell, pipet);
 	free(pipet);
 	return (status);

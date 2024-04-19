@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asamuilk <asamuilk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 14:55:35 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/19 17:17:44 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/19 22:41:37 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,27 +20,25 @@ void	exit_clean(t_info *minishell)
 	exit(minishell->exit_code);
 }
 
-int	exec_test(t_list *commands, t_info *minishell);
-
 void	run_line(char *line, t_info *minishell)
 {
 	t_list	*tokens;
 	t_list	*commands;
+	int		status;
 
 	g_signal = 0;
 	commands = NULL;
 	add_history(line);
-	tokens = lexer(line);
+	tokens = lexer(line, &status);
 	if (tokens)
-		commands = parser(tokens, minishell);
+		commands = parser(tokens, minishell, &status);
 	if (commands)
 	{
-		minishell->exit_code = exec_test(commands, minishell);
-		//minishell->exit_code = exec(commands, minishell);
+		minishell->exit_code = exec(commands, minishell);
 		ft_lstclear(&commands, free_command);
 	}
 	else
-		minishell->exit_code = FAIL;
+		minishell->exit_code = status;
 }
 
 void	shell_loop(t_info *minishell)

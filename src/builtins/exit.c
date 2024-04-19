@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asamuilk <asamuilk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 11:18:10 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/17 18:46:43 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/19 09:59:49 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,23 @@ int	check_status(char *arg)
 {
 	int	status;
 	int	i;
+	int	sign;
 
 	i = 0;
+	sign = 1;
+	if (arg[i] == '-')
+		sign = -1;
+	if (arg[i] == '-' || arg[i] == '+')
+		i++;
 	while (arg[i])
 	{
 		if (!ft_isdigit(arg[i++]))
 			return (-1);
 	}
 	status = ft_atoi(arg);
+	if (sign == -1)
+		status += 256;
+	status %= 256;
 	return (status);
 }
 

@@ -62,7 +62,9 @@ void	free_envvar(void *arg)
  */
 void	free_minishell_info(t_info *minishell)
 {
-	free_split(minishell->path);
-	free_split(minishell->envp);
+	if (minishell->path)
+		free_split(minishell->path);
+	if (minishell->envp)
+		free_split(minishell->envp);
 	ft_lstclear(&minishell->envp_list, free_envvar);
 }

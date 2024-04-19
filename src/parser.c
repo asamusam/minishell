@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 13:16:41 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/10 14:27:35 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/18 21:34:12 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,21 +122,21 @@ int	expand_groups(t_list *groups, t_info *minishell)
  * List of commands, each command containing a list of arguments
  * and file information (t_command type).
  */
-t_list	*parser(t_list *tokens, t_info *minishell)
+t_list	*parser(t_list *tokens, t_info *minishell, int *status)
 {
 	t_list	*groups;
 	t_list	*commands;
 
 	if (check_syntax(tokens) == FAIL)
-		return (free_tokens_return_null(tokens));
+		return (free_tokens_return_null(tokens, status, SYNTAX_FAIL));
 	groups = split_groups(tokens);
 	if (!groups)
-		return (free_tokens_return_null(tokens));
+		return (free_tokens_return_null(tokens, status, FAIL));
 	if (expand_groups(groups, minishell) == FAIL)
-		return (free_groups_return_null(groups));
+		return (free_groups_return_null(groups, status, FAIL));
 	commands = get_commands(groups);
 	if (!commands)
-		return (free_groups_return_null(groups));
+		return (free_groups_return_null(groups, status, FAIL));
 	ft_lstclear(&groups, free_token_list);
 	return (commands);
 }
