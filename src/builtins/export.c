@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 11:25:50 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/17 12:04:40 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/19 09:34:21 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,15 +42,27 @@ int	check_envs(t_info *minishell, char *key, char *value)
 	return (SUCCESS);
 }
 
-void	handle_key_val(t_list *args, char **key, char **value)
+int	handle_key_val(t_list *args, char **key, char **value)
 {
-	if (find_equal((char *)(args->next)->content) == -1)
-	{
-		*key = ft_strdup((char *)(args->next)->content);
-		*value = NULL;
-	}
+	if (find_equal((char *)args->content) == -1)
+		return (-1);
 	else
-		get_keyval((char *)(args->next)->content, key, value);
+		return (get_keyval((char *)args->content, key, value));
+}
+
+void	export_env(t_info *minishell, char **key, char **value)
+{
+	if (!key)
+		return ;
+	if (!minishell->envp_list)
+		minishell->envp_list = create_envp_node(*key, *value);
+	else
+		check_envs(minishell, *key, *value);
+	update_envstr(minishell);
+	set_pwds(minishell);
+	free(*key);
+	if (*value)
+		free(*value);
 }
 
 /*
@@ -63,28 +75,26 @@ void	handle_key_val(t_list *args, char **key, char **value)
  * Returns:
  * Status
  */
-int	handle_export(t_list *args, t_info *info)
+int	handle_export(t_list *args, t_info *minishell)
 {
 	char	*key;
 	char	*value;
+	t_list	*current;
 
 	if (!args->next)
-		return (print_export(info));
-	if (args->next && args->next->next)
-		return (0);
-	if (!check_input((char *)(args->next)->content))
-		return (print_error(EXPORT_ERROR, STDERR));
-	handle_key_val(args, &key, &value);
-	if (!key)
-		return (FAIL);
-	if (!info->envp_list)
-		info->envp_list = create_envp_node(key, value);
-	else
-		check_envs(info, key, value);
-	update_envstr(info);
-	set_pwds(info);
-	free(key);
-	if (value)
-		free(value);
+		return (print_export(minishell));
+	current = args->next;
+	while (current)
+	{
+		if (!check_input((char *)current->content))
+			return (print_error(EXPORT_ERROR, STDERR));
+		if (handle_key_val(current, &key, &value) == -1)
+		{
+			current = current->next;
+			continue ;
+		}
+		export_env(minishell, &key, &value);
+		current = current->next;
+	}
 	return (SUCCESS);
 }
