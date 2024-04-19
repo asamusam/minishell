@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 14:31:52 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/19 21:54:32 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/19 23:40:38 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,9 @@ void	child(t_command *command, t_info *minishell, int in, int out)
 
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
-	if (redir_stdin(&original_stdin, command->file_in) == FAIL)
+	if (redir_stdin(&original_stdin, command->file_in, in) == FAIL)
 		exit(FAIL);
-	else if (in != -1 && dup2(in, STDIN_FILENO) == -1)
-		exit(FAIL);
-	if (redir_stdout(&original_stdout, command->file_out) == FAIL)
-		exit(FAIL);
-	else if (out != -1 && dup2(out, STDOUT_FILENO) == -1)
+	if (redir_stdout(&original_stdout, command->file_out, out) == FAIL)
 		exit(FAIL);
 	if (command->args && !is_builtin(command->args->content))
 		status = handle_input(command, minishell);
@@ -34,9 +30,9 @@ void	child(t_command *command, t_info *minishell, int in, int out)
 		status = handle_builtin(command, minishell);
 	else
 		status = SUCCESS;
-	if (restore_stdin(original_stdin, command->file_in) == FAIL)
+	if (restore_stdin(original_stdin, command->file_in, in) == FAIL)
 		exit(FAIL);
-	if (restore_stdout(original_stdout, command->file_out) == FAIL)
+	if (restore_stdout(original_stdout, command->file_out, out) == FAIL)
 		exit(FAIL);
 	exit(status);
 }

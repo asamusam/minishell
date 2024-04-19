@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 14:55:35 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/19 22:41:37 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/20 00:25:22 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	run_line(char *line, t_info *minishell)
 		commands = parser(tokens, minishell, &status);
 	if (commands)
 	{
-		minishell->exit_code = exec(commands, minishell);
+		execute(commands, minishell);
 		ft_lstclear(&commands, free_command);
 	}
 	else

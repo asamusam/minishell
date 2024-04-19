@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 17:18:43 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/19 22:42:43 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/20 00:32:38 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,6 +107,6 @@ void	print_command(void *arg);
 
 // exec.c
 
-int		exec(t_list *commands, t_info *info);
+void	execute(t_list *commands, t_info *minishell);
 
 #endif

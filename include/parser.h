@@ -6,16 +6,15 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 15:00:30 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/18 22:45:19 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/20 00:31:51 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PARSER_H
 # define PARSER_H
-# include "libft.h"
 # include "minishell.h"
-# include "unistd.h"
-# include "fcntl.h"
+# include <unistd.h>
+# include <fcntl.h>
 
 typedef struct s_command
 {
