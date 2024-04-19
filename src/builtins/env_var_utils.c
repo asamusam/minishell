@@ -51,6 +51,8 @@ int	update_envp(t_list *envp_list, char *value)
 	free(((t_envp *)envp_list->content)->value);
 	if (value)
 		((t_envp *)envp_list->content)->value = ft_strdup(value);
+	else
+		((t_envp *)envp_list->content)->value = NULL;
 	return (SUCCESS);
 }
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 12:17:56 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/18 22:13:30 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/19 09:20:46 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ int		update_envp_pwd(t_info *minishell, char *newpwd);
 int		update_envp(t_list *envp_list, char *value);
 int		handle_parent(t_pipe *pipet);
 int		handle_last_parent(t_pipe *pipet);
+int		get_keyval(char *input, char **key, char **value);
 char	*get_cmd(char **path, char *command);
 char	**get_args(t_list *arg_lst);
 char	*find_envp_line(char *key, char **envp);
@@ -86,9 +87,9 @@ void	del_cmd_content(void *content);
 void	del_lst_content(void *content);
 void	del_env_content(void *content);
 void	free_info(t_info *minishell);
-void	get_keyval(char *input, char **key, char **value);
 void	set_envp(t_info *minishell, char **envp);
 void	set_pwds(t_info *minishell);
 t_list	*create_envp_node(char *key, char *value);
 int		handle_last_blt_redirection(t_pipe *pipet, t_command *command);
+
 #endif

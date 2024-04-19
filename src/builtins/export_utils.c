@@ -6,7 +6,7 @@
 /*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 09:32:21 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/16 14:27:05 by mmughedd         ###   ########.fr       */
+/*   Updated: 2024/04/19 09:37:39 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,9 @@ int	print_export(t_info *minishell)
 	t_list	*current;
 	t_envp	*envp;
 
-	current = minishell->envp_list;
+	current = NULL;
+	if (minishell->envp_list)
+		current = minishell->envp_list;
 	while (current)
 	{
 		envp = (t_envp *)current->content;
@@ -72,7 +74,7 @@ int	find_equal(char *input)
  * Returns:
  * Status
  */
-void	get_keyval(char *input, char **key, char **value)
+int	get_keyval(char *input, char **key, char **value)
 {
 	int	equal_len;
 	int	len;
@@ -89,6 +91,7 @@ void	get_keyval(char *input, char **key, char **value)
 		*key = ft_substr(input, 0, equal_len);
 		*value = ft_substr(input, equal_len + 1, len - equal_len);
 	}
+	return (SUCCESS);
 }
 
 /*
