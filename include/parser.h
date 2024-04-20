@@ -6,19 +6,15 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 15:00:30 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/04 17:45:54 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/20 00:31:51 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PARSER_H
 # define PARSER_H
-# define SYNTAX_ERROR "minishell: syntax error"
-# define FAIL 0
-# define SUCCESS 1
-# include "libft.h"
 # include "minishell.h"
-# include "unistd.h"
-# include "fcntl.h"
+# include <unistd.h>
+# include <fcntl.h>
 
 typedef struct s_command
 {
@@ -54,8 +50,8 @@ int			expand(t_list *tokens, t_info *minishell);
 void		free_command(void *arg);
 t_command	*free_command_return_null(t_command *command);
 t_list		*free_commands_return_null(t_list *commands);
-t_list		*free_tokens_return_null(t_list *tokens);
-t_list		*free_groups_return_null(t_list *groups);
+t_list		*free_tokens_return_null(t_list *tokens, int *status, int value);
+t_list		*free_groups_return_null(t_list *groups, int *status, int value);
 
 // parser_print.c
 
@@ -80,6 +76,6 @@ void		free_token_list(void *arg);
 int			check_syntax(t_list *tokens);
 t_list		*split_groups(t_list *tokens);
 int			expand_groups(t_list *groups, t_info *minishell);
-t_list		*parser(t_list *tokens, t_info *minishell);
+t_list		*parser(t_list *tokens, t_info *minishell, int *status);
 
 #endif

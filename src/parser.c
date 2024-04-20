@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 13:16:41 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/03 18:30:38 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/18 21:34:12 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
  * - tokens — list of tokens
  * 
  * Returns:
- * Zero if there is an error and one if there is not.
+ * One if there is an error and zero if there is not.
  */
 int	check_syntax(t_list *tokens)
 {
@@ -44,7 +44,7 @@ int	check_syntax(t_list *tokens)
 		(REDIRECT_OUT <= prev_type && prev_type <= REDIRECT_INSOURCE))
 		return (print_error(SYNTAX_ERROR, STDERR));
 	else
-		return (1);
+		return (SUCCESS);
 }
 
 /*
@@ -94,7 +94,7 @@ t_list	*split_groups(t_list *tokens)
  * - minishell — general info structure
  * 
  * Returns:
- * One on success and zero if memory allocation fails.
+ * Zero on success and one if memory allocation fails.
  */
 int	expand_groups(t_list *groups, t_info *minishell)
 {
@@ -103,7 +103,7 @@ int	expand_groups(t_list *groups, t_info *minishell)
 	temp = groups;
 	while (temp)
 	{
-		if (!expand((t_list *)temp->content, minishell))
+		if (expand((t_list *)temp->content, minishell) == FAIL)
 			return (FAIL);
 		temp = temp->next;
 	}
@@ -122,21 +122,21 @@ int	expand_groups(t_list *groups, t_info *minishell)
  * List of commands, each command containing a list of arguments
  * and file information (t_command type).
  */
-t_list	*parser(t_list *tokens, t_info *minishell)
+t_list	*parser(t_list *tokens, t_info *minishell, int *status)
 {
 	t_list	*groups;
 	t_list	*commands;
 
-	if (!check_syntax(tokens))
-		return (free_tokens_return_null(tokens));
+	if (check_syntax(tokens) == FAIL)
+		return (free_tokens_return_null(tokens, status, SYNTAX_FAIL));
 	groups = split_groups(tokens);
 	if (!groups)
-		return (free_tokens_return_null(tokens));
-	if (!expand_groups(groups, minishell))
-		return (free_groups_return_null(groups));
+		return (free_tokens_return_null(tokens, status, FAIL));
+	if (expand_groups(groups, minishell) == FAIL)
+		return (free_groups_return_null(groups, status, FAIL));
 	commands = get_commands(groups);
 	if (!commands)
-		return (free_groups_return_null(groups));
+		return (free_groups_return_null(groups, status, FAIL));
 	ft_lstclear(&groups, free_token_list);
 	return (commands);
 }

@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 19:38:26 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/04 16:45:32 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/18 21:32:49 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,10 +79,11 @@ t_list	*free_commands_return_null(t_list *commands)
  * Returns:
  * NULL.
  */
-t_list	*free_tokens_return_null(t_list *tokens)
+t_list	*free_tokens_return_null(t_list *tokens, int *status, int value)
 {
 	if (tokens)
 		ft_lstclear(&tokens, free_token);
+	*status = value;
 	return (NULL);
 }
 
@@ -96,9 +97,10 @@ t_list	*free_tokens_return_null(t_list *tokens)
  * Returns:
  * NULL.
  */
-t_list	*free_groups_return_null(t_list *groups)
+t_list	*free_groups_return_null(t_list *groups, int *status, int value)
 {
 	if (groups)
 		ft_lstclear(&groups, free_token_list);
+	*status = value;
 	return (NULL);
 }

@@ -3,14 +3,34 @@
 /*                                                        :::      ::::::::   */
 /*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: mmughedd <mmughedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 17:02:42 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/04 17:02:52 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/15 15:14:21 by mmughedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+/*
+ * Frees all the memory associated with ft_split() return.
+ * 
+ * Arguments:
+ * - arr — array of strings returned by ft_split()
+ * 
+ * Returns:
+ * Nothing.
+ */
+void	free_split(char **arr)
+{
+	int	i;
+
+	i = 0;
+	while (arr[i])
+		free(arr[i++]);
+	free(arr[i]);
+	free(arr);
+}
 
 /*
  * Frees all the memory associated with the envp structure.
@@ -29,4 +49,22 @@ void	free_envvar(void *arg)
 	free(var->key);
 	free(var->value);
 	free(var);
+}
+
+/*
+ * Frees all the memory associated with the t_info structure.
+ * 
+ * Arguments:
+ * - minishell — pointer to a structure of type t_info.
+ * 
+ * Returns:
+ * Nothing.
+ */
+void	free_minishell_info(t_info *minishell)
+{
+	if (minishell->path)
+		free_split(minishell->path);
+	if (minishell->envp)
+		free_split(minishell->envp);
+	ft_lstclear(&minishell->envp_list, free_envvar);
 }

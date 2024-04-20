@@ -6,45 +6,57 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 14:55:35 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/04 17:15:13 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/20 00:25:22 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+void	exit_clean(t_info *minishell)
+{
+	printf("exit\n");
+	free_minishell_info(minishell);
+	rl_clear_history();
+	exit(minishell->exit_code);
+}
+
+void	run_line(char *line, t_info *minishell)
+{
+	t_list	*tokens;
+	t_list	*commands;
+	int		status;
+
+	g_signal = 0;
+	commands = NULL;
+	add_history(line);
+	tokens = lexer(line, &status);
+	if (tokens)
+		commands = parser(tokens, minishell, &status);
+	if (commands)
+	{
+		execute(commands, minishell);
+		ft_lstclear(&commands, free_command);
+	}
+	else
+		minishell->exit_code = status;
+}
+
 void	shell_loop(t_info *minishell)
 {
 	char	*line;
-	t_list	*tokens;
-	t_list	*commands;
 
-	line = readline("-->");
-	while (line)
+	while (!minishell->exit_flag)
 	{
-		if (*line)
-		{
-			g_signal = 0;
-			add_history(rl_line_buffer);
-			tokens = lexer(line);
-			if (tokens)
-			{
-				commands = parser(tokens, minishell);
-				// executor goes here (if commands)
-				ft_lstiter(commands, print_command); // temporary
-				ft_lstclear(&commands, free_command); // temporary
-			}
-		}
-		if (g_signal == SIGINT)
-			minishell->exit_code = g_signal + 128; // for cases where we get ctrl-c before the executor (heredoc or interactive mode)
-		else
-			minishell->exit_code = 0; // temporary (normally, the executor sets the exit code)
-		free(line);
 		line = readline("-->");
+		if (!line)
+			exit_clean(minishell);
+		else if (!*line && g_signal)
+			minishell->exit_code = g_signal + 128;
+		else
+			run_line(line, minishell);
+		free(line);
 	}
-	printf("exit\n");
-	ft_lstclear(&minishell->envp_list, free_envvar);
-	rl_clear_history();
-	exit(minishell->exit_code);
+	exit_clean(minishell);
 }
 
 int	main(int ac, char **av, char **envp)

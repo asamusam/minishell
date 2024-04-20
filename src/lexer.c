@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 13:35:22 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/04 17:29:07 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/18 21:36:03 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ int	get_token(t_list **token_lst, char *line)
  * Returns:
  * List of type t_list with a t_token structure as a content of each node.
  */
-t_list	*lexer(char *line)
+t_list	*lexer(char *line, int *status)
 {
 	int		i;
 	int		len;
@@ -65,10 +65,14 @@ t_list	*lexer(char *line)
 	while (line[i])
 	{
 		len = get_token(&token_lst, line + i);
-		if (!len)
+		if (len <= 0)
 		{
 			if (token_lst)
 				ft_lstclear(&token_lst, free_token);
+			if (len == -2)
+				*status = SYNTAX_FAIL;
+			else
+				*status = FAIL;
 			return (NULL);
 		}
 		i = i + len;

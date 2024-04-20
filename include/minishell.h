@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 17:18:43 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/04 17:28:32 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/20 00:32:38 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,10 @@
 // error handling
 # define PERROR 0
 # define STDERR 1
+# define FAIL 1
+# define SUCCESS 0
+# define SYNTAX_ERROR "minishell: syntax error"
+# define SYNTAX_FAIL 2
 
 # include <stdio.h>
 # include <stdlib.h>
@@ -51,13 +55,22 @@ typedef struct s_envp
 
 typedef struct s_info
 {
+	char			**path;
+	char			**envp;
+	char			*pwd;
+	char			*oldpwd;
+	char			*home;
 	t_list			*envp_list;
+	int				exit_flag;
 	int				exit_code;
+	int				last_prc;
 }	t_info;
 
 // free.c
 
+void	free_split(char **arr);
 void	free_envvar(void *arg);
+void	free_minishell_info(t_info *minishell);
 
 // init.c
 
@@ -75,15 +88,14 @@ int		print_error(char *message, int type);
 void	print_envvar(void *arg);
 void	print_token(void *arg);
 void	free_token(void *arg);
-void	free_split(char **arr);
 
 // lexer.c
 
-t_list	*lexer(char *line);
+t_list	*lexer(char *line, int *status);
 
 // parser.c
 
-t_list	*parser(t_list *tokens, t_info *minishell);
+t_list	*parser(t_list *tokens, t_info *minishell, int *status);
 
 // parser_free.c
 
@@ -92,5 +104,9 @@ void	free_command(void *arg);
 // parser_print.c
 
 void	print_command(void *arg);
+
+// exec.c
+
+void	execute(t_list *commands, t_info *minishell);
 
 #endif

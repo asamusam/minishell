@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 19:41:43 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/04 16:45:07 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/10 14:46:11 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ t_command	*init_command(void)
  * - value — the argument value
  * 
  * Returns:
- * One on success and zero when memory allocation fails.
+ * Zero on success and one when memory allocation fails.
  */
 int	add_arg(t_list **args, char *value)
 {
@@ -70,7 +70,7 @@ int	add_arg(t_list **args, char *value)
  * - cmd — the command structure to add to the list
  * 
  * Returns:
- * One on success and zero when memory allocation fails.
+ * Zero on success and one when memory allocation fails.
  */
 int	add_command(t_list **commands, t_command *cmd)
 {
@@ -107,14 +107,14 @@ t_command	*get_command(t_list *group)
 	while (tkns)
 	{
 		tkn = (t_token *)tkns->content;
-		if (is_expandable(tkn->type) && !add_arg(&cmd->args, tkn->value))
+		if (is_expandable(tkn->type) && add_arg(&cmd->args, tkn->value) == FAIL)
 			return (free_command_return_null(cmd));
 		else if (REDIRECT_OUT <= tkn->type && tkn->type <= REDIRECT_INSOURCE)
 		{
 			type = tkn->type;
 			while (!is_expandable(((t_token *)tkns->content)->type))
 				tkns = tkns->next;
-			if (!handle_redirect(type, ((t_token *)tkns->content)->value, cmd))
+			if (handle_redirect(type, ((t_token *)tkns->content)->value, cmd))
 				return (free_command_return_null(cmd));
 		}
 		tkns = tkns->next;
@@ -140,7 +140,7 @@ t_list	*get_commands(t_list *groups)
 	while (groups)
 	{
 		command = get_command(groups);
-		if (!command || !add_command(&commands, command))
+		if (!command || add_command(&commands, command) == FAIL)
 		{
 			if (errno)
 				print_error("minishell parser", PERROR);
