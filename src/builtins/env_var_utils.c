@@ -82,6 +82,13 @@ t_list	*create_envp_node(char *key, char *value)
 	return (ft_lstnew((void *)node));
 }
 
+void	replace_pwd(t_list **envp_list, char *newpwd, t_info *minishell)
+{
+	free(((t_envp *)(*envp_list)->content)->value);
+	((t_envp *)(*envp_list)->content)->value = ft_strdup(newpwd);
+	minishell->pwd = ((t_envp *)(*envp_list)->content)->value;
+}
+
 /*
  * Updates PWD and OLDPWD env variables
  *
@@ -100,15 +107,13 @@ int	update_envp_pwd(t_info *minishell, char *newpwd)
 
 	envp_list = minishell->envp_list;
 	oldpwd = ft_strdup(minishell->pwd);
+	if (minishell->oldpwd == NULL)
+		ft_lstadd_back(&envp_list, create_envp_node("OLDPWD", NULL));
 	while (envp_list)
 	{
 		key = ((t_envp *)envp_list->content)->key;
 		if (key && !ft_strncmp(key, "PWD", 3))
-		{
-			free(((t_envp *)envp_list->content)->value);
-			((t_envp *)envp_list->content)->value = ft_strdup(newpwd);
-			minishell->pwd = ((t_envp *)envp_list->content)->value;
-		}
+			replace_pwd(&envp_list, newpwd, minishell);
 		else if (key && !ft_strncmp(key, "OLDPWD", 6))
 		{
 			free(((t_envp *)envp_list->content)->value);
