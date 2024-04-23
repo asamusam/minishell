@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 14:31:52 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/23 14:25:02 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/23 18:49:46 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,22 +29,23 @@ static int	run_child(t_command *command, t_info *minishell, int in, int out)
 	return (status);
 }
 
-static int	child(t_command *command, t_info *msh, int i)
+static void	child(t_command *command, t_info *msh, int i)
 {
 	int	ecode;
 
 	if (msh->psize == 0)
 		ecode = run_child(command, msh, -1, -1);
-	else if (i > 0 && i < msh->psize)
-	{
-		ecode = run_child(command, msh, msh->pipes[i - 1][0], msh->pipes[i][1]);
-		close(msh->pipes[i][0]);
-		close(msh->pipes[i][1]);
-	}
 	else if (i == 0)
 	{
 		close(msh->pipes[i][0]);
 		ecode = run_child(command, msh, -1, msh->pipes[i][1]);
+		close(msh->pipes[i][1]);
+	}
+	else if (i > 0 && i < msh->psize)
+	{
+		close(msh->pipes[i][0]);
+		ecode = run_child(command, msh, msh->pipes[i - 1][0], msh->pipes[i][1]);
+		close(msh->pipes[i - 1][0]);
 		close(msh->pipes[i][1]);
 	}
 	else

@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 14:33:16 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/23 14:25:29 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/23 17:44:25 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,13 +40,17 @@ int	wait_for_children(t_info *minishell)
 	return (status);
 }
 
-int	close_pipes(t_info *msh, int i)
+void	close_pipes(t_info *msh, int i)
 {
-	if (i > 0 && close(msh->pipes[i - 1][0]) == -1)
-		return (FAIL);
-	if (i < msh->psize && close(msh->pipes[i][1]) == -1)
-		return (FAIL);
-	return (SUCCESS);
+	if (i == 0)
+		close(msh->pipes[i][1]);
+	else if (i > 0 && i < msh->psize)
+	{
+		close(msh->pipes[i - 1][0]);
+		close(msh->pipes[i][1]);
+	}
+	else
+		close(msh->pipes[i - 1][0]);
 }
 
 void	free_pipes(int **pipes, int size)

@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 21:39:09 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/23 14:08:46 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/23 17:50:46 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,8 +80,7 @@ static int	run_pipeline(t_list *commands, t_info *msh)
 		msh->last_prc = run_command(command, msh, i);
 		if (msh->last_prc == -1)
 			return (free_pipes_fail(msh->pipes, msh->psize, FORK_ERROR));
-		if (close_pipes(msh, i) == FAIL)
-			return (free_pipes_fail(msh->pipes, msh->psize, CLOSE_ERROR));
+		close_pipes(msh, i);
 		commands = commands->next;
 		i ++;
 	}
