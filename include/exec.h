@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 12:17:56 by mmughedd          #+#    #+#             */
-/*   Updated: 2024/04/20 00:30:53 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/23 14:25:49 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 # include <sys/types.h>
 # include <sys/wait.h>
-# include <linux/limits.h>
+# include <limits.h>
 # include <stdbool.h>
 # include "parser.h"
 
@@ -64,15 +64,15 @@ void	set_envp(t_info *minishell, char **envp);
 void	set_pwds(t_info *minishell);
 t_list	*create_envp_node(char *key, char *value);
 
-int		redir_stdin(int	*original_stdin, int fd, int pipe);
-int		redir_stdout(int *original_stdout, int fd, int pipe);
-int		restore_stdin(int original_stdin, int fd, int pipe);
-int		restore_stdout(int original_stdout, int fd, int pipe);
-int		close_pipes(int **pipes, int i, int i_max);
+int		redir_stdin(int fd, int pipe);
+int		redir_stdout(int fd, int pipe);
+int		backup_stdin_stdout(int *in, int *out, t_command *command);
+int		restore_stdin(int original_stdin);
+int		restore_stdout(int original_stdout);
+int		close_pipes(t_info *msh, int i);
 void	free_pipes(int **pipes, int size);
-int		free_pipes_return_fail(int **pipes, int size, char *error_type);
-int		run_command(t_command *command, t_info *minishell, int in, int out);
-void	waiting_signal_handler(int signal);
-void	wait_for_children(t_info *minishell);
+int		free_pipes_fail(int **pipes, int size, char *error_type);
+pid_t	run_command(t_command *command, t_info *msh, int i);
+int		wait_for_children(t_info *minishell);
 
 #endif

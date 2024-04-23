@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   from_exec.c                                        :+:      :+:    :+:   */
+/*   commands.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/20 00:11:32 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/20 00:16:18 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/22 23:12:00 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ char	*get_cmd(char **path, char *command)
 	char	*cmd;
 	int		i;
 
-	if (strchr(command, '/'))
+	if (ft_strchr(command, '/'))
 	{
 		if (!access(command, 0))
 			return (command);
