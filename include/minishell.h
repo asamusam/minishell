@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 17:18:43 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/20 00:32:38 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/23 12:02:42 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,15 +55,17 @@ typedef struct s_envp
 
 typedef struct s_info
 {
-	char			**path;
-	char			**envp;
-	char			*pwd;
-	char			*oldpwd;
-	char			*home;
-	t_list			*envp_list;
-	int				exit_flag;
-	int				exit_code;
-	int				last_prc;
+	char	**path;
+	char	**envp;
+	char	*pwd;
+	char	*oldpwd;
+	char	*home;
+	t_list	*envp_list;
+	int		exit_flag;
+	int		exit_code;
+	int		last_prc;
+	int		**pipes;
+	int		psize;
 }	t_info;
 
 // free.c
@@ -107,6 +109,6 @@ void	print_command(void *arg);
 
 // exec.c
 
-void	execute(t_list *commands, t_info *minishell);
+int		execute(t_list *commands, t_info *minishell);
 
 #endif

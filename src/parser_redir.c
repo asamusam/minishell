@@ -6,7 +6,7 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 20:31:52 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/10 14:34:58 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/23 14:34:06 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,13 +60,18 @@ int	handle_insource(char *delimiter)
 	int	flag;
 	int	mode;
 
-	flag = O_CREAT | O_TRUNC | O_WRONLY;
-	mode = S_IRUSR | S_IWUSR | S_IROTH;
+	flag = O_RDWR | O_CREAT | O_TRUNC;
+	mode = S_IRUSR | S_IWUSR | S_IROTH | S_IRGRP;
 	fd = open("minishell_heredoc.txt", flag, mode);
 	if (fd == -1)
 		return (-1);
 	if (get_input(delimiter, fd) == FAIL)
+	{
+		close(fd);
 		return (-1);
+	}
+	close(fd);
+	fd = open("minishell_heredoc.txt", O_RDONLY);
 	return (fd);
 }
 

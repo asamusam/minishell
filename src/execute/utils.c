@@ -6,13 +6,13 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 14:33:16 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/20 00:07:16 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/23 17:44:25 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
-void	waiting_signal_handler(int signal)
+static void	waiting_signal_handler(int signal)
 {
 	if (signal == SIGINT)
 		printf("\n");
@@ -20,45 +20,37 @@ void	waiting_signal_handler(int signal)
 		printf("Quit (core dumped)\n");
 }
 
-void	wait_for_children(t_info *minishell)
+int	wait_for_children(t_info *minishell)
 {
-	int	status;
+	int		status;
+	void	(*old_handler)(int);
 
-	signal(SIGINT, waiting_signal_handler);
+	old_handler = signal(SIGINT, waiting_signal_handler);
 	signal(SIGQUIT, waiting_signal_handler);
 	if (waitpid(minishell->last_prc, &status, 0) == -1)
-		minishell->exit_code = print_error(WAIT_ERROR, PERROR);
+		return (print_error(WAIT_ERROR, PERROR));
 	if (WIFEXITED(status))
 		status = WEXITSTATUS(status);
 	else
 		status = 128 + WTERMSIG(status);
 	while (wait(NULL) != -1)
 		continue ;
-	minishell->exit_code = status;
-	signal(SIGINT, signal_handler);
+	signal(SIGINT, old_handler);
 	signal(SIGQUIT, SIG_IGN);
+	return (status);
 }
 
-int	close_pipes(int **pipes, int i, int i_max)
+void	close_pipes(t_info *msh, int i)
 {
-	if (i > 0)
+	if (i == 0)
+		close(msh->pipes[i][1]);
+	else if (i > 0 && i < msh->psize)
 	{
-		if (close(pipes[i - 1][0]) == -1)
-			return (FAIL);
+		close(msh->pipes[i - 1][0]);
+		close(msh->pipes[i][1]);
 	}
-	if (i < i_max)
-	{
-		if (close(pipes[i][1]) == -1)
-			return (FAIL);
-	}
-	if (i == i_max)
-	{
-		if (close(pipes[i][0]) == -1)
-			return (FAIL);
-		if (close(pipes[i][1]) == -1)
-			return (FAIL);
-	}
-	return (SUCCESS);
+	else
+		close(msh->pipes[i - 1][0]);
 }
 
 void	free_pipes(int **pipes, int size)
@@ -71,7 +63,7 @@ void	free_pipes(int **pipes, int size)
 	free(pipes);
 }
 
-int	free_pipes_return_fail(int **pipes, int size, char *error_type)
+int	free_pipes_fail(int **pipes, int size, char *error_type)
 {
 	if (pipes)
 		free_pipes(pipes, size);

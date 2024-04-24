@@ -6,98 +6,95 @@
 /*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 21:39:09 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/20 00:36:12 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/04/23 17:50:46 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
-int	run_builtin(t_command *command, t_info *minishell)
+static int	run_builtin(t_command *command, t_info *minishell)
 {
-	int		original_stdin;
-	int		original_stdout;
+	int		in;
+	int		out;
 	int		status;
 
-	if (redir_stdin(&original_stdin, command->file_in, -1) == FAIL)
+	if (backup_stdin_stdout(&in, &out, command) == FAIL)
 		return (FAIL);
-	if (redir_stdout(&original_stdout, command->file_out, -1) == FAIL)
+	if (redir_stdin(command->file_in, -1) == FAIL)
+		return (FAIL);
+	if (redir_stdout(command->file_out, -1) == FAIL)
 		return (FAIL);
 	status = handle_builtin(command, minishell);
-	if (restore_stdin(original_stdin, command->file_in, -1) == FAIL)
+	if (command->file_in && restore_stdin(in) == FAIL)
 		return (FAIL);
-	if (restore_stdout(original_stdout, command->file_out, -1) == FAIL)
+	if (command->file_out && restore_stdout(out) == FAIL)
 		return (FAIL);
 	return (status);
 }
 
-void	run_single_command(t_list *commands, t_info *minishell)
+static int	run_single_command(t_list *commands, t_info *minishell)
 {
 	t_command	*command;
 
 	command = (t_command *)commands->content;
+	minishell->psize = 0;
 	if (is_builtin(command->args->content))
-	{
-		minishell->exit_code = run_builtin(command, minishell);
-		minishell->last_prc = 0;
-	}
+		return (run_builtin(command, minishell));
 	else
-		minishell->last_prc = run_command(command, minishell, -1, -1);
+		minishell->last_prc = run_command(command, minishell, 0);
+	return (wait_for_children(minishell));
 }
 
-pid_t	run_pipe(int i, int **pipes, t_list *commands, t_info *minishell)
+static int	create_pipes(t_info *minishell)
 {
-	t_command	*command;
-	pid_t		pid;
-
-	command = (t_command *)commands->content;
-	if (i > 0 && commands->next)
-		pid = run_command(command, minishell, pipes[i - 1][0], pipes[i][1]);
-	else if (i == 0)
-		pid = run_command(command, minishell, -1, pipes[i][1]);
-	else
-		pid = run_command(command, minishell, pipes[i - 1][0], -1);
-	return (pid);
-}
-
-int	run_pipeline(t_list *commands, t_info *minishell)
-{
-	int	**pipes;
 	int	i;
-	int	status;
-	int	size;
 
 	i = 0;
-	status = SUCCESS;
-	size = ft_lstsize(commands);
-	pipes = malloc(sizeof(int *) * size);
+	minishell->pipes = malloc(sizeof(int *) * minishell->psize);
+	if (!minishell->pipes)
+		return (print_error(MALLOC_ERROR, PERROR));
+	while (i < minishell->psize)
+	{
+		minishell->pipes[i] = malloc(2 * sizeof(int));
+		if (!minishell->pipes[i])
+			return (free_pipes_fail(minishell->pipes, i, MALLOC_ERROR));
+		i ++;
+	}
+	return (SUCCESS);
+}
+
+static int	run_pipeline(t_list *commands, t_info *msh)
+{
+	int			i;
+	t_command	*command;
+
+	i = 0;
+	msh->psize = ft_lstsize(commands) - 1;
+	if (create_pipes(msh) == FAIL)
+		return (FAIL);
 	while (commands)
 	{
-		pipes[i] = malloc(2 * sizeof(int));
-		if (!pipes || !pipes[i])
-			return (free_pipes_return_fail(pipes, i, MALLOC_ERROR));
-		if (pipe(pipes[i]) == -1)
-			return (free_pipes_return_fail(pipes, i, PIPE_ERROR));
-		minishell->last_prc = run_pipe(i, pipes, commands, minishell);
-		if (close_pipes(pipes, i, size - 1) == FAIL)
-			return (free_pipes_return_fail(pipes, i, PIPE_ERROR));
+		command = (t_command *)commands->content;
+		if (i < msh->psize && pipe(msh->pipes[i]) == -1)
+			return (free_pipes_fail(msh->pipes, msh->psize, PIPE_ERROR));
+		msh->last_prc = run_command(command, msh, i);
+		if (msh->last_prc == -1)
+			return (free_pipes_fail(msh->pipes, msh->psize, FORK_ERROR));
+		close_pipes(msh, i);
 		commands = commands->next;
 		i ++;
 	}
-	free_pipes(pipes, size);
-	return (status);
+	free_pipes(msh->pipes, msh->psize);
+	return (SUCCESS);
 }
 
-void	execute(t_list *commands, t_info *minishell)
+int	execute(t_list *commands, t_info *minishell)
 {
 	if (!((t_command *)commands->content)->args && !commands->next)
-	{
-		minishell->exit_code = SUCCESS;
-		return ;
-	}
+		return (SUCCESS);
 	if (!commands->next)
-		run_single_command(commands, minishell);
-	else
-		run_pipeline(commands, minishell);
-	if (minishell->last_prc)
-		wait_for_children(minishell);
+		return (run_single_command(commands, minishell));
+	else if (run_pipeline(commands, minishell) == FAIL)
+		return (FAIL);
+	return (wait_for_children(minishell));
 }
