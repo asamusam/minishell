@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asamuilk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: asamuilk <asamuilk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 14:55:35 by asamuilk          #+#    #+#             */
-/*   Updated: 2024/04/23 14:31:50 by asamuilk         ###   ########.fr       */
+/*   Updated: 2024/05/17 18:04:28 by asamuilk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,9 +71,5 @@ int	main(int ac, char **av, char **envp)
 		shell_loop(&minishell);
 	}
 	else
-	{
-		ft_putstr_fd("We don't accept arguments for now.", STDERR_FILENO);
-		return (EXIT_FAILURE);
-	}
-	return (EXIT_SUCCESS);
+		return (print_error("Usage: ./minishell", STDERR));
 }
